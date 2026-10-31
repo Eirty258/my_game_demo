@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cexl5mk04bf1"]
+
+[ext_resource type="Script" uid="uid://ck66yp8mq6mrs" path="res://drop/base_drop.gd" id="1_ya052"]
+
+[node name="BaseDrop" type="Area2D" unique_id=2051316017]
+script = ExtResource("1_ya052")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=1436535147]
+modulate = Color(1, 1, 1, 0.49803922)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1232805363]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1296150326]

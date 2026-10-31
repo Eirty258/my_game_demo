@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://bbhvhn1ih0mox"]
+
+[ext_resource type="Texture2D" uid="uid://knkxqufl6rjx" path="res://arts/texture/smoke_death.png" id="1_igxo6"]
+[ext_resource type="Script" uid="uid://c82kuxtq2nhon" path="res://visual_effects/smoke_death.gd" id="2_y356n"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c8wwj"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w2cgd"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pcsxh"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ls3ly"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_833dq"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cnho1"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cymyp"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p0clj"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gv5e0"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8wnkr"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dmuaq"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bmm5b"]
+atlas = ExtResource("1_igxo6")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o4w51"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c8wwj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w2cgd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pcsxh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ls3ly")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_833dq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cnho1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cymyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p0clj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gv5e0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8wnkr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dmuaq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bmm5b")
+}],
+"loop": true,
+"name": &"default",
+"speed": 36.0
+}]
+
+[node name="SmokeDeath" type="AnimatedSprite2D" unique_id=1847036743]
+sprite_frames = SubResource("SpriteFrames_o4w51")
+frame_progress = 0.94705576
+script = ExtResource("2_y356n")

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cqlrmmunttwqq"]
+
+[ext_resource type="Script" uid="uid://c3mtw7v2kbupr" path="res://shop/order.gd" id="1_4gibr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqttt"]
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_blend = true
+
+[node name="Order" type="Control" unique_id=392055639]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_4gibr")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1557198331]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -8.0
+offset_right = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_aqttt")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=1319266471]
+layout_mode = 2
+mouse_filter = 2

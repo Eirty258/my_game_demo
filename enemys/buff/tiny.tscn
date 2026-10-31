@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bgxqkobuekvx8"]
+
+[ext_resource type="PackedScene" uid="uid://cdqaqvetqpeug" path="res://enemys/buff/buff_manager.tscn" id="1_ah8ed"]
+[ext_resource type="Script" uid="uid://cydrsije27y6c" path="res://enemys/buff/tiny.gd" id="2_w2w84"]
+
+[node name="Tiny" unique_id=1867971539 instance=ExtResource("1_ah8ed")]
+script = ExtResource("2_w2w84")
+size = 0.5
+duration = 3.0
+params = {}

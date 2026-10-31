@@ -1,0 +1,35 @@
+extends Node
+
+signal egg_shot(projectile:Node)#蛋变成子弹时,传递子弹
+signal projectile_spawned(projectile:Node)#子弹生成时,传递子弹
+signal drop_egg_picked(type:String)#拾取蛋时，传递蛋种
+signal egg_droped(pos:Vector2,type:String)#即将掉落蛋时，传递掉落蛋的位置和种类(弃用）
+signal something_droped(pos:Vector2,drop_name:String)#即将掉落掉落物时，传递掉落物位置和名称
+signal to_get_item_by_name(item_name:String)#即将得到道具时，传递道具名
+signal drop_order_picked(pos:Vector2)#拾取订单时
+signal egg_double_clicked(egg:Egg)#蛋被双击时传递蛋本身
+signal fire_ball_spawned(fire_ball:Projectile)#生成火球时传递火球
+signal ice_ball_spawned(ice_ball:Projectile)#生成冰锥时传递冰锥
+signal electricity_ball_spawned(electricity_ball:Projectile)#生成电环时传递电环
+signal energy_full#能量满时
+signal boss_cleared#boss们被击败后
+signal item_clicked(item_name:String)#点击掉落的道具时传递道具名
+signal item_droped(pos:Vector2,item_name:String)#即将掉落道具时，传递位置和道具名
+signal item_dealt(item_name:String)#交易道具时，传递道具名
+signal dove_spawned#即将生成鸽子时
+signal edge_destroyed(cell:Cell)#防线被击破时传递被击破的方格
+signal void_clicked#虚空之蛋被点击第二次时
+signal void_egg_droped(pos:Vector2)#虚空之蛋掉落前,传递掉落位置
+#signal tutorial_enemy_died#训练人偶死亡时
+signal egg_broken#蛋被双击破碎后,棋盘已结算时
+signal projectile_disappeard#弹射物消失时，结算前
+signal tutorial_step_updated#教程进度更新
+signal egg_number_zero#蛋数量归零时
+signal tutorial_finished#教程完成时
+#ui更新相关
+signal egg_shards_updated(shards_number:int)#传递egg_shards
+signal energy_updated(energy:int)#传递能量数值
+signal orders_button_clicked#订单按钮被点击
+signal paused#暂停
+signal resumed#恢复暂停
+signal restart_button_pressed#重开游戏按下时

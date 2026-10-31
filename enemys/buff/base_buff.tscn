@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bcamegq540ebw"]
+
+[ext_resource type="Script" uid="uid://dv7ubchb1d4tw" path="res://enemys/buff/base_buff.gd" id="1_vmj3r"]
+
+[node name="BaseBuff" type="Node2D" unique_id=453030242]
+script = ExtResource("1_vmj3r")

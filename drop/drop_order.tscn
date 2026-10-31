@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://b4adienl134h"]
+
+[ext_resource type="PackedScene" uid="uid://cexl5mk04bf1" path="res://drop/base_drop.tscn" id="1_wep8j"]
+[ext_resource type="Script" uid="uid://d14jarf5fhc3b" path="res://drop/drop_order.gd" id="2_meys3"]
+[ext_resource type="Texture2D" uid="uid://ds2ngi15xeh2s" path="res://arts/texture/order.png" id="3_1jgxq"]
+[ext_resource type="Texture2D" uid="uid://bx8dawoeueryl" path="res://arts/texture/shadow.png" id="3_738lp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1jgxq"]
+size = Vector2(378, 387)
+
+[node name="drop_order" unique_id=2051316017 instance=ExtResource("1_wep8j")]
+script = ExtResource("2_meys3")
+contents = {
+"requirements": [{
+"amount": 3,
+"type": "egg_shard"
+}],
+"rewards": [{
+"amount": 1,
+"item_name": "conehead",
+"type": "item"
+}]
+}
+
+[node name="Shadow" parent="." index="0" unique_id=1436535147]
+position = Vector2(0, 170)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_738lp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="2" unique_id=1637145741]
+texture = ExtResource("3_1jgxq")
+
+[node name="CollisionShape2D" parent="." index="3" unique_id=1296150326]
+position = Vector2(-1, 5.5)
+shape = SubResource("RectangleShape2D_1jgxq")

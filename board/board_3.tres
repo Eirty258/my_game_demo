@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoardData" format=3 uid="uid://cu7tq8ghvjewv"]
+
+[ext_resource type="Script" uid="uid://88xhsqcguo42" path="res://board/cells/celldata.gd" id="1_5v506"]
+[ext_resource type="Resource" uid="uid://iqcvcd6qjccm" path="res://board/cells/empty_cell.tres" id="2_pyxak"]
+[ext_resource type="Script" uid="uid://dk2jvasvul53l" path="res://board/boarddata.gd" id="2_spdyo"]
+[ext_resource type="Resource" uid="uid://c0ur2dunk1lmt" path="res://board/cells/edge_cell.tres" id="3_gj3ti"]
+[ext_resource type="Resource" uid="uid://bbffo81h4kgu1" path="res://board/cells/up_cell.tres" id="4_fpi5t"]
+[ext_resource type="Resource" uid="uid://dcmrsymjfi4p7" path="res://board/cells/inner_cell.tres" id="5_0p8ii"]
+[ext_resource type="Resource" uid="uid://r3w603mq644e" path="res://board/cells/left_cell.tres" id="6_amq3x"]
+[ext_resource type="Resource" uid="uid://n66xcgvdlxev" path="res://board/cells/right_cell.tres" id="7_tkitl"]
+[ext_resource type="Resource" uid="uid://b106qb4nltxdu" path="res://board/cells/down_cell.tres" id="8_apfxu"]
+
+[resource]
+script = ExtResource("2_spdyo")
+grid = Array[ExtResource("1_5v506")]([ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("3_gj3ti"), ExtResource("4_fpi5t"), ExtResource("4_fpi5t"), ExtResource("3_gj3ti"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("6_amq3x"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("7_tkitl"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("6_amq3x"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("7_tkitl"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("5_0p8ii"), ExtResource("5_0p8ii"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("3_gj3ti"), ExtResource("8_apfxu"), ExtResource("8_apfxu"), ExtResource("3_gj3ti"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("2_pyxak"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("3_gj3ti"), ExtResource("2_pyxak"), ExtResource("2_pyxak")])
+enemy_spawn_point_left = Array[int]([3, 4])
+enemy_spawn_point_right = Array[int]([3, 4])
+enemy_spawn_point_up = Array[int]([3, 4])
+enemy_spawn_point_down = Array[int]([3, 4])
+metadata/_custom_type_script = "uid://dk2jvasvul53l"

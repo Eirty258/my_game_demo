@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cjfgdxjeb5ljm"]
+
+[ext_resource type="PackedScene" uid="uid://bcamegq540ebw" path="res://enemys/buff/base_buff.tscn" id="1_fbyku"]
+[ext_resource type="Script" uid="uid://c4t1nxlvalj8u" path="res://enemys/buff/chill.gd" id="2_boj1e"]
+
+[node name="Chill" unique_id=453030242 instance=ExtResource("1_fbyku")]
+script = ExtResource("2_boj1e")
+time_scale = 0.7

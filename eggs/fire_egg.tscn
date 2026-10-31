@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://dh567sv2l65q4"]
+
+[ext_resource type="PackedScene" uid="uid://c7n67pro3ma8q" path="res://eggs/base_egg.tscn" id="1_o4y5o"]
+[ext_resource type="Script" uid="uid://dkdb2w3jbcwoe" path="res://eggs/fire_egg.gd" id="2_pfakx"]
+[ext_resource type="Texture2D" uid="uid://d3ndu8yrogv6w" path="res://arts/texture/fire.png" id="3_pfakx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lf751"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wv2wj"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tslpj"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ncsr"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhbdx"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ajlla"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0mxg"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g24hs"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_je8w5"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w8wck"]
+atlas = ExtResource("3_pfakx")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w8wck"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lf751")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wv2wj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tslpj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ncsr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qhbdx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ajlla")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0mxg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g24hs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_je8w5")
+}],
+"loop": true,
+"name": &"active",
+"speed": 13.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w8wck")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pfakx"]
+radius = 174.0
+height = 462.0
+
+[node name="FireEgg" unique_id=645874807 instance=ExtResource("1_o4y5o")]
+script = ExtResource("2_pfakx")
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=607318436]
+sprite_frames = SubResource("SpriteFrames_w8wck")
+animation = &"active"
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1282754969]
+shape = SubResource("CapsuleShape2D_pfakx")

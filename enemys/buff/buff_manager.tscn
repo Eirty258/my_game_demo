@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cdqaqvetqpeug"]
+
+[ext_resource type="Script" uid="uid://clenohb5gj3sg" path="res://enemys/buff/buff_manager.gd" id="1_xde3d"]
+
+[node name="BuffManager" type="Node2D" unique_id=1867971539]
+script = ExtResource("1_xde3d")

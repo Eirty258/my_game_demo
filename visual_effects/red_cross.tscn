@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://s7bubva87h6k"]
+
+[ext_resource type="Texture2D" uid="uid://cvytllxcp7b87" path="res://arts/texture/red_cross.png" id="1_2nqrn"]
+[ext_resource type="Script" uid="uid://upwcow7v04w7" path="res://visual_effects/red_cross.gd" id="2_42jgn"]
+
+[node name="RedCross" type="Sprite2D" unique_id=1275532557]
+texture = ExtResource("1_2nqrn")
+script = ExtResource("2_42jgn")

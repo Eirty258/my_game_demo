@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cu30ph175ofip"]
+
+[ext_resource type="PackedScene" uid="uid://b0avydnc0hpde" path="res://enemys/base_enemy.tscn" id="1_on84q"]
+[ext_resource type="Script" uid="uid://dymxay5qdqy2i" path="res://enemys/spin_turtle.gd" id="2_rdgkr"]
+
+[node name="SpinTurtle" unique_id=872240167 instance=ExtResource("1_on84q")]
+script = ExtResource("2_rdgkr")

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CellData" format=3 uid="uid://c0ur2dunk1lmt"]
+
+[ext_resource type="Script" uid="uid://88xhsqcguo42" path="res://board/cells/celldata.gd" id="1_34aqj"]
+
+[resource]
+script = ExtResource("1_34aqj")
+is_edge = true
+is_collidable = true
+metadata/_custom_type_script = "uid://88xhsqcguo42"

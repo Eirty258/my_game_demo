@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://bc8saukf7l2aa"]
+
+[ext_resource type="PackedScene" uid="uid://dl0rhqmjbbinv" path="res://projectiles/base_projectile.tscn" id="1_31ek4"]
+[ext_resource type="Script" uid="uid://d3q6jtdkomcev" path="res://projectiles/electricity_ball.gd" id="2_844q8"]
+[ext_resource type="Texture2D" uid="uid://cmaefqddwxx8s" path="res://arts/texture/electicity_ball.png" id="3_j5qfg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j5qfg"]
+radius = 184.13
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fwtyx"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xx3af"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iowd2"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_080sh"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a4peu"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xglqt"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rkyw0"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hwqn8"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0jp5p"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6e0xa"]
+atlas = ExtResource("3_j5qfg")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g5spb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fwtyx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xx3af")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iowd2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_080sh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a4peu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xglqt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rkyw0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hwqn8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0jp5p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6e0xa")
+}],
+"loop": true,
+"name": &"default",
+"speed": 20.0
+}]
+
+[node name="ElectricityBall" unique_id=1522012806 instance=ExtResource("1_31ek4")]
+script = ExtResource("2_844q8")
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=486615253]
+shape = SubResource("CircleShape2D_j5qfg")
+
+[node name="AnimatedSprite2D" parent="." index="1" unique_id=104582478]
+sprite_frames = SubResource("SpriteFrames_g5spb")
+frame_progress = 0.306476
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="2" unique_id=294750586]
+rect = Rect2(-200, -185, 385, 376)

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b3pm3jdgf7bl8"]
+
+[ext_resource type="PackedScene" uid="uid://dl0rhqmjbbinv" path="res://projectiles/base_projectile.tscn" id="1_ar7qu"]
+[ext_resource type="Script" uid="uid://cyugikvqc0cxk" path="res://projectiles/sharp_shards.gd" id="2_xctil"]
+[ext_resource type="Texture2D" uid="uid://jpsup43iotrb" path="res://arts/texture/sharpshard2.png" id="3_icg2i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qk8yy"]
+radius = 100.0
+
+[node name="SharpShard2" unique_id=1522012806 instance=ExtResource("1_ar7qu")]
+script = ExtResource("2_xctil")
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=486615253]
+shape = SubResource("CircleShape2D_qk8yy")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="2" unique_id=294750586]
+rect = Rect2(-114, -100, 223, 201)
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="3" unique_id=395686584]
+texture = ExtResource("3_icg2i")

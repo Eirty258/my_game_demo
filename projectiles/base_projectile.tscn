@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dl0rhqmjbbinv"]
+
+[ext_resource type="Script" uid="uid://dfaeo57sl3750" path="res://projectiles/base_projectile.gd" id="1_6ogwh"]
+
+[node name="BaseProjectile" type="Area2D" unique_id=1522012806]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_6ogwh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=486615253]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=104582478]
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=294750586]
+rect = Rect2(-187, -185, 372, 376)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

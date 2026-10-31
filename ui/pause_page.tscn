@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://bl5wbtik4e4x0"]
+
+[ext_resource type="Script" uid="uid://clsk4ax5icum" path="res://ui/pause_page.gd" id="1_qm7lq"]
+[ext_resource type="Texture2D" uid="uid://du1m6nyrxfukx" path="res://arts/texture/pause_page.png" id="2_2xpmr"]
+[ext_resource type="Texture2D" uid="uid://6wvidnxdngff" path="res://arts/texture/item_page.png" id="4_3uu54"]
+[ext_resource type="PackedScene" uid="uid://mggy0cbf0wvb" path="res://ui/restart_button.tscn" id="4_054ja"]
+[ext_resource type="Texture2D" uid="uid://dtly3nuxl8a6j" path="res://arts/texture/continue.png" id="5_1btph"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mo7s0"]
+texture = ExtResource("2_2xpmr")
+texture_margin_left = 60.0
+texture_margin_top = 60.0
+texture_margin_right = 60.0
+texture_margin_bottom = 60.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3uu54"]
+texture = ExtResource("4_3uu54")
+texture_margin_left = 60.0
+texture_margin_top = 60.0
+texture_margin_right = 60.0
+texture_margin_bottom = 60.0
+
+[node name="PausePage" type="Control" unique_id=1177996437]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qm7lq")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=636546624]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -350.0
+offset_right = 600.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_mo7s0")
+
+[node name="ItemBar" type="PanelContainer" parent="." unique_id=914286011]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.46100003
+anchor_right = 0.5
+anchor_bottom = 0.46100003
+offset_left = -430.0
+offset_top = -172.88004
+offset_right = 447.0
+offset_bottom = 173.11996
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_3uu54")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ItemBar" unique_id=529074942]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="ItemBar/ScrollContainer" unique_id=798725645]
+layout_mode = 2
+columns = 6
+
+[node name="RestartButton" parent="." unique_id=2137355775 instance=ExtResource("4_054ja")]
+layout_mode = 1
+offset_left = 1173.36
+offset_top = 757.72003
+offset_right = 1174.64
+offset_bottom = 758.27997
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="ContinueButton" type="TextureButton" parent="." unique_id=507504559]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_left = 726.0
+offset_top = 694.0
+offset_right = 854.0
+offset_bottom = 822.0
+texture_normal = ExtResource("5_1btph")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]

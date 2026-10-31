@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://bossihkstu6ha"]
+
+[ext_resource type="PackedScene" uid="uid://c7n67pro3ma8q" path="res://eggs/base_egg.tscn" id="1_k0irc"]
+[ext_resource type="Script" uid="uid://dli04hdcfh5gp" path="res://eggs/electricity_egg.gd" id="2_jrdsr"]
+[ext_resource type="Texture2D" uid="uid://deng4lc0q26fe" path="res://arts/texture/electricity.png" id="3_wa6y5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nptxl"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a31ki"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oy46q"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dv431"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qcn5h"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3jh5s"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0r38s"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3jke8"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ecbk1"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_abt7i"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hmao4"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cghbt"]
+atlas = ExtResource("3_wa6y5")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ds3xe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nptxl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a31ki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oy46q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dv431")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qcn5h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3jh5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0r38s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3jke8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ecbk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abt7i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hmao4")
+}],
+"loop": true,
+"name": &"active",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cghbt")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pfakx"]
+radius = 174.0
+height = 462.0
+
+[node name="ElectricityEgg" unique_id=1914256397 instance=ExtResource("1_k0irc")]
+script = ExtResource("2_jrdsr")
+
+[node name="AnimatedSprite2D" parent="." index="0" unique_id=607318436]
+sprite_frames = SubResource("SpriteFrames_ds3xe")
+animation = &"idle"
+frame_progress = 0.4797549
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1282754969]
+shape = SubResource("CapsuleShape2D_pfakx")

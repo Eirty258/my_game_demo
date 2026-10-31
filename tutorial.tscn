@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://p2f3laky80dw"]
+
+[ext_resource type="Script" uid="uid://bfyo10h1qvfey" path="res://tutorial.gd" id="1_7n6eb"]
+[ext_resource type="Texture2D" uid="uid://bqt4tu0rsfqqp" path="res://arts/texture/background_2.png" id="2_0cr88"]
+[ext_resource type="PackedScene" uid="uid://dythgfu44yhkk" path="res://board/board.tscn" id="3_4t6hg"]
+[ext_resource type="PackedScene" uid="uid://d111ho47n60xb" path="res://enemy_manager.tscn" id="4_7vrqn"]
+[ext_resource type="PackedScene" uid="uid://crey6vd72itmt" path="res://items/item_manager.tscn" id="5_bhfnd"]
+[ext_resource type="PackedScene" uid="uid://by0islktv1f4l" path="res://drop/drop_manager.tscn" id="6_tvjhf"]
+[ext_resource type="PackedScene" uid="uid://dgvkn28nfhs7u" path="res://ui/ui.tscn" id="7_vmw6g"]
+[ext_resource type="Texture2D" uid="uid://clr00f06f24mh" path="res://arts/texture/hand.png" id="8_4t6hg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7vrqn"]
+atlas = ExtResource("8_4t6hg")
+region = Rect2(0, 0, 600, 600)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhfnd"]
+atlas = ExtResource("8_4t6hg")
+region = Rect2(600, 0, 600, 600)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvjhf"]
+atlas = ExtResource("8_4t6hg")
+region = Rect2(600, 0, 600, 600)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vmw6g"]
+atlas = ExtResource("8_4t6hg")
+region = Rect2(0, 0, 600, 600)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4hjyh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7vrqn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bhfnd")
+}],
+"loop": false,
+"name": &"click",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvjhf")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vmw6g")
+}],
+"loop": true,
+"name": &"up",
+"speed": 5.0
+}]
+
+[node name="Tutorial" type="Node" unique_id=1883544618]
+script = ExtResource("1_7n6eb")
+
+[node name="Background" type="CanvasLayer" parent="." unique_id=1801307784]
+layer = -1
+
+[node name="Background" type="Sprite2D" parent="Background" unique_id=62369801]
+texture = ExtResource("2_0cr88")
+offset = Vector2(960, 540)
+
+[node name="Board" parent="." unique_id=750264424 instance=ExtResource("3_4t6hg")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1204159795]
+zoom = Vector2(0.15, 0.15)
+
+[node name="EnemyManager" parent="." unique_id=1804351131 instance=ExtResource("4_7vrqn")]
+
+[node name="ItemManager" parent="." unique_id=1195792264 instance=ExtResource("5_bhfnd")]
+
+[node name="DropManager" parent="." unique_id=826207587 instance=ExtResource("6_tvjhf")]
+
+[node name="UI" parent="." unique_id=641497328 instance=ExtResource("7_vmw6g")]
+visible = false
+
+[node name="Hand" type="Node2D" parent="." unique_id=2021768502]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hand" unique_id=1387955082]
+sprite_frames = SubResource("SpriteFrames_4hjyh")
+animation = &"click"

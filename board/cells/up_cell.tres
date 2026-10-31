@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CellData" format=3 uid="uid://bbffo81h4kgu1"]
+
+[ext_resource type="Script" uid="uid://88xhsqcguo42" path="res://board/cells/celldata.gd" id="1_ln6ab"]
+
+[resource]
+script = ExtResource("1_ln6ab")
+direction = Vector2(0, -1)
+durability = 99999.0
+metadata/_custom_type_script = "uid://88xhsqcguo42"

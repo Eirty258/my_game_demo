@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cyt0wsrkxc1hf"]
+
+[ext_resource type="PackedScene" uid="uid://cdqaqvetqpeug" path="res://enemys/buff/buff_manager.tscn" id="1_b17wu"]
+[ext_resource type="Script" uid="uid://c7ykn71b2wg1v" path="res://enemys/buff/giant.gd" id="2_a18sb"]
+
+[node name="Giant" unique_id=1867971539 instance=ExtResource("1_b17wu")]
+script = ExtResource("2_a18sb")
+size = 2.0
+duration = 3.0
+params = {}

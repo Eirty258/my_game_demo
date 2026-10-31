@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://by0islktv1f4l"]
+
+[ext_resource type="Script" uid="uid://cs16p4whi1umk" path="res://drop/drop_manager.gd" id="1_ifomx"]
+
+[node name="DropManager" type="Node2D" unique_id=826207587]
+script = ExtResource("1_ifomx")

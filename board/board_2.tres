@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoardData" format=3 uid="uid://dr6ik5vbwgv1r"]
+
+[ext_resource type="Script" uid="uid://88xhsqcguo42" path="res://board/cells/celldata.gd" id="1_y6ebv"]
+[ext_resource type="Script" uid="uid://dk2jvasvul53l" path="res://board/boarddata.gd" id="2_8gorf"]
+[ext_resource type="Resource" uid="uid://c0ur2dunk1lmt" path="res://board/cells/edge_cell.tres" id="2_bcnvi"]
+[ext_resource type="Resource" uid="uid://dcmrsymjfi4p7" path="res://board/cells/inner_cell.tres" id="3_5igaj"]
+[ext_resource type="Resource" uid="uid://bbffo81h4kgu1" path="res://board/cells/up_cell.tres" id="4_gvvcc"]
+[ext_resource type="Resource" uid="uid://r3w603mq644e" path="res://board/cells/left_cell.tres" id="5_f0j6j"]
+[ext_resource type="Resource" uid="uid://n66xcgvdlxev" path="res://board/cells/right_cell.tres" id="6_vsj4m"]
+[ext_resource type="Resource" uid="uid://b106qb4nltxdu" path="res://board/cells/down_cell.tres" id="7_se12g"]
+
+[resource]
+script = ExtResource("2_8gorf")
+size = Vector2i(6, 6)
+grid = Array[ExtResource("1_y6ebv")]([ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("3_5igaj"), ExtResource("4_gvvcc"), ExtResource("4_gvvcc"), ExtResource("3_5igaj"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("5_f0j6j"), ExtResource("3_5igaj"), ExtResource("3_5igaj"), ExtResource("6_vsj4m"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("5_f0j6j"), ExtResource("3_5igaj"), ExtResource("3_5igaj"), ExtResource("6_vsj4m"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("3_5igaj"), ExtResource("7_se12g"), ExtResource("7_se12g"), ExtResource("3_5igaj"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi"), ExtResource("2_bcnvi")])
+enemy_spawn_point_left = Array[int]([1, 2, 3, 4])
+enemy_spawn_point_right = Array[int]([1, 2, 3, 4])
+enemy_spawn_point_up = Array[int]([1, 2, 3, 4])
+enemy_spawn_point_down = Array[int]([1, 2, 3, 4])
+metadata/_custom_type_script = "uid://dk2jvasvul53l"

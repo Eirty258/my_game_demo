@@ -1,0 +1,13 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+export/
+build/
+*.exe
+*.pck
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tmp
+remind_me.txt

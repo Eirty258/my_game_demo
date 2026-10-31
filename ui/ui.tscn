@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://dgvkn28nfhs7u"]
+
+[ext_resource type="Script" uid="uid://dmcyual02pmmc" path="res://ui/ui.gd" id="1_nb4k0"]
+[ext_resource type="Texture2D" uid="uid://d1hjfkodpixod" path="res://arts/texture/egg_shard.png" id="2_ks8t7"]
+[ext_resource type="Texture2D" uid="uid://ba20ky33lklgy" path="res://arts/texture/pause_button.png" id="3_wl5ax"]
+[ext_resource type="Texture2D" uid="uid://ctbx4fnm8aqcy" path="res://arts/texture/orders_button.png" id="4_vkava"]
+[ext_resource type="PackedScene" uid="uid://bfjkja3o7g71d" path="res://shop/order_manager.tscn" id="5_tf0e0"]
+[ext_resource type="Texture2D" uid="uid://cdb2xoajq0p1x" path="res://arts/texture/energy_bar_under.png" id="6_bo1jx"]
+[ext_resource type="Texture2D" uid="uid://ci48ij2f48uu3" path="res://arts/texture/energy_bar_progress.png" id="7_gycre"]
+[ext_resource type="Texture2D" uid="uid://bab8q3s8l8m47" path="res://arts/texture/energy_bar_over.png" id="7_pa1oa"]
+[ext_resource type="Texture2D" uid="uid://dy43sppbtde07" path="res://arts/texture/boss_icon_active.png" id="9_ay4pc"]
+[ext_resource type="PackedScene" uid="uid://bl5wbtik4e4x0" path="res://ui/pause_page.tscn" id="10_ay4pc"]
+[ext_resource type="Texture2D" uid="uid://cih00bbhr3e3s" path="res://arts/texture/boss_icon_inactive.png" id="10_bi8hs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ks8t7"]
+bg_color = Color(0.56278247, 0.3687944, 0.045804992, 1)
+border_width_left = 16
+border_width_top = 16
+border_width_right = 16
+border_width_bottom = 16
+border_color = Color(0.82375336, 0.5505042, 0.096335284, 1)
+border_blend = true
+shadow_color = Color(0.5126997, 0.33448827, 0.038008854, 1)
+shadow_size = 8
+
+[node name="UI" type="CanvasLayer" unique_id=641497328]
+process_mode = 3
+script = ExtResource("1_nb4k0")
+
+[node name="HUD" type="Control" parent="." unique_id=948114322]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeft" type="VBoxContainer" parent="HUD" unique_id=2010659030]
+layout_mode = 1
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 400.0
+offset_bottom = 400.0
+mouse_filter = 2
+theme_override_constants/separation = 8
+metadata/_edit_lock_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="HUD/TopLeft" unique_id=871411623]
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ks8t7")
+metadata/_edit_group_ = true
+
+[node name="EggShardsUI" type="HBoxContainer" parent="HUD/TopLeft/PanelContainer" unique_id=1194458899]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="HUD/TopLeft/PanelContainer/EggShardsUI" unique_id=747208404]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_ks8t7")
+expand_mode = 1
+
+[node name="Count" type="Label" parent="HUD/TopLeft/PanelContainer/EggShardsUI" unique_id=1110643955]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+
+[node name="TopRight" type="HBoxContainer" parent="HUD" unique_id=104888789]
+layout_direction = 3
+layout_mode = 1
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 400.0
+offset_bottom = 400.0
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="HUD/TopRight" unique_id=1026784647]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="TextureButton" type="TextureButton" parent="HUD/TopRight/Control" unique_id=1313585505]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture_normal = ExtResource("3_wl5ax")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Control2" type="Control" parent="HUD/TopRight" unique_id=1027199541]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="TextureButton" type="TextureButton" parent="HUD/TopRight/Control2" unique_id=2124675689]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture_normal = ExtResource("4_vkava")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="OrderManager" parent="HUD" unique_id=1152854301 instance=ExtResource("5_tf0e0")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="EnergyBar" type="TextureProgressBar" parent="HUD" unique_id=1940995959]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -426.0
+offset_top = -100.0
+offset_right = -26.0
+grow_horizontal = 0
+grow_vertical = 0
+texture_under = ExtResource("6_bo1jx")
+texture_over = ExtResource("7_pa1oa")
+texture_progress = ExtResource("7_gycre")
+texture_progress_offset = Vector2(40.5, 15)
+
+[node name="BossIcon" type="TextureRect" parent="HUD" unique_id=2053354952]
+visible = false
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_left = 1407.0
+offset_top = 961.0
+offset_right = 1535.0
+offset_bottom = 1089.0
+mouse_filter = 2
+texture = ExtResource("9_ay4pc")
+expand_mode = 1
+
+[node name="BossIcon2" type="TextureRect" parent="HUD" unique_id=822029137]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 1861.0
+offset_top = 998.0
+offset_right = 1925.0
+offset_bottom = 1062.0
+mouse_filter = 2
+texture = ExtResource("10_bi8hs")
+expand_mode = 1
+
+[node name="PausePage" parent="HUD" unique_id=1177996437 instance=ExtResource("10_ay4pc")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="HUD/TopRight/Control/TextureButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="HUD/TopRight/Control2/TextureButton" to="." method="_on_texture_button_pressed"]

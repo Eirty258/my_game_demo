@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ceyuxh21shq43"]
+
+[ext_resource type="PackedScene" uid="uid://bcamegq540ebw" path="res://enemys/buff/base_buff.tscn" id="1_sl6a4"]
+[ext_resource type="Script" uid="uid://wqkykivndcij" path="res://enemys/buff/burn.gd" id="2_kf4o8"]
+
+[node name="Burn" unique_id=453030242 instance=ExtResource("1_sl6a4")]
+script = ExtResource("2_kf4o8")
+burn_damage = 3.5
+
+[node name="BurnDamageTimer" type="Timer" parent="." index="0" unique_id=1620480328]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="BurnDamageTimer" to="." method="_on_burn_damage_timer_timeout"]

@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://cdtu0sw834c5"]
+
+[ext_resource type="Script" uid="uid://cp6qmxosw1qvv" path="res://shop/icon_unit.gd" id="1_dju72"]
+[ext_resource type="Texture2D" uid="uid://crnvmkb7ojv3s" path="res://arts/texture/double_yolk_egg.png" id="2_ohw65"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kb46a"]
+bg_color = Color(0.6146824, 0.7090715, 0.96205, 1)
+border_width_left = 16
+border_width_top = 16
+border_width_right = 16
+border_width_bottom = 16
+border_color = Color(0.88909537, 0.91841996, 0.9894807, 1)
+border_blend = true
+
+[node name="IconUnit" type="VBoxContainer" unique_id=1074716522]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_dju72")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1314658011]
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kb46a")
+
+[node name="Icon" type="TextureRect" parent="PanelContainer" unique_id=551608625]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_ohw65")
+expand_mode = 1
+
+[node name="Count" type="Label" parent="." unique_id=2137950548]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8156863, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.5780242, 0.4674316, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "1"
+horizontal_alignment = 1

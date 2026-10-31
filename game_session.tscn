@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://ch45cbb7n12eh"]
+
+[ext_resource type="Texture2D" uid="uid://b5wvmtp1g5y85" path="res://arts/texture/background_1.png" id="1_gg646"]
+[ext_resource type="Script" uid="uid://dksbycmxhww4f" path="res://game_session.gd" id="1_tpfo3"]
+[ext_resource type="PackedScene" uid="uid://dythgfu44yhkk" path="res://board/board.tscn" id="2_tpfo3"]
+[ext_resource type="PackedScene" uid="uid://d111ho47n60xb" path="res://enemy_manager.tscn" id="3_jogsb"]
+[ext_resource type="PackedScene" uid="uid://crey6vd72itmt" path="res://items/item_manager.tscn" id="4_mk4b5"]
+[ext_resource type="PackedScene" uid="uid://by0islktv1f4l" path="res://drop/drop_manager.tscn" id="5_31dt4"]
+[ext_resource type="PackedScene" uid="uid://dgvkn28nfhs7u" path="res://ui/ui.tscn" id="6_csie3"]
+
+[node name="GameSession" type="Node" unique_id=1422633988]
+script = ExtResource("1_tpfo3")
+
+[node name="Background" type="CanvasLayer" parent="." unique_id=1237687955]
+layer = -1
+
+[node name="Background" type="Sprite2D" parent="Background" unique_id=1105472267]
+texture = ExtResource("1_gg646")
+offset = Vector2(960, 540)
+
+[node name="Board" parent="." unique_id=750264424 instance=ExtResource("2_tpfo3")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=560625537]
+zoom = Vector2(0.15, 0.15)
+
+[node name="EnemyManager" parent="." unique_id=1804351131 instance=ExtResource("3_jogsb")]
+
+[node name="ItemManager" parent="." unique_id=1195792264 instance=ExtResource("4_mk4b5")]
+
+[node name="DropManager" parent="." unique_id=826207587 instance=ExtResource("5_31dt4")]
+
+[node name="UI" parent="." unique_id=641497328 instance=ExtResource("6_csie3")]

@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://b0avydnc0hpde"]
+
+[ext_resource type="Script" uid="uid://cu4h64hs3ln6j" path="res://enemys/base_enemy.gd" id="1_pbmuf"]
+[ext_resource type="PackedScene" uid="uid://cdqaqvetqpeug" path="res://enemys/buff/buff_manager.tscn" id="2_i57bu"]
+
+[node name="BaseEnemy" type="CharacterBody2D" unique_id=872240167]
+collision_layer = 2
+collision_mask = 7
+script = ExtResource("1_pbmuf")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=893756249]
+modulate = Color(1, 1, 1, 0.49803922)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1685219780]
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1576395619]
+collision_layer = 2
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=567650131]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=634295820]
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=436281964]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=2096971420]
+
+[node name="BuffManager" parent="." unique_id=1867971539 instance=ExtResource("2_i57bu")]
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Hitbox" to="." method="_on_area_2d_body_exited"]

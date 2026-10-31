@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bt1jp80dodqav"]
+
+[ext_resource type="PackedScene" uid="uid://64iysiwwf75r" path="res://items/base_item.tscn" id="1_k43kp"]
+[ext_resource type="Script" uid="uid://c83gi02uxxo6h" path="res://items/charcoal.gd" id="2_vv3q6"]
+[ext_resource type="Texture2D" uid="uid://dekouawl282pw" path="res://arts/texture/charcoal.png" id="3_1revt"]
+
+[node name="Charcoal" unique_id=2043867778 instance=ExtResource("1_k43kp")]
+script = ExtResource("2_vv3q6")
+icon = ExtResource("3_1revt")

@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://bfjkja3o7g71d"]
+
+[ext_resource type="Script" uid="uid://chp4yi1hejyvy" path="res://shop/order_manager.gd" id="1_g8111"]
+[ext_resource type="Texture2D" uid="uid://88ybydg4f4yo" path="res://arts/texture/close_button.png" id="2_sun3k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8111"]
+bg_color = Color(0.76801145, 0.8775616, 0.9912544, 1)
+border_width_left = 64
+border_width_top = 64
+border_width_right = 64
+border_width_bottom = 64
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+
+[node name="OrderManager" type="Control" unique_id=1152854301]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g8111")
+
+[node name="OrdersPage" type="Control" parent="." unique_id=160693504]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PanelContainer" type="PanelContainer" parent="OrdersPage" unique_id=666193687]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 646.0
+offset_top = 126.0
+offset_right = 1274.0
+offset_bottom = 954.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_g8111")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="OrdersPage/PanelContainer" unique_id=1182128998]
+custom_minimum_size = Vector2(500, 700)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OrdersPage/PanelContainer/ScrollContainer" unique_id=142212136]
+custom_minimum_size = Vector2(500, 700)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 200
+
+[node name="CloseButton" type="TextureButton" parent="OrdersPage" unique_id=1894956942]
+layout_mode = 0
+offset_left = 1204.0
+offset_top = 40.0
+offset_right = 1283.0
+offset_bottom = 158.0
+texture_normal = ExtResource("2_sun3k")
+
+[connection signal="button_down" from="OrdersPage/CloseButton" to="." method="_on_close_button_button_down"]

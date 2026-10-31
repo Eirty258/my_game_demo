@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cot57maebfjwg"]
+
+[ext_resource type="PackedScene" uid="uid://64iysiwwf75r" path="res://items/base_item.tscn" id="1_ioy66"]
+[ext_resource type="Script" uid="uid://dc0erdk7yxyi3" path="res://items/ice_cube.gd" id="2_e0uuu"]
+[ext_resource type="Texture2D" uid="uid://bb8vm3xvg1t1b" path="res://arts/texture/ice_cube.png" id="3_4s1gl"]
+
+[node name="IceCube" unique_id=2043867778 instance=ExtResource("1_ioy66")]
+script = ExtResource("2_e0uuu")
+icon = ExtResource("3_4s1gl")

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://d111ho47n60xb"]
+
+[ext_resource type="Script" uid="uid://cxh74ukglqyjl" path="res://enemy_manager.gd" id="1_jcgge"]
+
+[node name="EnemyManager" type="Node2D" unique_id=1804351131]
+y_sort_enabled = true
+script = ExtResource("1_jcgge")
+
+[node name="EnemySpawnCooldown" type="Timer" parent="." unique_id=1745178241]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="timeout" from="EnemySpawnCooldown" to="." method="_on_enemy_spawn_cooldown_timeout"]

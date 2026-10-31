@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://dmnxd7c3qitd8"]
+
+[ext_resource type="PackedScene" uid="uid://cexl5mk04bf1" path="res://drop/base_drop.tscn" id="1_0mgus"]
+[ext_resource type="Script" uid="uid://c25w5f71e2kcm" path="res://drop/item.gd" id="2_m1i08"]
+[ext_resource type="Texture2D" uid="uid://cra2b37l4jcuv" path="res://arts/texture/white_ray.png" id="3_c3rjn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c3rjn"]
+radius = 256.0
+
+[node name="Item" unique_id=2051316017 instance=ExtResource("1_0mgus")]
+scale = Vector2(2, 2)
+script = ExtResource("2_m1i08")
+
+[node name="AnimatedSprite2D" parent="." index="1" unique_id=1232805363]
+metadata/_edit_lock_ = true
+
+[node name="Background1" type="Sprite2D" parent="." index="2" unique_id=255612553]
+modulate = Color(1, 1, 1, 0.47058824)
+scale = Vector2(2, 2)
+texture = ExtResource("3_c3rjn")
+metadata/_edit_lock_ = true
+
+[node name="Background2" type="Sprite2D" parent="." index="3" unique_id=1693416504]
+modulate = Color(1, 1, 1, 0.47058824)
+self_modulate = Color(1, 1, 0.29803923, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_c3rjn")
+metadata/_edit_lock_ = true
+
+[node name="Icon" type="Sprite2D" parent="." index="4" unique_id=34749176]
+metadata/_edit_lock_ = true
+
+[node name="Control" type="Control" parent="." index="5" unique_id=207304193]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 487.0
+offset_top = -512.0
+offset_right = 1536.0
+offset_bottom = 512.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Control" index="0" unique_id=899842574]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -512.0
+offset_right = 2796.5
+offset_bottom = 512.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 16
+theme_override_constants/shadow_offset_y = 16
+theme_override_constants/shadow_outline_size = 24
+theme_override_font_sizes/font_size = 128
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="CollisionShape2D" parent="." index="6" unique_id=1296150326]
+shape = SubResource("CircleShape2D_c3rjn")
+metadata/_edit_lock_ = true

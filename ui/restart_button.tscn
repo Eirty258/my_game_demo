@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://mggy0cbf0wvb"]
+
+[ext_resource type="Texture2D" uid="uid://dnugpxxe2qqec" path="res://arts/texture/restart_button.png" id="1_id83l"]
+[ext_resource type="Script" uid="uid://cwmwummfu8rqr" path="res://ui/restart_button.gd" id="2_3jpn7"]
+
+[node name="RestartButton" type="TextureButton" unique_id=2137355775]
+anchors_preset = -1
+anchor_left = -0.033
+anchor_top = -0.059000004
+anchor_right = 0.033
+anchor_bottom = 0.059000004
+offset_left = -0.6399994
+offset_top = -0.27999496
+offset_right = 0.6399994
+offset_bottom = 0.27999496
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("1_id83l")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("2_3jpn7")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

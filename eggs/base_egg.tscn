@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c7n67pro3ma8q"]
+
+[ext_resource type="Script" uid="uid://cqdkjd3woucdg" path="res://eggs/base_egg.gd" id="1_ql4tb"]
+
+[node name="BaseEgg" type="Area2D" unique_id=1914256397]
+script = ExtResource("1_ql4tb")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=607318436]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1282754969]

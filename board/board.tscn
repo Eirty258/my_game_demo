@@ -1,0 +1,110 @@
+[gd_scene format=4 uid="uid://dythgfu44yhkk"]
+
+[ext_resource type="Script" uid="uid://nhfm5wpn8pi4" path="res://board/board.gd" id="1_eiwly"]
+[ext_resource type="Texture2D" uid="uid://dofugc6lf5pit" path="res://arts/texture/grid1.png" id="2_psm7c"]
+[ext_resource type="Texture2D" uid="uid://db77x6nt51s0r" path="res://arts/texture/grid2.png" id="3_8l818"]
+[ext_resource type="Texture2D" uid="uid://2ynd027ly4ry" path="res://arts/texture/edge.png" id="4_hecc7"]
+[ext_resource type="Texture2D" uid="uid://csydxa10wl12l" path="res://arts/texture/arrow.png" id="4_jqgjh"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8l818"]
+texture = ExtResource("2_psm7c")
+texture_region_size = Vector2i(512, 512)
+0:0/next_alternative_id = 3
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+0:0/1 = 1
+0:0/1/modulate = Color(1, 0, 0, 1)
+0:0/1/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+1:0/0 = 0
+1:1/0 = 0
+0:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jqgjh"]
+texture = ExtResource("3_8l818")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4go2t"]
+texture = ExtResource("4_hecc7")
+texture_region_size = Vector2i(512, 512)
+0:0/next_alternative_id = 3
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+0:0/1 = 1
+0:0/1/modulate = Color(1, 0, 0, 1)
+0:0/1/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+1:0/next_alternative_id = 2
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+1:0/1 = 1
+1:0/1/modulate = Color(1, 0, 0, 1)
+1:0/1/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+2:0/next_alternative_id = 3
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+2:0/1 = 1
+2:0/1/modulate = Color(1, 0, 0, 1)
+2:0/1/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+3:0/next_alternative_id = 2
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+3:0/1 = 1
+3:0/1/modulate = Color(1, 0, 0, 1)
+3:0/1/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hecc7"]
+texture = ExtResource("4_jqgjh")
+texture_region_size = Vector2i(512, 512)
+0:0/next_alternative_id = 4
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/flip_h = true
+0:0/2 = 2
+0:0/2/transpose = true
+0:0/3 = 3
+0:0/3/flip_v = true
+0:0/3/transpose = true
+
+[sub_resource type="TileSet" id="TileSet_jqgjh"]
+tile_size = Vector2i(512, 512)
+physics_layer_0/collision_layer = 8
+physics_layer_0/collision_mask = 2
+sources/0 = SubResource("TileSetAtlasSource_8l818")
+sources/1 = SubResource("TileSetAtlasSource_jqgjh")
+sources/2 = SubResource("TileSetAtlasSource_4go2t")
+sources/3 = SubResource("TileSetAtlasSource_hecc7")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vf5bc"]
+texture = ExtResource("4_jqgjh")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_mgc1s"]
+tile_size = Vector2i(512, 512)
+sources/0 = SubResource("TileSetAtlasSource_vf5bc")
+
+[node name="Board" type="Node2D" unique_id=750264424]
+script = ExtResource("1_eiwly")
+
+[node name="grid" type="TileMapLayer" parent="." unique_id=1896129536]
+tile_map_data = PackedByteArray("AAACAP7/AgAAAAAAAAACAP//AgAAAAAAAAACAAAAAgAAAAAAAAACAAEAAgAAAAAAAAD+//7/AgAAAAAAAAD///7/AgAAAAAAAAAAAP7/AgAAAAAAAAABAP7/AgAAAAAAAAD+/wEAAgAAAAAAAAD+////AgAAAAAAAAD+/wAAAgAAAAAAAAD+/wIAAgAAAAAAAAD//wIAAgAAAAAAAAAAAAIAAgAAAAAAAAABAAIAAgAAAAAAAAACAAIAAgAAAAAAAAD//wAAAwAAAAAAAQAAAP//AwAAAAAAAwAAAAEAAwAAAAAAAgABAAAAAwAAAAAAAAA=")
+tile_set = SubResource("TileSet_jqgjh")
+
+[node name="tile2" type="TileMapLayer" parent="grid" unique_id=1063499472]
+modulate = Color(1, 1, 1, 0.25882354)
+tile_set = SubResource("TileSet_mgc1s")
