@@ -75,6 +75,7 @@ func _ready() -> void:#要比board晚加入节点树
 	##spawn_enemy("green_snake",Vector2(-256,-4096),Vector2.DOWN)
 	#spawn_a_wave_of_enemy()
 	##spawn_random_boss()
+	#spawn_test_scarecrows()
 	pass
 
 
@@ -149,6 +150,53 @@ func coord_to_pos(coord:Vector2i)->Vector2:
 func _on_enemy_spawn_cooldown_timeout() -> void:
 	can_spawn=true
 	enemy_number=0
+
+const TEST_CELL_SIZE:=512.0
+
+#测试用：相机可见范围内、棋盘以外的每一格都刷一个教学稻草人
+#（不动、1 血、不掉落，专门用来打靶；数量可能有几百个，只在测试时用）
+func spawn_test_scarecrows(every:int=1) -> int:
+	var board_node=get_tree().get_first_node_in_group("board")
+	if board_node==null:
+		push_error("spawn_test_scarecrows: 找不到 board")
+		return 0
+	var board_size:Vector2i=board_node.size
+	var offset:Vector2=board_node.offset
+
+	#相机可见的世界矩形；拿不到相机时退回“棋盘外扩 4 格”
+	var camera:=get_viewport().get_camera_2d()
+	var view_rect:Rect2
+	if camera!=null:
+		var viewport_size:Vector2=get_viewport().get_visible_rect().size
+		var half:Vector2=viewport_size*0.5/camera.zoom
+		view_rect=Rect2(camera.global_position-half,half*2.0)
+	else:
+		var expand:=Vector2(TEST_CELL_SIZE,TEST_CELL_SIZE)*4.0
+		view_rect=Rect2(offset-expand,Vector2(board_size)*TEST_CELL_SIZE+expand*2.0)
+
+	var min_x:int=floori((view_rect.position.x-offset.x)/TEST_CELL_SIZE)
+	var min_y:int=floori((view_rect.position.y-offset.y)/TEST_CELL_SIZE)
+	var max_x:int=floori((view_rect.end.x-offset.x)/TEST_CELL_SIZE)
+	var max_y:int=floori((view_rect.end.y-offset.y)/TEST_CELL_SIZE)
+
+	var spawned:=0
+	for x in range(min_x,max_x+1,every):
+		for y in range(min_y,max_y+1,every):
+			if x>=0&&x<board_size.x&&y>=0&&y<board_size.y:
+				continue#棋盘内的格子跳过
+			var cell:=Vector2i(x,y)
+			spawn_enemy("tutorial_enemy",coord_to_pos(cell),direction_to_board(cell,board_size))
+			spawned+=1
+	print("测试稻草人：共 %d 个（相机范围 x:%d~%d y:%d~%d）"%[spawned,min_x,max_x,min_y,max_y])
+	return spawned
+
+#从某一格指向棋盘中心的方向，只取上下左右（敌人只有这四个朝向的动画）
+func direction_to_board(cell:Vector2i,board_size:Vector2i) -> Vector2:
+	var target:=Vector2(board_size)*0.5
+	var delta:=target-Vector2(cell)
+	if absf(delta.x)>absf(delta.y):
+		return Vector2.RIGHT if delta.x>0.0 else Vector2.LEFT
+	return Vector2.DOWN if delta.y>0.0 else Vector2.UP
 
 func get_next_wave_budget():
 	await get_tree().create_timer(8).timeout
