@@ -6,7 +6,7 @@ extends Projectile
 #爆炸对半径内的所有敌人造成 N 倍面板伤害（默认 3 倍）
 #（特效暂时统一使用 red_pao 贴图）
 
-@export var explosion_radius:float=512.0
+@export var explosion_radius:float=512.0*1.5
 @export var explosion_damage_multiplier:float=3.0
 @export var knock_back_force:float=100.0
 @export var projectile_speed_scale:float=0.8

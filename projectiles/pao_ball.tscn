@@ -20,7 +20,7 @@ animations = [{
 
 [node name="PaoBall" unique_id=1721581631 instance=ExtResource("1_base")]
 script = ExtResource("2_script")
-explosion_radius = 512.0
+explosion_radius = 768.0
 explosion_damage_multiplier = 3.0
 knock_back_force = 100.0
 projectile_speed_scale = 0.8
