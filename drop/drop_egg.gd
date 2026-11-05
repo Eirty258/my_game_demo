@@ -20,7 +20,7 @@ func _process(delta: float) -> void:
 	pass
 
 func handle_click():
-	SignalBus.drop_egg_picked.emit(type)
+	SignalBus.drop_egg_picked.emit(type)#红方“兵”也在调用这个信号
 	queue_free()
 
 func pick_by_weight(weights: Dictionary) -> String:

@@ -118,8 +118,8 @@ func show_text_hint(text: String, duration: float = 60.0) -> void:
 	label.text = text
 	label.add_theme_font_size_override("font_size", 48)
 	label.add_theme_color_override("font_color", Color.BLACK)
-	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 4)
+	label.add_theme_color_override("font_outline_color", Color.WHITE)
+	label.add_theme_constant_override("outline_size", 6)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 

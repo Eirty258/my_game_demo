@@ -9,6 +9,7 @@ func _ready() -> void:
 	SignalBus.restart_button_pressed.connect(restart)
 	SignalBus.tutorial_finished.connect(tutorial_finish)
 	tutorial()
+	#GameState.tutorial_step=-1
 	#restart()
 
 

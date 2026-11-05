@@ -73,3 +73,52 @@ func cutscene_in():
 	cutscene.iris_in()
 func cutscene_out():
 	cutscene.iris_out()
+
+var _current_hint_layer: CanvasLayer = null
+var _current_hint_tween: Tween = null
+
+func show_text_hint(text: String, duration: float = 5.0) -> void:
+	# 先清除上一个提示
+	if _current_hint_tween and _current_hint_tween.is_valid():
+		_current_hint_tween.kill()
+	if is_instance_valid(_current_hint_layer):
+		_current_hint_layer.queue_free()
+
+	var label = Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 48)
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	var screen_size = get_viewport().get_visible_rect().size
+	label.size = Vector2(screen_size.x, 100)
+	label.position = Vector2(0, screen_size.y * 0.05)
+	label.pivot_offset = label.size / 2.0
+
+	label.modulate.a = 0.0
+	label.scale = Vector2(0.8, 0.8)
+
+	var canvas_layer = CanvasLayer.new()
+	canvas_layer.layer = 100
+	canvas_layer.add_child(label)
+	add_child(canvas_layer)
+
+	_current_hint_layer = canvas_layer
+
+	_current_hint_tween = create_tween()
+	_current_hint_tween.set_parallel(true)
+	_current_hint_tween.tween_property(label, "modulate:a", 1.0, 0.2)
+	_current_hint_tween.tween_property(label, "scale", Vector2.ONE, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	_current_hint_tween.chain().tween_interval(duration)
+	_current_hint_tween.chain().tween_property(label, "modulate:a", 0.0, 0.3)
+	_current_hint_tween.chain().tween_callback(func():
+		if is_instance_valid(canvas_layer):
+			canvas_layer.queue_free()
+		if _current_hint_layer == canvas_layer:
+			_current_hint_layer = null
+	)

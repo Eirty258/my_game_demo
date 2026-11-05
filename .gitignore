@@ -11,3 +11,5 @@ Thumbs.db
 .idea/
 *.tmp
 remind_me.txt
+.cursor
+/addons

@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bc033c488ooo1"]
+
+[ext_resource type="PackedScene" uid="uid://g2pjfdbys85u" path="res://drop/chesses/base_chess.tscn" id="1_x35c0"]
+[ext_resource type="Script" uid="uid://dbsoj3ebf68aq" path="res://drop/chesses/red_bing.gd" id="2_lacar"]
+[ext_resource type="Texture2D" uid="uid://c3fdmhvu66q7o" path="res://arts/texture/chesses/red_bing.png" id="4_2i1sf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkk8a"]
+atlas = ExtResource("4_2i1sf")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n7hdk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkk8a")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="RedBing" unique_id=2051316017 instance=ExtResource("1_x35c0")]
+script = ExtResource("2_lacar")
+
+[node name="AnimatedSprite2D" parent="." index="1" unique_id=1232805363]
+sprite_frames = SubResource("SpriteFrames_n7hdk")
+animation = &"idle"
