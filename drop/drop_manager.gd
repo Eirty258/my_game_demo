@@ -14,7 +14,7 @@ func _ready() -> void:
 	#spawn_item(Vector2(0,0),"double_yolk_egg")
 	#for i in range(15):
 		#spawn_item(Vector2(0,0),"double_yolk_egg")
-	#spawn_drop_specific_chess(Vector2(0,0),"red_bing")
+	spawn_drop_specific_chess(Vector2(0,0),"red_pao")
 
 
 
@@ -27,8 +27,8 @@ func spawn_drop(pos:Vector2,drop_name:String):
 		spawn_drop_egg(pos)
 	elif drop_name=="order":
 		spawn_drop_order(pos)
-	#elif drop_name=="red_bing":
-		#spawn_drop_specific_chess(pos,drop_name)
+	elif drop_name=="red_bing"||drop_name=="red_pao":
+		spawn_drop_specific_chess(pos,drop_name)
 
 func spawn_drop_egg(pos:Vector2,type:String="null"):
 	var drop_egg_scene:PackedScene=load("res://drop/drop_egg.tscn")

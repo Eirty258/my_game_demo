@@ -5,6 +5,7 @@ const DRAG_THRESHOLD:=8.0
 const fire_egg=preload("res://eggs/fire_egg.tscn")
 const ice_egg=preload("res://eggs/ice_egg.tscn")
 const electricity_egg=preload("res://eggs/electricity_egg.tscn")
+const pao_egg=preload("res://eggs/pao_egg.tscn")
 
 
 
@@ -103,6 +104,8 @@ func spawn_egg(coord:Vector2i,type:String):
 		egg=ice_egg.instantiate()
 	elif type=="electricity":
 		egg=electricity_egg.instantiate()
+	elif type=="pao":
+		egg=pao_egg.instantiate()
 	else:
 		print("蛋种类名错误")
 		return
@@ -227,30 +230,23 @@ func rescan_groups():
 	for i in range(size.x):
 		for j in range(size.y):
 			scan(Vector2i(i,j))
+			#成组门槛：电力蛋少一颗，红炮一颗即可
+			var min_group_size:int=max(GameState.min_chain,1)
 			if current_type=="electricity":
-				if group.size()>=max(GameState.min_chain-1,1):#临时组大于三个元素则分配新id
-					var group_id=alloc_group_id()
-					for e in group:
-						e.group_id=group_id
-						e.directions=directions.duplicate()
-						#print(e.directions)
-				else:#否则不成组，id重置为-1
-					for e in group:
-						e.group_id=-1
-						e.directions.clear()
-						#print(e.coordinate,":","clear")
-			else:
-				if group.size()>=max(GameState.min_chain,1):#临时组大于三个元素则分配新id
-					var group_id=alloc_group_id()
-					for e in group:
-						e.group_id=group_id
-						e.directions=directions.duplicate()
-						#print(e.directions)
-				else:#否则不成组，id重置为-1
-					for e in group:
-						e.group_id=-1
-						e.directions.clear()
-						#print(e.coordinate,":","clear")
+				min_group_size=max(GameState.min_chain-1,1)
+			elif current_type=="pao":
+				min_group_size=1
+			if group.size()>=min_group_size:#达到门槛则分配新id
+				var group_id=alloc_group_id()
+				for e in group:
+					e.group_id=group_id
+					e.directions=directions.duplicate()
+					#print(e.directions)
+			else:#否则不成组，id重置为-1
+				for e in group:
+					e.group_id=-1
+					e.directions.clear()
+					#print(e.coordinate,":","clear")
 			#重置临时变量
 			group.clear()
 			directions.clear()

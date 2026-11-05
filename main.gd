@@ -8,9 +8,9 @@ func _ready() -> void:
 	SignalBus.resumed.connect(resume_game)
 	SignalBus.restart_button_pressed.connect(restart)
 	SignalBus.tutorial_finished.connect(tutorial_finish)
-	tutorial()
-	#GameState.tutorial_step=-1
-	#restart()
+	#tutorial()
+	GameState.tutorial_step=-1
+	restart()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
