@@ -21,8 +21,7 @@ func _on_area_entered(area: Area2D) -> void:
 		hit_targets[body]=true
 		has_hit=true
 		body.take_hit(final_damage,knocked_back,type)
-		if pierce_flag:
-			return
+		#穿透时也照常附加灼烧：先结算buff，再决定是否继续飞行
 		var params={
 			"burn_damage":final_damage/10,
 			"duration":float(3.0)
@@ -32,4 +31,6 @@ func _on_area_entered(area: Area2D) -> void:
 			#"size":0.7
 		#}
 		#body.add_buff("tiny",params)
+		if pierce_flag:
+			return
 		queue_free()

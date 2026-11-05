@@ -22,11 +22,12 @@ func _on_area_entered(area: Area2D) -> void:
 		hit_targets[body]=true
 		has_hit=true
 		body.take_hit(final_damage,knocked_back,type)
-		if pierce_flag:
-			return
+		#穿透时也照常附加冻缓：先结算buff，再决定是否继续飞行
 		var params={
 			"time_scale":0.7,
 			"duration":float(10.0)
 		}
 		body.add_buff("chill",params)
+		if pierce_flag:
+			return
 		queue_free()
