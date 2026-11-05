@@ -19,7 +19,7 @@ func shoot(chain_count:int):
 	for i in directions:
 		var pao_ball=pao_ball_scene.instantiate()
 		pao_ball.direction=i
-		pao_ball.type=type
+		pao_ball.type="fire"#火属性炮弹：吃火属性加成与火弱点，但不附加灼烧
 		pao_ball.knocked_back=i*100
 		pao_ball.global_position=global_position
 		pao_ball.damage_mul*=damage_multiply

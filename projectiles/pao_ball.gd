@@ -1,10 +1,13 @@
 extends Projectile
 
 #红炮的炮弹：穿过第一个敌人，碰到第二个敌人时爆炸
-#爆炸对半径内的所有敌人造成本炮弹的面板伤害
+#基础伤害与火球一致（Projectile 默认 3.5），并继承火属性加成（木炭等）
+#但不附加灼烧 —— 命中只结算伤害
+#爆炸对半径内的所有敌人造成 N 倍面板伤害（默认 3 倍）
 #（特效暂时统一使用 red_pao 贴图）
 
 @export var explosion_radius:float=512.0
+@export var explosion_damage_multiplier:float=3.0
 @export var knock_back_force:float=100.0
 @export var projectile_speed_scale:float=0.8
 
@@ -18,6 +21,8 @@ func _ready() -> void:
 	super._ready()
 	#棋子保持正立，不做方向旋转
 	$AnimatedSprite2D.rotation=0.0
+	#继承火属性加成：木炭等监听 fire_ball_spawned 的道具会加到本炮弹上
+	SignalBus.fire_ball_spawned.emit(self)
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -32,7 +37,7 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	hit_targets[body]=true
 	enemy_hit_count+=1
-	#第一个敌人照常吃伤害，炮弹继续飞行
+	#第一个敌人照常吃伤害，炮弹继续飞行（没有灼烧等附加状态）
 	if enemy_hit_count>=2:
 		explode()
 		return
@@ -44,6 +49,7 @@ func explode() -> void:
 		return
 	is_exploded=true
 	var center:Vector2=global_position
+	var explosion_damage:float=final_damage*explosion_damage_multiplier
 	for enemy in get_tree().get_nodes_in_group("enemy"):
 		if not is_instance_valid(enemy) or enemy.is_dying:
 			continue
@@ -51,7 +57,7 @@ func explode() -> void:
 			var push:Vector2=enemy.global_position-center
 			if push==Vector2.ZERO:
 				push=Vector2.DOWN
-			enemy.take_hit(final_damage,push.normalized()*knock_back_force,type)
+			enemy.take_hit(explosion_damage,push.normalized()*knock_back_force,type)
 	spawn_explosion_visual(center)
 	queue_free()
 
