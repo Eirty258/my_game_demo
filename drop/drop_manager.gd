@@ -15,6 +15,7 @@ func _ready() -> void:
 	#for i in range(15):
 		#spawn_item(Vector2(0,0),"double_yolk_egg")
 	spawn_drop_specific_chess(Vector2(0,0),"red_pao")
+	spawn_drop_specific_chess(Vector2(0,0),"red_shuai")
 
 
 
@@ -27,7 +28,7 @@ func spawn_drop(pos:Vector2,drop_name:String):
 		spawn_drop_egg(pos)
 	elif drop_name=="order":
 		spawn_drop_order(pos)
-	elif drop_name=="red_bing"||drop_name=="red_pao":
+	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai":
 		spawn_drop_specific_chess(pos,drop_name)
 
 func spawn_drop_egg(pos:Vector2,type:String="null"):

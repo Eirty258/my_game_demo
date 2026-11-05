@@ -51,4 +51,7 @@ func _on_durability_changed():
 	elif durability/(max_durability)<=0.3&&durability/(max_durability)>0:
 		board.turn_tile(coord,3)
 	if durability<=0:
+		#有“帅”时由帅顶替这次破坏，不触发游戏失败
+		if board!=null&&board.absorb_edge_destruction(self):
+			return
 		SignalBus.edge_destroyed.emit(self)

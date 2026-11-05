@@ -54,6 +54,10 @@ func _on_group_id_changed(value):
 func shoot(chain_count:int):
 	pass
 
+#破碎（双击打碎 / 被献祭）时的钩子，子类可覆盖
+func on_broken() -> void:
+	pass
+
 func die():
 	$CollisionShape2D.disabled=true
 	GameState.modify_egg_shards(shards_number)

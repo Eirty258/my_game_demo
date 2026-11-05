@@ -6,6 +6,7 @@ const fire_egg=preload("res://eggs/fire_egg.tscn")
 const ice_egg=preload("res://eggs/ice_egg.tscn")
 const electricity_egg=preload("res://eggs/electricity_egg.tscn")
 const pao_egg=preload("res://eggs/pao_egg.tscn")
+const shuai_egg=preload("res://eggs/shuai_egg.tscn")
 
 
 
@@ -106,6 +107,8 @@ func spawn_egg(coord:Vector2i,type:String):
 		egg=electricity_egg.instantiate()
 	elif type=="pao":
 		egg=pao_egg.instantiate()
+	elif type=="shuai":
+		egg=shuai_egg.instantiate()
 	else:
 		print("蛋种类名错误")
 		return
@@ -230,13 +233,16 @@ func rescan_groups():
 	for i in range(size.x):
 		for j in range(size.y):
 			scan(Vector2i(i,j))
-			#成组门槛：电力蛋少一颗，红炮一颗即可
+			#成组门槛：电力蛋少一颗，红炮一颗即可；帅不成组（不参与发射）
 			var min_group_size:int=max(GameState.min_chain,1)
+			var can_group:bool=true
 			if current_type=="electricity":
 				min_group_size=max(GameState.min_chain-1,1)
 			elif current_type=="pao":
 				min_group_size=1
-			if group.size()>=min_group_size:#达到门槛则分配新id
+			elif current_type=="shuai":
+				can_group=false
+			if can_group&&group.size()>=min_group_size:#达到门槛则分配新id
 				var group_id=alloc_group_id()
 				for e in group:
 					e.group_id=group_id
@@ -311,8 +317,28 @@ func remove_egg_broken(egg:Egg):
 	var cell=find_cell(egg.coordinate)#cell
 	cell.is_collidable=false
 	cell.is_exist_egg=false
+	egg.on_broken()#破碎效果（帅的冲击波在这里）
 	egg.die()#节点本身
 	SignalBus.egg_broken.emit()
+
+#边界被击破时的“帅”的护驾：场上有帅就献祭一枚、把这面墙修回 1 点耐久
+#返回 true 表示这次破坏被顶替，不触发游戏失败
+func absorb_edge_destruction(cell:Cell) -> bool:
+	var shuai_list:=get_all_shuai()
+	if shuai_list.is_empty():
+		return false
+	var shuai:Egg=shuai_list.pick_random()
+	cell.durability=1
+	remove_egg_broken(shuai)
+	return true
+
+#棋盘上所有还活着的帅
+func get_all_shuai() -> Array:
+	var result:=[]
+	for egg in egg_nodes.values():
+		if is_instance_valid(egg) and egg.type=="shuai":
+			result.append(egg)
+	return result
 
 #替换受伤红色tile
 func turn_red_tile(coord:Vector2i):
