@@ -61,6 +61,7 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	if type==weekness:
 		damage*=2
 	health=health-damage
+	show_damage(damage)
 	#播放受击动画
 	play_animation("takehit")
 	#position改变用tween做，时长刚好和受击动画一致
@@ -74,6 +75,12 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	is_stunned=false
 	if !is_dying:#TODO 临时用，最好加变量锁
 		play_animation("walk")
+
+const DAMAGE_NUMBER_OFFSET:=Vector2(0,-160)#数字出现在敌人头顶
+
+#显示这次受到的伤害数值（弱点翻倍后也是显示实际数值）
+func show_damage(damage:float,color:Color=Color(1.0,0.86,0.32)) -> void:
+	VisualEffect.show_damage_number(global_position+DAMAGE_NUMBER_OFFSET,damage,color)
 
 func _on_health_changed():
 	if "boss" in get_groups():

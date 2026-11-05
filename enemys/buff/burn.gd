@@ -24,6 +24,7 @@ func apply_damage(enemy: Enemy) -> void:
 	if not is_instance_valid(enemy):
 		return
 	enemy.health -= burn_damage
+	enemy.show_damage(burn_damage,Color(1.0,0.5,0.3))#持续伤害用偏橙的颜色
 	flash_red()
 	$BurnDamageTimer.start()
 

@@ -122,3 +122,75 @@ func show_text_hint(text: String, duration: float = 5.0) -> void:
 		if _current_hint_layer == canvas_layer:
 			_current_hint_layer = null
 	)
+
+#------------------------------------------------------------------
+#伤害数字
+#用法：VisualEffect.show_damage_number(世界坐标, 伤害值)
+#字号随伤害变大，有上下限；屏幕上飘起后淡出
+const DAMAGE_FONT_MIN:int=26          #字号下限
+const DAMAGE_FONT_MAX:int=110         #字号上限
+const DAMAGE_FONT_BASE:int=26         #基础字号（伤害为 0 时的字号）
+const DAMAGE_FONT_PER_DAMAGE:float=4.0#每 1 点伤害增加的字号
+const DAMAGE_NUMBER_RISE:float=110.0  #向上飘的像素
+const DAMAGE_NUMBER_LIFETIME:float=0.7
+const DAMAGE_NUMBER_LAYER:int=90      #低于文字提示(100)，高于游戏画面
+const DAMAGE_NUMBER_BOX:Vector2=Vector2(600.0,220.0)#固定大小的居中文本框
+
+var _damage_layer:CanvasLayer=null
+
+func show_damage_number(world_position:Vector2,damage:float,color:Color=Color(1.0,0.86,0.32)) -> void:
+	if damage<=0.0:
+		return
+	#世界坐标 -> 屏幕坐标（自动带上当前相机的位置和缩放）
+	var screen_pos:Vector2=get_viewport().get_canvas_transform()*world_position
+	#随机偏移，避免连续命中时数字完全重叠
+	screen_pos+=Vector2(randf_range(-24.0,24.0),randf_range(-16.0,16.0))
+	var font_size:int=get_damage_font_size(damage)
+
+	var label:=Label.new()
+	label.text=format_damage(damage)
+	label.add_theme_font_size_override("font_size",font_size)
+	label.add_theme_color_override("font_color",color)
+	label.add_theme_color_override("font_outline_color",Color.BLACK)
+	label.add_theme_constant_override("outline_size",maxi(2,font_size/12))
+	label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+
+	_get_damage_layer().add_child(label)
+	label.size=DAMAGE_NUMBER_BOX
+	label.pivot_offset=DAMAGE_NUMBER_BOX*0.5
+	label.position=screen_pos-DAMAGE_NUMBER_BOX*0.5
+	label.scale=Vector2.ONE*0.6
+	label.modulate.a=0.0
+
+	var tween:=label.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label,"modulate:a",1.0,0.08)
+	tween.tween_property(label,"scale",Vector2.ONE,0.14)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label,"position:y",label.position.y-DAMAGE_NUMBER_RISE,DAMAGE_NUMBER_LIFETIME)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_OUT)
+	tween.chain().tween_property(label,"modulate:a",0.0,0.2)
+	tween.chain().tween_callback(label.queue_free)
+
+#按伤害算字号，并夹在上下限之间
+func get_damage_font_size(damage:float) -> int:
+	var raw_size:float=DAMAGE_FONT_BASE+damage*DAMAGE_FONT_PER_DAMAGE
+	return clampi(roundi(raw_size),DAMAGE_FONT_MIN,DAMAGE_FONT_MAX)
+
+#整数伤害不带小数点，非整数保留一位
+func format_damage(damage:float) -> String:
+	if is_equal_approx(damage,roundf(damage)):
+		return str(roundi(damage))
+	return "%.1f"%damage
+
+#伤害数字共用一个 CanvasLayer，避免每次都新建
+func _get_damage_layer() -> CanvasLayer:
+	if not is_instance_valid(_damage_layer):
+		_damage_layer=CanvasLayer.new()
+		_damage_layer.layer=DAMAGE_NUMBER_LAYER
+		add_child(_damage_layer)
+	return _damage_layer

@@ -232,6 +232,7 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	if type==weekness:
 		damage*=2
 	health=health-damage
+	show_damage(damage)
 	#播放受击动画
 	if $AnimatedSprite2D.animation=="idle":
 		$AnimatedSprite2D.play("takehit")
