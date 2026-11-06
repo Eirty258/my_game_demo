@@ -9,17 +9,23 @@ var item_chinese_name:Dictionary={
 	"sharp_shards":"锋利蛋片",
 	"five_in_a_row":"五子棋必胜阵法",
 	"driving_license":"机动车驾驶证",
+	"snowfall":"降雪",
+	"sunshine":"日照",
+	"magnetic_anomaly":"磁场异常",
 }
 
 var item_description:Dictionary={
-	"charcoal":"火属性伤害上升+火蛋出现概率提高",
-	"charge_bread":"电属性伤害上升+电蛋出现概率提高",
+	"charcoal":"火属性伤害上升",
+	"charge_bread":"电属性伤害上升",
 	"conehead":"子弹穿透",
 	"double_yolk_egg":"双发",
-	"ice_cube":"冰属性伤害上升+冰蛋出现概率提高",
+	"ice_cube":"冰属性伤害上升",
 	"sharp_shards":"附加锋利碎片",
 	"five_in_a_row":"五子连珠",
 	"driving_license":"引擎在轰鸣",
+	"snowfall":"冰蛋出现概率提高",
+	"sunshine":"火蛋出现概率提高",
+	"magnetic_anomaly":"电蛋出现概率提高",
 }
 
 # Called when the node enters the scene tree for the first time.

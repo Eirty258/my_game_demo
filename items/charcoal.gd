@@ -5,7 +5,6 @@ extends Item
 func _ready() -> void:
 	item_name="charcoal"
 	SignalBus.fire_ball_spawned.connect(fire_ball_damage_add)
-	WeightTable.random_eggs["fire"]+=1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -5,7 +5,6 @@ extends Item
 func _ready() -> void:
 	item_name="ice_cube"
 	SignalBus.ice_ball_spawned.connect(ice_ball_damage_add)
-	WeightTable.random_eggs["ice"]+=1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

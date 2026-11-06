@@ -64,6 +64,9 @@ var boss_item_pool:Dictionary={
 	"charcoal":1,
 	"ice_cube":1,
 	"charge_bread":1,
+	"snowfall":1,
+	"sunshine":1,
+	"magnetic_anomaly":1,
 }
 #开局时录下来的原始权重，reset() 照它还原
 var _default_state:Dictionary={}
