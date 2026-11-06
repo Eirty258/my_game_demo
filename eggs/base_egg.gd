@@ -15,13 +15,41 @@ var directions=[]#待发射的有方向
 var shards_number:int=1
 var disabled:bool=false
 
+#鼠标悬停时微微放大 + 提亮
+const HOVER_SCALE:=1.12
+const HOVER_GLOW:=Color(1.35,1.35,1.35,1.0)
+const HOVER_TIME:=0.12
+var _hover_tween:Tween=null
+var _playing_death:bool=false
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	spawn_animation()
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 	#inactivate()
 	#await  get_tree().create_timer(3).timeout
 	#activate()
 	pass # Replace with function body.
+
+func _on_mouse_entered() -> void:
+	_hover_to(HOVER_SCALE,HOVER_GLOW)
+
+func _on_mouse_exited() -> void:
+	_hover_to(1.0,Color.WHITE)
+
+func _hover_to(target_scale:float,target_glow:Color) -> void:
+	if _playing_death:
+		return
+	if _hover_tween and _hover_tween.is_valid():
+		_hover_tween.kill()
+	_hover_tween=create_tween()
+	_hover_tween.set_parallel(true)
+	_hover_tween.set_trans(Tween.TRANS_QUAD)
+	_hover_tween.set_ease(Tween.EASE_OUT)
+	_hover_tween.tween_property(self,"scale",Vector2.ONE*target_scale,HOVER_TIME)
+	#用 self_modulate 提亮，避免和失活变暗用的 modulate 打架
+	_hover_tween.tween_property(self,"self_modulate",target_glow,HOVER_TIME)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -59,6 +87,7 @@ func on_broken() -> void:
 	pass
 
 func die():
+	_playing_death=true#死亡动画期间不要被悬停效果拉回来
 	$CollisionShape2D.disabled=true
 	GameState.modify_egg_shards(shards_number)
 	get_parent().egg_number_reduce()

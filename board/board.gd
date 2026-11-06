@@ -2,6 +2,10 @@ extends Node2D
 class_name Board
 
 const DRAG_THRESHOLD:=8.0
+const DRAG_ARROW_TEXTURE=preload("res://arts/texture/arrow.png")
+const DRAG_ARROW_DISTANCE:=320.0#箭头离蛋中心的距离（蛋半径约 256，所以刚好在蛋外侧）
+const DRAG_ARROW_SIZE:=220.0#箭头的目标宽度
+const DRAG_ARROW_ROTATION_OFFSET:=0.0#贴图朝上就填 -PI/2
 const fire_egg=preload("res://eggs/fire_egg.tscn")
 const ice_egg=preload("res://eggs/ice_egg.tscn")
 const electricity_egg=preload("res://eggs/electricity_egg.tscn")
@@ -29,6 +33,7 @@ var max_egg_number:int=0
 var drag_start_pos:Vector2
 var is_dragging:bool=false
 var dragging_egg:Egg=null
+var _drag_arrow:Sprite2D=null#拖动时提示方向的箭头
 
 #分配堆id相关
 var visited:Dictionary={}#Vector2i:bool
@@ -85,7 +90,8 @@ func _input(event: InputEvent) -> void:
 		if not is_dragging:
 			if event.position.distance_to(drag_start_pos) > DRAG_THRESHOLD:
 				is_dragging=true
-			#TODO 给egg写一个根据向量出现指示箭头的函数，在这里调用
+		if is_dragging:
+			_update_drag_arrow(event.global_position)
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if is_dragging:
@@ -101,6 +107,7 @@ func _input(event: InputEvent) -> void:
 				_on_click_only(dragging_egg)
 			dragging_egg = null
 			is_dragging = false
+			_hide_drag_arrow()
 
 #在指定坐标生成指定类型的蛋
 func spawn_egg(coord:Vector2i,type:String):
@@ -147,6 +154,36 @@ func snap_to_cardinal(delta: Vector2) -> Vector2:
 		return Vector2(signf(delta.x), 0)
 	else:
 		return Vector2(0, signf(delta.y))
+
+#拖动预览：在蛋要移动的那一侧显示一个小箭头
+func _update_drag_arrow(mouse_pos:Vector2) -> void:
+	if dragging_egg==null or not is_instance_valid(dragging_egg):
+		_hide_drag_arrow()
+		return
+	var vector=snap_to_cardinal(mouse_pos-drag_start_pos)
+	if vector==Vector2.ZERO:
+		_hide_drag_arrow()
+		return
+	var arrow=_ensure_drag_arrow()
+	arrow.visible=true
+	arrow.rotation=vector.angle()+DRAG_ARROW_ROTATION_OFFSET
+	arrow.position=dragging_egg.position+vector*DRAG_ARROW_DISTANCE
+
+func _hide_drag_arrow() -> void:
+	if is_instance_valid(_drag_arrow):
+		_drag_arrow.visible=false
+
+func _ensure_drag_arrow() -> Sprite2D:
+	if not is_instance_valid(_drag_arrow):
+		_drag_arrow=Sprite2D.new()
+		_drag_arrow.texture=DRAG_ARROW_TEXTURE
+		_drag_arrow.visible=false
+		_drag_arrow.z_index=80
+		var texture_width:=float(DRAG_ARROW_TEXTURE.get_width())
+		if texture_width>0.0:
+			_drag_arrow.scale=Vector2.ONE*(DRAG_ARROW_SIZE/texture_width)
+		add_child(_drag_arrow)
+	return _drag_arrow
 
 #根据坐标返回蛋
 #func find_egg(coord: Vector2i) -> Egg:
