@@ -2,14 +2,15 @@ extends Egg
 
 #红车：和炮一样单颗可发射，但打出来的是随机载具
 
-const VEHICLE_SCENES=[
-	#preload("res://projectiles/vehicles/ju_stroller.tscn"),#婴儿车
-	#preload("res://projectiles/vehicles/ju_bicycle.tscn"),#自行车
-	#preload("res://projectiles/vehicles/ju_motorcycle.tscn"),#摩托车
-	#preload("res://projectiles/vehicles/ju_minibus.tscn"),#小客车
-	#preload("res://projectiles/vehicles/ju_truck.tscn"),#大货车
-	preload("res://projectiles/vehicles/ju_train_head.tscn"),#高铁
-]
+#载具名 -> 场景；键名必须和 WeightTable.ju_vehicles 里的一致，权重统一在那张表里调
+const VEHICLE_SCENES:Dictionary={
+	"ju_stroller":preload("res://projectiles/vehicles/ju_stroller.tscn"),#婴儿车
+	"ju_bicycle":preload("res://projectiles/vehicles/ju_bicycle.tscn"),#自行车
+	"ju_motorcycle":preload("res://projectiles/vehicles/ju_motorcycle.tscn"),#摩托车
+	"ju_minibus":preload("res://projectiles/vehicles/ju_minibus.tscn"),#小客车
+	"ju_truck":preload("res://projectiles/vehicles/ju_truck.tscn"),#大货车
+	"ju_train_head":preload("res://projectiles/vehicles/ju_train_head.tscn"),#高铁
+}
 
 const VOLLEY=preload("res://projectiles/volley.gd")
 const TRAIN_HEAD=preload("res://projectiles/vehicles/ju_train_head.tscn")
@@ -27,7 +28,11 @@ func _process(delta: float) -> void:
 	pass
 
 func shoot(chain_count:int):
-	var vehicle_scene:PackedScene=VEHICLE_SCENES.pick_random()
+	var vehicle_type:String=WeightTable.pick_by_weight(WeightTable.ju_vehicles)
+	if not VEHICLE_SCENES.has(vehicle_type):
+		push_warning("红车：权重表里的载具 %s 没有对应场景" % vehicle_type)
+		return
+	var vehicle_scene:PackedScene=VEHICLE_SCENES[vehicle_type]
 	var damage_multiply:float=1+(chain_count-1)/5
 	for i in directions:
 		if vehicle_scene==TRAIN_HEAD:

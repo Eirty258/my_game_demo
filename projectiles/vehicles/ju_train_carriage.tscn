@@ -20,13 +20,13 @@ animations = [{
 
 [node name="JuTrainCarriage" unique_id=450010801 instance=ExtResource("1_base")]
 script = ExtResource("2_script")
-damage = 2.0
 forced_pierce = true
 ignore_pierce_bonus = false
 explode_on_hit = false
 drop_egg_on_hit = false
 align_to_direction = false
 speed = 8192.0
+damage = 2.0
 
 [node name="CollisionShape2D" parent="." index="0" unique_id=486615253]
 shape = SubResource("CircleShape2D_train_carriage")

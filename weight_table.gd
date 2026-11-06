@@ -1,9 +1,44 @@
 extends Node
 
+#所有概率表集中放这里，方便统一调权重
+#约定：一张表 = 一个 Dictionary{名字:权重}，用 WeightTable.pick_by_weight(表名) 抽
+
 var random_eggs:Dictionary={
 	"fire":1,
 	"ice":1,
 	"electricity":1
+}
+
+#中国象棋棋子权重表：权重 = 一副棋里该棋子的数量
+#红黑各7种共14种；红方：车2 马2 炮2 相2 仕2 帅1 兵5，黑方同数
+#还没实装的先注释掉，做完把注释放开就行（键名要和 weight_table 之外的 spawn 逻辑对得上）
+var chess_pieces:Dictionary={
+	#——红方——
+	"red_bing":5,#兵
+	"red_pao":2,#炮
+	"red_ju":2,#车
+	"red_xiang":2,#相
+	"red_shi":2,#仕
+	"red_shuai":1,#帅
+	#"red_ma":2,#马：未实装
+	#——黑方——
+	#"black_bing":5,#卒
+	#"black_pao":2,#炮
+	#"black_ju":2,#车
+	#"black_ma":2,#马
+	#"black_xiang":2,#象
+	#"black_shi":2,#士
+	#"black_shuai":1,#将
+}
+
+#红车发射的载具权重表：先全为1，后面再调
+var ju_vehicles:Dictionary={
+	"ju_stroller":1,#婴儿车
+	"ju_bicycle":1,#自行车
+	"ju_motorcycle":1,#摩托车
+	"ju_minibus":1,#小客车
+	"ju_truck":1,#大货车
+	"ju_train_head":1,#高铁
 }
 
 var order_item_pool:Dictionary={#订单道具池
