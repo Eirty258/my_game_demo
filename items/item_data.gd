@@ -12,6 +12,8 @@ var item_chinese_name:Dictionary={
 	"snowfall":"降雪",
 	"sunshine":"日照",
 	"magnetic_anomaly":"磁场异常",
+	"god_right_hand":"神之右手",
+	"red_chain":"红色锁链",
 }
 
 var item_description:Dictionary={
@@ -26,6 +28,8 @@ var item_description:Dictionary={
 	"snowfall":"冰蛋出现概率提高",
 	"sunshine":"火蛋出现概率提高",
 	"magnetic_anomaly":"电蛋出现概率提高",
+	"god_right_hand":"幻想杀手，右键抑制蛋的力量",
+	"red_chain":"知识！情感！意志！最少连锁数-1",
 }
 
 # Called when the node enters the scene tree for the first time.

@@ -58,6 +58,8 @@ var order_item_pool:Dictionary={#订单道具池
 	"sharp_shards":1,
 	"five_in_a_row":1,
 	"driving_license":1,
+	"god_right_hand":1,
+	"red_chain":1,
 }
 
 var boss_item_pool:Dictionary={

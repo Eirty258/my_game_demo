@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://64iysiwwf75r" path="res://items/base_item.tscn" id="1_base"]
+[ext_resource type="Script" path="res://items/god_right_hand.gd" id="2_script"]
+
+[node name="GodRightHand" unique_id=2043867778 instance=ExtResource("1_base")]
+script = ExtResource("2_script")

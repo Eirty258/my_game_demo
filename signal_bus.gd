@@ -8,6 +8,7 @@ signal something_droped(pos:Vector2,drop_name:String)#即将掉落掉落物时�
 signal to_get_item_by_name(item_name:String)#即将得到道具时，传递道具名
 signal drop_order_picked(pos:Vector2)#拾取订单时
 signal egg_double_clicked(egg:Egg)#蛋被双击时传递蛋本身
+signal egg_right_clicked(egg:Egg)#蛋被右键时传递蛋本身（失活的蛋也能触发）
 signal fire_ball_spawned(fire_ball:Projectile)#生成火球时传递火球
 signal ice_ball_spawned(ice_ball:Projectile)#生成冰锥时传递冰锥
 signal electricity_ball_spawned(electricity_ball:Projectile)#生成电环时传递电环

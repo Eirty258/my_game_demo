@@ -54,10 +54,12 @@ var enemy_spawn_point_y=[]
 #刷蛋相关
 var egg_spawn_chance:float=0.002
 var base_spawn_chance:float=0.002
+var _last_min_chain:int=-1#上一帧的最少连锁数，被道具改过就重新分组
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_last_min_chain=GameState.min_chain#以当前值为基准，之后变了才重新分组
 	SignalBus.drop_egg_picked.connect(spawn_egg_at_random_position)
 	SignalBus.egg_double_clicked.connect(remove_egg_broken)
 	if GameState.tutorial_step!=-1:
@@ -72,6 +74,10 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_targeting:
 		_update_target_highlight()
+	#最少连锁数被道具/效果改过（红色锁链等）就重新分组，不用等下一颗蛋出生
+	if GameState.min_chain!=_last_min_chain:
+		_last_min_chain=GameState.min_chain
+		rescan_groups()
 	if !GameState.is_floor_cleared&&GameState.tutorial_step==-1:
 		try_to_spawn_egg()
 	#print("平均生成一颗蛋耗时:",1/(egg_spawn_chance * 60))
@@ -84,6 +90,11 @@ func _init() -> void:
 func _input(event: InputEvent) -> void:
 	if _handle_targeting_input(event):#瞄准状态优先接管鼠标
 		return
+	#右键点蛋：交给道具（神之右手等）处理；没有道具接这个信号就不拦
+	if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_RIGHT and event.pressed:
+		if _handle_egg_right_click():
+			get_viewport().set_input_as_handled()
+			return
 	if dragging_egg==null:
 		return
 	if event is InputEventMouseMotion:
@@ -533,6 +544,21 @@ func get_cell_at_mouse() -> Cell:
 	var local:=get_global_mouse_position()-offset
 	var coord:=Vector2i(floori(local.x/512.0),floori(local.y/512.0))
 	return find_cell(coord)
+
+#右键点到的蛋：失活的蛋碰撞体是关掉的，走不了物理拾取，所以这里直接按格子找
+func _handle_egg_right_click() -> bool:
+	if dragging_egg!=null:
+		return false
+	if not SignalBus.has_connections("egg_right_clicked"):
+		return false
+	var cell:=get_cell_at_mouse()
+	if cell==null:
+		return false
+	var egg:Egg=find_egg(cell.coord)
+	if egg==null:
+		return false
+	SignalBus.egg_right_clicked.emit(egg)
+	return true
 
 func _handle_targeting_input(event:InputEvent) -> bool:
 	if not is_targeting:
