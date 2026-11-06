@@ -879,7 +879,7 @@ libraries/ = SubResource("AnimationLibrary_xd5u4")
 
 [node name="AnimatedSprite2D" parent="." index="4" unique_id=634295820]
 sprite_frames = SubResource("SpriteFrames_ud3wo")
-animation = &"walk_up"
+animation = &"walk_right"
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Hurtbox" parent_id_path=PackedInt32Array(436281964) index="0" unique_id=2096971420]

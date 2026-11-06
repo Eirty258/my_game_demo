@@ -15,6 +15,10 @@ func _ready() -> void:
 	close_attack_damage=8
 	ai_velocity=speed*direction
 	energy=15
+	#var params={
+		#"size":2
+	#}
+	#add_buff("giant",params)
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
