@@ -31,11 +31,8 @@ var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 
 @export var ai_velocity: Vector2 = Vector2.ZERO
 @export var separation_velocity: Vector2 = Vector2.ZERO
-#掉落物表
-@export var drop_table:Dictionary={#权重
-	"null":2,
-	"egg":1,
-}
+#掉落物表：留空就用 WeightTable.enemy_drops（想单独定制的敌人再在这里覆盖）
+@export var drop_table:Dictionary={}
 @export var drop_count:int=3
 
 @export var _original_speed:float=0
@@ -278,8 +275,11 @@ func pick_by_weight(weights: Dictionary) -> String:
 
 func sample_drops()->Array:
 	var to_spawn_drops=[]
+	var table:Dictionary=drop_table
+	if table.is_empty():
+		table=WeightTable.enemy_drops
 	for i in range(drop_count):
-		var drop=pick_by_weight(drop_table)
+		var drop=pick_by_weight(table)
 		if drop!="null":
 			to_spawn_drops.append(drop)
 	return to_spawn_drops

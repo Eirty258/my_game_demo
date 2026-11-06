@@ -111,6 +111,10 @@ func _input(event: InputEvent) -> void:
 
 #在指定坐标生成指定类型的蛋
 func spawn_egg(coord:Vector2i,type:String):
+	#权重表里的键带阵营（red_ju），蛋内部只用属性名（ju），这里统一转换
+	#以后有黑棋，在这个分支里按阵营分发到不同的蛋场景
+	if type.begins_with("red_"):
+		type=type.substr(4)
 	var egg
 	if type=="fire":
 		egg=fire_egg.instantiate()

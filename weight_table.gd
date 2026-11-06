@@ -3,10 +3,21 @@ extends Node
 #所有概率表集中放这里，方便统一调权重
 #约定：一张表 = 一个 Dictionary{名字:权重}，用 WeightTable.pick_by_weight(表名) 抽
 
-var random_eggs:Dictionary={
+var random_eggs:Dictionary={#自然生成蛋的权重
 	"fire":1,
 	"ice":1,
-	"electricity":1
+	"electricity":1,
+	#下面几种目前权重为 0，不会自然生成；把位置留出来给道具/事件改写
+	"red_pao":0,#红炮
+	"red_ju":0,#红车
+	"red_shuai":0,#红帅
+}
+
+#敌人死亡时的掉落表：每个掉落槽位抽一次，"null" 表示这次不掉
+var enemy_drops:Dictionary={
+	"null":2,
+	"egg":1,
+	"chess":0.2,#棋子：从 chess_pieces 表里随机抽一颗
 }
 
 #中国象棋棋子权重表：权重 = 一副棋里该棋子的数量
@@ -46,6 +57,7 @@ var order_item_pool:Dictionary={#订单道具池
 	"double_yolk_egg":1,
 	"sharp_shards":1,
 	"five_in_a_row":1,
+	"driving_license":1,
 }
 
 var boss_item_pool:Dictionary={
@@ -53,14 +65,30 @@ var boss_item_pool:Dictionary={
 	"ice_cube":1,
 	"charge_bread":1,
 }
+#开局时录下来的原始权重，reset() 照它还原
+var _default_state:Dictionary={}
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	_default_state={
+		"random_eggs":random_eggs.duplicate(),
+		"enemy_drops":enemy_drops.duplicate(),
+		"chess_pieces":chess_pieces.duplicate(),
+		"red_ju_vehicles":red_ju_vehicles.duplicate(),
+		"order_item_pool":order_item_pool.duplicate(),
+		"boss_item_pool":boss_item_pool.duplicate(),
+	}
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+#重开一局时调用：所有概率表回到初始值（道具加的权重要靠这里清掉）
+#以后新增表，记得在上面 _ready 的 _default_state 里补一行
+func reset() -> void:
+	for key in _default_state:
+		set(key,_default_state[key].duplicate())
 
 func pick_by_weight(weights: Dictionary) -> String:
 	var total = 0.0

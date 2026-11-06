@@ -25,6 +25,7 @@ func resume_game():
 func restart():
 	VisualEffect.cutscene_out()
 	await get_tree().create_timer(2).timeout
+	WeightTable.reset()#新一局：所有概率表回到初始状态
 	if get_node("GameSession") !=null:
 		get_node("GameSession").queue_free()
 		await get_tree().process_frame
@@ -43,6 +44,7 @@ func tutorial():
 func tutorial_finish():
 	VisualEffect.cutscene_out()
 	await get_tree().create_timer(2).timeout
+	WeightTable.reset()#从教程进正式局，也当成新一局
 	if get_node("Tutorial") !=null:
 		get_node("Tutorial").queue_free()
 		await get_tree().process_frame

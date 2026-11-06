@@ -31,8 +31,15 @@ func spawn_drop(pos:Vector2,drop_name:String):
 		spawn_drop_egg(pos)
 	elif drop_name=="order":
 		spawn_drop_order(pos)
+	elif drop_name=="chess":
+		spawn_drop_random_chess(pos)
 	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai"||drop_name=="red_xiang"||drop_name=="red_shi"||drop_name=="red_ju":
 		spawn_drop_specific_chess(pos,drop_name)
+
+#随机掉一颗棋子：种类从 WeightTable.chess_pieces 里按权重抽
+func spawn_drop_random_chess(pos:Vector2):
+	var chess_type:String=WeightTable.pick_by_weight(WeightTable.chess_pieces)
+	spawn_drop_specific_chess(pos,chess_type)
 
 func spawn_drop_egg(pos:Vector2,type:String="null"):
 	var drop_egg_scene:PackedScene=load("res://drop/drop_egg.tscn")
@@ -49,7 +56,11 @@ func spawn_drop_order(pos:Vector2)->Drop:
 	return drop_order
 
 func spawn_drop_specific_chess(pos:Vector2,type:String="null"):
-	var drop_chess=load("res://drop/chesses/%s.tscn"%type).instantiate()
+	var path="res://drop/chesses/%s.tscn"%type
+	if not ResourceLoader.exists(path):
+		push_warning("drop_manager：没有这颗棋子的掉落物 %s" % type)
+		return
+	var drop_chess=load(path).instantiate()
 	drop_chess.global_position=pos+Vector2(randf_range(-256,256),randf_range(-256,256))
 	add_child(drop_chess)
 
