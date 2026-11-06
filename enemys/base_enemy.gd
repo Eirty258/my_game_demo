@@ -18,6 +18,7 @@ class_name Enemy
 			$AnimatedSprite2D.flip_h=false
 @export var close_attack_damage:float=5
 @export var touch_cell:Cell=null
+var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 @export var is_stunned:bool=false
 @export var is_dying:bool=false
 @export var motion:String=""
@@ -49,6 +50,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if is_dying:
 		return
+	#贴着墙的每一帧都重新算一次索敌，避免只在进入时算一次算错就再也不更新
+	if is_instance_valid(tilemap_body):
+		touch_cell=_cell_ahead(tilemap_body)
 	handle_ai()
 	_apply_separation(delta)
 	velocity = ai_velocity + separation_velocity
@@ -146,15 +150,31 @@ func close_attack():
 		touch_cell.take_hit(close_attack_damage)
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
-	if body  is TileMapLayer:
-		var area = $Hitbox
-		var shape_node = area.get_node("CollisionShape2D")
-		var circle = shape_node.shape as CircleShape2D
-		var radius = circle.radius
-		var center = shape_node.global_position
-		var front_point = center + direction.normalized() * (radius+256)
-		var cell = body.local_to_map(body.to_local(front_point))
-		touch_cell=find_cell(cell)
+	if body is TileMapLayer:
+		tilemap_body=body
+		touch_cell=_cell_ahead(body)
+
+#朝面朝方向、用“缩放后”的 hitbox 半径往前探一格。
+#原来的写法只用了未缩放的 shape 半径：敌人被变大后 hitbox 实际半径远大于它，
+#投影点会落在棋盘外（find_cell 返回 null），于是不攻击、直接穿墙走过去。
+func _cell_ahead(body:Node2D) -> Cell:
+	var board=get_tree().get_first_node_in_group("board")
+	if board==null:
+		return null
+	var board_size:Vector2i=board.size
+	var shape_node:CollisionShape2D=$Hitbox/CollisionShape2D
+	var circle:=shape_node.shape as CircleShape2D
+	var base_radius:=0.0
+	if circle!=null:
+		base_radius=circle.radius
+	var scaled_radius:=base_radius*maxf(absf(global_scale.x),absf(global_scale.y))
+	var center:Vector2=shape_node.global_position
+	var front_point:Vector2=center+direction.normalized()*(scaled_radius+256.0)
+	var coord:Vector2i=body.local_to_map(body.to_local(front_point))
+	#夹回棋盘内：大体积敌人的投影点可能还在棋盘外，取最近的边界格
+	coord.x=clampi(coord.x,0,board_size.x-1)
+	coord.y=clampi(coord.y,0,board_size.y-1)
+	return board.find_cell(coord)
 
 
 func find_cell(coord:Vector2i)->Cell:
@@ -167,6 +187,7 @@ func _on_area_2d_body_exited(body: Node2D) -> void:#临时修复反复body_exit�
 		await get_tree().physics_frame
 		await get_tree().physics_frame
 		if not $Hitbox.has_overlapping_bodies():
+			tilemap_body=null
 			touch_cell=null
 
 func play_animation(motion_name:String):
