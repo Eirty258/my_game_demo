@@ -63,6 +63,8 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if is_targeting:
+		_update_target_highlight()
 	if !GameState.is_floor_cleared&&GameState.tutorial_step==-1:
 		try_to_spawn_egg()
 	#print("平均生成一颗蛋耗时:",1/(egg_spawn_chance * 60))
@@ -73,6 +75,8 @@ func _init() -> void:
 
 #鼠标交互
 func _input(event: InputEvent) -> void:
+	if _handle_targeting_input(event):#瞄准状态优先接管鼠标
+		return
 	if dragging_egg==null:
 		return
 	if event is InputEventMouseMotion:
@@ -405,6 +409,128 @@ func pick_by_weight(weights: Dictionary) -> String:
 		if roll < acc:
 			return key
 	return weights.keys()[0]   # 兜底
+
+#================ 指向/瞄准状态（供“临时拿起”的掉落物复用） ================
+#调用方：board.begin_targeting(可用判定, 使用回调, 取消回调, 准星贴图)
+#  - 可用判定(cell) -> bool：鼠标指到这一格时是否高亮、可点
+#  - 使用回调(cell)：左键点在可用格上时触发
+#  - 取消回调()：左键点无效处 / 右键时触发
+#board 负责接管鼠标、画高亮、最后把系统指针还原
+var is_targeting:bool=false
+var _target_is_valid:Callable
+var _target_on_used:Callable
+var _target_on_cancelled:Callable
+var _target_highlight:ColorRect=null
+var _target_cursor:ImageTexture=null
+var _block_drop_clicks_until:int=0
+
+#瞄准中，或刚刚结束瞄准的头几帧：掉落物不要再响应点击
+#（拣起/放下的那一次点击会通过物理拾取再送到掉落物一次，这里挡掉）
+func blocks_drop_clicks() -> bool:
+	return is_targeting||Time.get_ticks_msec()<_block_drop_clicks_until
+
+func begin_targeting(is_valid:Callable,on_used:Callable,on_cancelled:Callable,cursor_texture:Texture2D=null) -> void:
+	is_targeting=true
+	_target_is_valid=is_valid
+	_target_on_used=on_used
+	_target_on_cancelled=on_cancelled
+	_set_target_cursor(cursor_texture)
+	#高亮交给 _process 更新：拿起动作发生在物理拾取回调里，这里不宜新建节点
+
+func end_targeting() -> void:
+	if not is_targeting:
+		return
+	is_targeting=false
+	_target_is_valid=Callable()
+	_target_on_used=Callable()
+	_target_on_cancelled=Callable()
+	_block_drop_clicks_until=Time.get_ticks_msec()+120
+	_clear_target_cursor()
+	_hide_target_highlight()
+
+#主动取消（等价于玩家点了无效处）
+func cancel_targeting() -> void:
+	if not is_targeting:
+		return
+	var callback:=_target_on_cancelled
+	end_targeting()
+	if callback.is_valid():
+		callback.call()
+
+#鼠标当前指向的格子，棋盘外返回 null
+func get_cell_at_mouse() -> Cell:
+	var local:=get_global_mouse_position()-offset
+	var coord:=Vector2i(floori(local.x/512.0),floori(local.y/512.0))
+	return find_cell(coord)
+
+func _handle_targeting_input(event:InputEvent) -> bool:
+	if not is_targeting:
+		return false
+	if not (event is InputEventMouseButton):
+		return false
+	if not event.pressed:
+		return false
+	if event.button_index==MOUSE_BUTTON_RIGHT:
+		cancel_targeting()
+		get_viewport().set_input_as_handled()
+		return true
+	if event.button_index!=MOUSE_BUTTON_LEFT:
+		return false
+	var cell:=get_cell_at_mouse()
+	if cell!=null&&_target_is_valid.is_valid()&&bool(_target_is_valid.call(cell)):
+		var callback:=_target_on_used
+		end_targeting()
+		if callback.is_valid():
+			callback.call(cell)
+	else:
+		cancel_targeting()
+	get_viewport().set_input_as_handled()
+	return true
+
+func _update_target_highlight() -> void:
+	if not is_targeting:
+		return
+	var cell:=get_cell_at_mouse()
+	var valid:=cell!=null&&_target_is_valid.is_valid()&&bool(_target_is_valid.call(cell))
+	var rect:=_ensure_target_highlight()
+	rect.visible=valid
+	if valid:
+		rect.position=Vector2(cell.coord)*512.0
+
+func _ensure_target_highlight() -> ColorRect:
+	if not is_instance_valid(_target_highlight):
+		_target_highlight=ColorRect.new()
+		_target_highlight.size=Vector2(512.0,512.0)
+		_target_highlight.color=Color(1.0,0.85,0.2,0.32)
+		_target_highlight.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		_target_highlight.z_index=100
+		_target_highlight.visible=false
+		add_child(_target_highlight)
+	return _target_highlight
+
+func _hide_target_highlight() -> void:
+	if is_instance_valid(_target_highlight):
+		_target_highlight.visible=false
+
+func _set_target_cursor(texture:Texture2D) -> void:
+	if texture==null:
+		return
+	var image:Image=texture.get_image()
+	if image==null:
+		return
+	var cursor_size:=96
+	image.resize(cursor_size,cursor_size,Image.INTERPOLATE_BILINEAR)
+	_target_cursor=ImageTexture.create_from_image(image)
+	Input.set_custom_mouse_cursor(_target_cursor,Input.CURSOR_ARROW,Vector2(cursor_size*0.5,cursor_size*0.5))
+
+func _clear_target_cursor() -> void:
+	Input.set_custom_mouse_cursor(null)
+	_target_cursor=null
+
+#场景切换/重开时别把准星指针留在屏幕上
+func _exit_tree() -> void:
+	if is_targeting:
+		_clear_target_cursor()
 
 func spawn_egg_at_random_position(type:String):
 	if egg_number>=max_egg_number:
