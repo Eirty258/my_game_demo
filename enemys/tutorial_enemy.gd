@@ -5,6 +5,7 @@ extends Enemy
 
 
 func _ready() -> void:
+	add_to_group("enemy")#这个子类没有调用 super._ready()，分组自己补
 	speed=0
 	close_attack_damage=0
 	health=1

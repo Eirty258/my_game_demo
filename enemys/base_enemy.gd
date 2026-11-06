@@ -43,6 +43,7 @@ var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 @export var energy:float=0
 
 func _ready() -> void:
+	add_to_group("enemy")#放在 _ready：子类都会 super._ready()，_init 里的会被子类覆盖掉
 	play_animation("walk")
 	$AnimatedSprite2D.frame=randi_range(0,8)#动画起码9帧
 	pass
@@ -57,9 +58,8 @@ func _physics_process(delta: float) -> void:
 	_apply_separation(delta)
 	velocity = ai_velocity + separation_velocity
 	move_and_slide()
+	_keep_outside_board()#兜底：不允许任何推动把它挤进棋盘
 
-func _init() -> void:
-	add_to_group("enemy")
 func take_hit(damage:float,knocked_back:Vector2,type:String):
 	is_stunned=true
 	if type==weekness:
@@ -69,7 +69,9 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	#播放受击动画
 	play_animation("takehit")
 	#position改变用tween做，时长刚好和受击动画一致
-	var target_pos := position + knocked_back
+	#击退目标点也要夹在棋盘外，否则会把敌人顶进棋盘里
+	var knock_world:Vector2=_clamp_outside_board(global_position+knocked_back)
+	var target_pos := position + (knock_world-global_position)
 	var tween := create_tween()
 	tween.set_trans(Tween.TRANS_QUAD)
 	tween.set_ease(Tween.EASE_OUT)
@@ -180,6 +182,42 @@ func _cell_ahead(body:Node2D) -> Cell:
 func find_cell(coord:Vector2i)->Cell:
 	var board=get_tree().get_first_node_in_group("board")
 	return board.find_cell(coord)
+
+#不允许敌人进入棋盘内部：只沿它接近的那条轴夹住，别的方向（比如纸鹤横穿屏幕）不受影响
+func _keep_outside_board() -> void:
+	global_position=_clamp_outside_board(global_position)
+
+func _clamp_outside_board(point:Vector2) -> Vector2:
+	var board=get_tree().get_first_node_in_group("board")
+	if board==null:
+		return point
+	var left:float=board.offset.x
+	var top:float=board.offset.y
+	var right:float=left+board.size.x*512.0
+	var bottom:float=top+board.size.y*512.0
+	var margin:=_body_radius()
+	if direction.x>0.0:
+		if point.y>=top&&point.y<=bottom:
+			point.x=minf(point.x,left-margin)
+	elif direction.x<0.0:
+		if point.y>=top&&point.y<=bottom:
+			point.x=maxf(point.x,right+margin)
+	elif direction.y>0.0:
+		if point.x>=left&&point.x<=right:
+			point.y=minf(point.y,top-margin)
+	elif direction.y<0.0:
+		if point.x>=left&&point.x<=right:
+			point.y=maxf(point.y,bottom+margin)
+	return point
+
+#身体碰撞半径（考虑缩放），用来决定敌人能贴到离棋盘多近
+func _body_radius() -> float:
+	var shape_node:CollisionShape2D=$CollisionShape2D
+	var circle:=shape_node.shape as CircleShape2D
+	var base_radius:=20.0
+	if circle!=null:
+		base_radius=circle.radius
+	return base_radius*maxf(absf(global_scale.x),absf(global_scale.y))
 
 
 func _on_area_2d_body_exited(body: Node2D) -> void:#临时修复反复body_exit：延迟两帧再判断
