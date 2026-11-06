@@ -21,6 +21,7 @@ radius = 128.0
 [node name="JuMinibus" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 damage = 10.5
+speed = 4900.0
 forced_pierce = true
 
 [node name="CollisionShape2D" parent="." index="0"]

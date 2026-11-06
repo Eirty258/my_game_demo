@@ -21,6 +21,7 @@ radius = 128.0
 [node name="JuMotorcycle" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 damage = 3.5
+speed = 4500.0
 ignore_pierce_bonus = true
 explode_on_hit = true
 

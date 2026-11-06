@@ -20,7 +20,8 @@ radius = 128.0
 
 [node name="JuTrainHead" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
-damage = 3.5
+damage = 2.0
+speed = 8192.0
 forced_pierce = true
 
 [node name="CollisionShape2D" parent="." index="0"]

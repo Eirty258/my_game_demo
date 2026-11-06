@@ -18,6 +18,7 @@ func _ready() -> void:
 	spawn_drop_specific_chess(Vector2(0,0),"red_shuai")
 	spawn_drop_specific_chess(Vector2(0,0),"red_xiang")
 	spawn_drop_specific_chess(Vector2(0,0),"red_shi")
+	spawn_drop_specific_chess(Vector2(0,0),"red_ju")
 
 
 
