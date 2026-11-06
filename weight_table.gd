@@ -32,13 +32,13 @@ var chess_pieces:Dictionary={
 }
 
 #红车发射的载具权重表：先全为1，后面再调
-var ju_vehicles:Dictionary={
-	"ju_stroller":1,#婴儿车
-	"ju_bicycle":1,#自行车
-	"ju_motorcycle":1,#摩托车
-	"ju_minibus":1,#小客车
-	"ju_truck":1,#大货车
-	"ju_train_head":1,#高铁
+var red_ju_vehicles:Dictionary={
+	"red_ju_stroller":1,#婴儿车
+	"red_ju_bicycle":1,#自行车
+	"red_ju_motorcycle":1,#摩托车
+	"red_ju_minibus":1,#小客车
+	"red_ju_truck":1,#大货车
+	"red_ju_train_head":1,#高铁
 }
 
 var order_item_pool:Dictionary={#订单道具池

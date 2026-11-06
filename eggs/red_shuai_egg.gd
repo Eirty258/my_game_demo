@@ -1,6 +1,6 @@
 extends Egg
 
-const SHUAI_WAVE_SCENE=preload("res://projectiles/shuai_wave.tscn")
+const SHUAI_WAVE_SCENE=preload("res://projectiles/red_shuai_wave.tscn")
 
 #红帅：不参与发射，只作防线保险
 #1. 破碎（双击打碎，或被献祭）时，在破碎处释放红色环形冲击波

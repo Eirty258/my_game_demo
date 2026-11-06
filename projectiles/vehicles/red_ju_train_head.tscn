@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" uid="uid://dl0rhqmjbbinv" path="res://projectiles/base_projectile.tscn" id="1_base"]
-[ext_resource type="Script" path="res://projectiles/ju_train_head.gd" id="2_script"]
+[ext_resource type="Script" path="res://projectiles/red_ju_train_head.gd" id="2_script"]
 [ext_resource type="Texture2D" uid="uid://bec2dqu0ut1de" path="res://arts/texture/chesses/red_ju.png" id="3_tex"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_train_head"]
