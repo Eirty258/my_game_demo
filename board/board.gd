@@ -7,6 +7,7 @@ const ice_egg=preload("res://eggs/ice_egg.tscn")
 const electricity_egg=preload("res://eggs/electricity_egg.tscn")
 const pao_egg=preload("res://eggs/pao_egg.tscn")
 const shuai_egg=preload("res://eggs/shuai_egg.tscn")
+const EDGE_SHIELD_SCRIPT=preload("res://visual_effects/edge_shield.gd")
 
 
 
@@ -357,6 +358,32 @@ func turn_tile(coord:Vector2i,level:int):
 	var tilemaplayer=$grid
 	var source_id = tilemaplayer.get_cell_source_id(coord)
 	tilemaplayer.set_cell(coord, source_id,Vector2(level,0),0)
+
+#给所有边界格套护盾：敌人照常索敌攻击，但边界不掉耐久
+#duration 秒后自动失效；重复套用会重置时长并重做视觉
+var _shield_nodes:Dictionary={}#coord -> 护盾视觉节点
+
+func shield_all_edges(duration:float=10.0) -> void:
+	for column in grid:
+		for cell in column:
+			if cell!=null&&cell.is_edge:
+				shield_edge(cell,duration)
+
+#给单个边界格套护盾（以后别的道具可以只护其中一面）
+func shield_edge(cell:Cell,duration:float) -> void:
+	if cell==null||not cell.is_edge:
+		return
+	cell.apply_shield(duration)
+	_spawn_shield_visual(cell.coord,duration)
+
+func _spawn_shield_visual(coord:Vector2i,duration:float) -> void:
+	if _shield_nodes.has(coord) and is_instance_valid(_shield_nodes[coord]):
+		_shield_nodes[coord].queue_free()
+	var shield=EDGE_SHIELD_SCRIPT.new()
+	shield.lifetime=duration
+	shield.position=Vector2(coord)*512.0+Vector2(256,256)
+	add_child(shield)
+	_shield_nodes[coord]=shield
 func loadboard(board_tres:BoardData):
 	size=board_tres.size
 	offset=-256*Vector2(size)

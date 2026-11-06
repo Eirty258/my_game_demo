@@ -17,6 +17,7 @@ var durability:float=100:
 		_on_durability_changed()
 var coord:Vector2i=Vector2i.ZERO
 var board:Board#TODO 循环引用了?
+var shield_end_time:int=0#护盾到期时间（毫秒时间戳）
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -37,8 +38,17 @@ func edge():
 	is_collidable=true
 
 func take_hit(damage:float):
+	if is_shielded():
+		return#护盾期间敌人照常攻击，但不掉耐久
 	durability-=damage
 	board.turn_red_tile(coord)
+
+#套护盾：重复套用会取更晚的到期时间
+func apply_shield(duration:float) -> void:
+	shield_end_time=maxi(shield_end_time,Time.get_ticks_msec()+int(duration*1000.0))
+
+func is_shielded() -> bool:
+	return Time.get_ticks_msec()<shield_end_time
 	
 
 func _on_durability_changed():
