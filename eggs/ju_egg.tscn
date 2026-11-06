@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://eggs/base_egg.tscn" id="1_base"]
+[ext_resource type="Script" path="res://eggs/ju_egg.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://bec2dqu0ut1de" path="res://arts/texture/chesses/red_ju.png" id="3_tex"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ju"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tex")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tex")
+}],
+"loop": true,
+"name": &"active",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ju"]
+radius = 174.0
+height = 462.0
+
+[node name="JuEgg" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = SubResource("SpriteFrames_ju")
+animation = &"active"
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("CapsuleShape2D_ju")

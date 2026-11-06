@@ -7,6 +7,7 @@ const ice_egg=preload("res://eggs/ice_egg.tscn")
 const electricity_egg=preload("res://eggs/electricity_egg.tscn")
 const pao_egg=preload("res://eggs/pao_egg.tscn")
 const shuai_egg=preload("res://eggs/shuai_egg.tscn")
+const ju_egg=preload("res://eggs/ju_egg.tscn")
 const EDGE_SHIELD_SCRIPT=preload("res://visual_effects/edge_shield.gd")
 
 
@@ -114,6 +115,8 @@ func spawn_egg(coord:Vector2i,type:String):
 		egg=pao_egg.instantiate()
 	elif type=="shuai":
 		egg=shuai_egg.instantiate()
+	elif type=="ju":
+		egg=ju_egg.instantiate()
 	else:
 		print("蛋种类名错误")
 		return
@@ -243,7 +246,7 @@ func rescan_groups():
 			var can_group:bool=true
 			if current_type=="electricity":
 				min_group_size=max(GameState.min_chain-1,1)
-			elif current_type=="pao":
+			elif current_type=="pao"||current_type=="ju":
 				min_group_size=1
 			elif current_type=="shuai":
 				can_group=false

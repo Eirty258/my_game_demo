@@ -30,7 +30,7 @@ func spawn_drop(pos:Vector2,drop_name:String):
 		spawn_drop_egg(pos)
 	elif drop_name=="order":
 		spawn_drop_order(pos)
-	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai"||drop_name=="red_xiang"||drop_name=="red_shi":
+	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai"||drop_name=="red_xiang"||drop_name=="red_shi"||drop_name=="red_ju":
 		spawn_drop_specific_chess(pos,drop_name)
 
 func spawn_drop_egg(pos:Vector2,type:String="null"):
