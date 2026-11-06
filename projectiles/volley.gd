@@ -19,8 +19,9 @@ var interval:float=0.08
 var damage_mul:float=1.0
 var attack_type:String="ju"
 var knockback:Vector2=Vector2.ZERO
+var chain_count:int=1#这次发射一共几颗蛋（五连之类的道具要判定它）
 
-func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2) -> Node:
+func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2,p_chain_count:int=1) -> Node:
 	first_scene=p_first
 	repeat_scene=p_repeat
 	origin=p_origin
@@ -30,6 +31,7 @@ func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction
 	damage_mul=p_damage_mul
 	attack_type=p_type
 	knockback=p_knockback
+	chain_count=p_chain_count
 	return self
 
 func _ready() -> void:
@@ -53,6 +55,7 @@ func _fire_one(index:int) -> void:
 	var projectile=scene.instantiate()
 	projectile.direction=direction
 	projectile.type=attack_type
+	projectile.chain_count=chain_count
 	projectile.knocked_back=knockback
 	projectile.global_position=origin
 	projectile.damage_mul*=damage_mul

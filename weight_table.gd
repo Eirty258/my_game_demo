@@ -45,6 +45,7 @@ var order_item_pool:Dictionary={#订单道具池
 	"conehead":1,
 	"double_yolk_egg":1,
 	"sharp_shards":1,
+	"five_in_a_row":1,
 }
 
 var boss_item_pool:Dictionary={

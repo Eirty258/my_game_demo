@@ -38,12 +38,13 @@ func shoot(chain_count:int):
 		if vehicle_scene==TRAIN_HEAD:
 			#高铁：从棋子位置一节节发出去，跟车头的位置、存活都无关
 			var volley=VOLLEY.new()
-			volley.setup(TRAIN_HEAD,TRAIN_CARRIAGE,global_position,i,TRAIN_COUNT,TRAIN_INTERVAL,damage_multiply,type,i*100)
+			volley.setup(TRAIN_HEAD,TRAIN_CARRIAGE,global_position,i,TRAIN_COUNT,TRAIN_INTERVAL,damage_multiply,type,i*100,chain_count)
 			get_tree().root.add_child(volley)
 			continue
 		var ball=vehicle_scene.instantiate()
 		ball.direction=i
 		ball.type=type
+		ball.chain_count=chain_count
 		ball.knocked_back=i*100
 		ball.global_position=global_position
 		ball.damage_mul*=damage_multiply

@@ -7,6 +7,7 @@ var item_chinese_name:Dictionary={
 	"double_yolk_egg":"双黄蛋",
 	"ice_cube":"一块蓝冰",
 	"sharp_shards":"锋利蛋片",
+	"five_in_a_row":"五子棋必胜阵法",
 }
 
 var item_description:Dictionary={
@@ -16,6 +17,7 @@ var item_description:Dictionary={
 	"double_yolk_egg":"双发",
 	"ice_cube":"冰属性伤害上升+冰蛋出现概率提高",
 	"sharp_shards":"附加锋利碎片",
+	"five_in_a_row":"五子连珠",
 }
 
 # Called when the node enters the scene tree for the first time.

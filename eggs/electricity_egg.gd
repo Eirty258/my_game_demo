@@ -20,6 +20,7 @@ func shoot(chain_count:int):
 		var electricity_ball=electricity_ball_scene.instantiate()
 		electricity_ball.direction=i
 		electricity_ball.type=type
+		electricity_ball.chain_count=chain_count
 		electricity_ball.knocked_back=i*100
 		electricity_ball.global_position=global_position
 		electricity_ball.damage_mul*=damage_multiply

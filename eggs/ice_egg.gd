@@ -20,6 +20,7 @@ func shoot(chain_count:int):
 		var ice_ball=ice_ball_scene.instantiate()
 		ice_ball.direction=i
 		ice_ball.type=type
+		ice_ball.chain_count=chain_count
 		ice_ball.knocked_back=i*100
 		ice_ball.global_position=global_position
 		ice_ball.damage_mul*=damage_multiply

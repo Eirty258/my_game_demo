@@ -4,6 +4,7 @@ class_name Projectile
 @export var speed:float=4096
 @export var direction:Vector2=Vector2.ZERO
 @export var type:String="null"
+@export var chain_count:int=1#这一次发射一共几颗蛋一起发（五连之类的道具要判定它）
 @export var final_damage_scale:float=1.0:
 	set(value):
 		final_damage_scale=value

@@ -20,6 +20,7 @@ func shoot(chain_count:int):
 		var fire_ball=fire_ball_scene.instantiate()
 		fire_ball.direction=i
 		fire_ball.type=type
+		fire_ball.chain_count=chain_count
 		fire_ball.knocked_back=i*100
 		fire_ball.global_position=global_position
 		fire_ball.damage_mul*=damage_multiply
