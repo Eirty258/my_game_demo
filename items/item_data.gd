@@ -32,6 +32,20 @@ var item_description:Dictionary={
 	"red_chain":"知识！情感！意志！最少连锁数-1",
 }
 
+#图标：先找 arts/texture/items/ ，再退回 arts/texture/（老道具图标在根目录）
+func get_icon_texture(icon_name:String) -> Texture2D:
+	for dir in ["res://arts/texture/items/","res://arts/texture/"]:
+		var path="%s%s.png"%[dir,icon_name]
+		if ResourceLoader.exists(path):
+			return load(path)
+	return null
+
+#悬浮提示的文案：不是道具（比如蛋片）就返回空串
+func get_tooltip(item_name:String) -> String:
+	if not item_chinese_name.has(item_name):
+		return ""
+	return "%s：%s" % [item_chinese_name[item_name],item_description.get(item_name,"")]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.

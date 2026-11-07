@@ -20,6 +20,7 @@ func _ready() -> void:
 	super._ready()
 	#贴图默认朝右，按发射方向转
 	$AnimatedSprite2D.rotation=direction.angle()
+	$CollisionShape2D.rotation=direction.angle()
 	#继承火属性加成：木炭等监听 fire_ball_spawned 的道具会加到本炮弹上
 	SignalBus.fire_ball_spawned.emit(self)
 

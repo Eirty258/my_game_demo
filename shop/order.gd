@@ -47,14 +47,10 @@ func appear():
 	var hbox=$PanelContainer/HBoxContainer
 	var requirements=contents["requirements"]
 	var rewards=contents["rewards"]
-	#requirements
 	var icon_unit_scene:PackedScene=load("res://shop/icon_unit.tscn")
-	var icon_unit_1=icon_unit_scene.instantiate()
+	#requirements
 	for i in requirements:
-		icon_unit_1.set_icon_and_count(i["type"],i["amount"])
-		icon_unit_1.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
-		icon_unit_1.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		hbox.add_child(icon_unit_1)
+		hbox.add_child(_make_icon_unit(icon_unit_scene,i["type"],i["amount"]))
 	#arrow
 	var rect=TextureRect.new()
 	rect.texture=load("res://arts/texture/order_arrow.png")
@@ -64,12 +60,8 @@ func appear():
 	#rect.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
 	hbox.add_child(rect)
 	#rewards
-	var icon_unit_2=icon_unit_scene.instantiate()
 	for i in rewards:
-		icon_unit_2.set_icon_and_count(i["item_name"],i["amount"])
-		icon_unit_2.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
-		icon_unit_2.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		hbox.add_child(icon_unit_2)
+		hbox.add_child(_make_icon_unit(icon_unit_scene,i.get("item_name",i["type"]),i["amount"]))
 	#deal
 	var deal_button=TextureButton.new()
 	deal_button.texture_normal=load("res://arts/texture/deal_button.png")
@@ -81,6 +73,14 @@ func appear():
 	dealbutton=deal_button
 	deal_button.button_down.connect(deal)
 	hbox.add_child(deal_button)
+
+#每个条目单独一个图标单元（原来在循环里复用同一个实例，多个条目会互相覆盖）
+func _make_icon_unit(icon_unit_scene:PackedScene,icon_name:String,amount:int) -> IconUnit:
+	var unit:IconUnit=icon_unit_scene.instantiate()
+	unit.set_icon_and_count(icon_name,amount)
+	unit.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	unit.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return unit
 
 func setup(dic:Dictionary):
 	contents=dic

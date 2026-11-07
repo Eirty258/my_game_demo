@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://2tx5sxke080g" path="res://projectiles/red_pao_ball.gd" id="2_script"]
 [ext_resource type="Texture2D" uid="uid://20h1f3srj8yq" path="res://arts/texture/projectile/red_pao_ball.png" id="3_tex"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_pao_ball"]
-radius = 128.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_omeje"]
+size = Vector2(1461, 469)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pao_ball"]
 animations = [{
@@ -21,13 +21,17 @@ animations = [{
 [node name="PaoBall" unique_id=1721581631 instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 explosion_radius = 768.0
-explosion_damage_multiplier = 3.0
+explosion_damage_multiplier = 5.0
 knock_back_force = 100.0
 projectile_speed_scale = 0.8
 
 [node name="CollisionShape2D" parent="." index="0" unique_id=486615253]
-shape = SubResource("CircleShape2D_pao_ball")
+position = Vector2(34.5, 0)
+shape = SubResource("RectangleShape2D_omeje")
 
 [node name="AnimatedSprite2D" parent="." index="1" unique_id=104582478]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(3.2539058, 3.2539058)
 sprite_frames = SubResource("SpriteFrames_pao_ball")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="2" unique_id=294750586]
+rect = Rect2(-710, -253, 1488, 496)

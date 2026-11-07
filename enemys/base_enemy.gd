@@ -153,14 +153,24 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		tilemap_body=body
 		touch_cell=_cell_ahead(body)
 
-#朝面朝方向、用“缩放后”的 hitbox 半径往前探一格。
-#原来的写法只用了未缩放的 shape 半径：敌人被变大后 hitbox 实际半径远大于它，
-#投影点会落在棋盘外（find_cell 返回 null），于是不攻击、直接穿墙走过去。
+#正前方那一格；空洞（棋盘挖掉的格子）不算，返回 null
 func _cell_ahead(body:Node2D) -> Cell:
 	var board=get_tree().get_first_node_in_group("board")
 	if board==null:
 		return null
-	var board_size:Vector2i=board.size
+	var coord:=_front_cell_coord(body,board.size)
+	if coord.x<0:
+		return null
+	var cell=board.find_cell(coord)
+	#正前方是空洞（棋盘挖掉的格子）就不能算“打到了墙”，否则敌人会停下来对着空气攻击
+	if cell==null||!cell.is_available:
+		return null
+	return cell
+
+#朝面朝方向、用“缩放后”的 hitbox 半径往前探一格，返回那一格的坐标。
+#原来的写法只用了未缩放的 shape 半径：敌人被变大后 hitbox 实际半径远大于它，
+#投影点会落在棋盘外（find_cell 返回 null），于是不攻击、直接穿墙走过去。
+func _front_cell_coord(tilemap:Node2D,board_size:Vector2i) -> Vector2i:
 	var shape_node:CollisionShape2D=$Hitbox/CollisionShape2D
 	var circle:=shape_node.shape as CircleShape2D
 	var base_radius:=0.0
@@ -169,11 +179,11 @@ func _cell_ahead(body:Node2D) -> Cell:
 	var scaled_radius:=base_radius*maxf(absf(global_scale.x),absf(global_scale.y))
 	var center:Vector2=shape_node.global_position
 	var front_point:Vector2=center+direction.normalized()*(scaled_radius+256.0)
-	var coord:Vector2i=body.local_to_map(body.to_local(front_point))
+	var coord:Vector2i=tilemap.local_to_map(tilemap.to_local(front_point))
 	#夹回棋盘内：大体积敌人的投影点可能还在棋盘外，取最近的边界格
 	coord.x=clampi(coord.x,0,board_size.x-1)
 	coord.y=clampi(coord.y,0,board_size.y-1)
-	return board.find_cell(coord)
+	return coord
 
 
 func find_cell(coord:Vector2i)->Cell:
@@ -184,10 +194,30 @@ func find_cell(coord:Vector2i)->Cell:
 func _keep_outside_board() -> void:
 	global_position=_clamp_outside_board(global_position)
 
+#这一格是不是棋盘“挖掉”的格子（坐标在盘内但没有格子）
+func _is_hole_cell(board:Node,coord:Vector2i) -> bool:
+	if coord.x<0:
+		return false
+	var cell=board.find_cell(coord)
+	return cell!=null&&!cell.is_available
+
+#自己脚下这一格（可能已经走进缺口里了）
+func _cell_at_point(board:Node,point:Vector2) -> Vector2i:
+	var tilemap:Node2D=board.get_node_or_null("grid")
+	if tilemap==null:
+		return Vector2i(-1,-1)
+	return tilemap.local_to_map(tilemap.to_local(point))
+
 func _clamp_outside_board(point:Vector2) -> Vector2:
 	var board=get_tree().get_first_node_in_group("board")
 	if board==null:
 		return point
+	#自己脚下或正前方是空洞（棋盘挖掉的格子）：这里没有墙，不夹，
+	#让它继续往前走，穿过缺口去攻击缺口后面那一格真正的 edge
+	var tilemap:Node2D=board.get_node_or_null("grid")
+	if tilemap!=null:
+		if _is_hole_cell(board,_cell_at_point(board,point))||_is_hole_cell(board,_front_cell_coord(tilemap,board.size)):
+			return point
 	var left:float=board.offset.x
 	var top:float=board.offset.y
 	var right:float=left+board.size.x*512.0

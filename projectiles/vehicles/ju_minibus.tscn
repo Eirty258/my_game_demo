@@ -25,6 +25,8 @@ ignore_pierce_bonus = false
 explode_on_hit = false
 drop_egg_on_hit = false
 align_to_direction = false
+flip_h_by_direction = false
+vertical_texture = null
 speed = 4900.0
 damage = 10.5
 

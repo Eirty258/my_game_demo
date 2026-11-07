@@ -16,10 +16,12 @@ const VOLLEY=preload("res://projectiles/volley.gd")
 const TRAIN_HEAD=preload("res://projectiles/vehicles/red_ju_train_head.tscn")
 const TRAIN_CARRIAGE=preload("res://projectiles/vehicles/red_ju_train_carriage.tscn")
 const TRAIN_COUNT:=16#1 车头 + 15 车厢
-#高铁各节贴图的长度（像素，高度都是512）：车头 1481、车厢 2273
+#高铁各节贴图的长度（像素）：横向是宽，竖直是朝下贴图的高
 #发车间隔按“长度 / 速度”算，车与车才会首尾相接（贴图都是中心对齐的）
 const TRAIN_HEAD_LENGTH:=1481.0
 const TRAIN_CARRIAGE_LENGTH:=2273.0
+const TRAIN_HEAD_LENGTH_V:=1134.0
+const TRAIN_CARRIAGE_LENGTH_V:=1536.0
 
 var _train_speed:float=0.0
 
@@ -43,9 +45,13 @@ func shoot(chain_count:int):
 		if vehicle_scene==TRAIN_HEAD:
 			#高铁：从棋子位置一节节发出去，跟车头的位置、存活都无关
 			var train_speed:=_get_train_speed()
+			#纵向飞用的是朝下的贴图，长度和横向不一样
+			var vertical:bool=absf(i.y)>absf(i.x)
+			var head_length:float=TRAIN_HEAD_LENGTH_V if vertical else TRAIN_HEAD_LENGTH
+			var carriage_length:float=TRAIN_CARRIAGE_LENGTH_V if vertical else TRAIN_CARRIAGE_LENGTH
 			#车头中心到第一节车厢中心 = (车头长 + 车厢长) / 2
-			var first_gap:float=(TRAIN_HEAD_LENGTH+TRAIN_CARRIAGE_LENGTH)*0.5/train_speed
-			var body_gap:float=TRAIN_CARRIAGE_LENGTH/train_speed
+			var first_gap:float=(head_length+carriage_length)*0.5/train_speed
+			var body_gap:float=carriage_length/train_speed
 			var volley=VOLLEY.new()
 			volley.setup(TRAIN_HEAD,TRAIN_CARRIAGE,global_position,i,TRAIN_COUNT,body_gap,damage_multiply,type,i*100,chain_count,first_gap)
 			get_tree().root.add_child(volley)

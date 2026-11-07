@@ -5,14 +5,28 @@ var type:String="fire"
 var egg_sprite_dictionary:Dictionary={
 	"fire":"res://drop/egg_texture/fire_egg.tres",
 	"ice":"res://drop/egg_texture/ice_egg.tres",
-	"electricity":"res://drop/egg_texture/electricity_egg.tres"
+	"electricity":"res://drop/egg_texture/electricity_egg.tres",
+	#棋子的蛋（红车/红炮/红帅）用的是棋盘上那张整图，不需要再从元素蛋序列图里切
+	"red_ju":"res://arts/texture/chesses/red_ju.png",
+	"red_pao":"res://arts/texture/chesses/red_pao.png",
+	"red_shuai":"res://arts/texture/chesses/red_shuai.png",
 }
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if type=="null":
 		type=pick_by_weight(WeightTable.random_eggs)
 	scale=Vector2.ONE*0.5
-	$Sprite2D.texture=load(egg_sprite_dictionary[type]) as Texture
+	$Sprite2D.texture=get_egg_texture(type)
+
+#取掉落时显示的贴图：查表，查不到再找棋子蛋的整图，都没有就别崩
+func get_egg_texture(egg_type:String) -> Texture2D:
+	if egg_sprite_dictionary.has(egg_type):
+		return load(egg_sprite_dictionary[egg_type]) as Texture2D
+	var path="res://arts/texture/chesses/%s.png"%egg_type
+	if ResourceLoader.exists(path):
+		return load(path)
+	push_warning("drop_egg：没有蛋 %s 的掉落贴图" % egg_type)
+	return null
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
