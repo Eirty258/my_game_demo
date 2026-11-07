@@ -210,14 +210,17 @@ var _damage_layer:CanvasLayer=null
 func show_damage_number(world_position:Vector2,damage:float,color:Color=Color(1.0,0.86,0.32)) -> void:
 	if damage<=0.0:
 		return
+	show_float_text(world_position,format_damage(damage),color,get_damage_font_size(damage))
+
+#任意文字从世界坐标处飘起（伤害数字、"免疫"之类共用一套表现）
+func show_float_text(world_position:Vector2,text:String,color:Color=Color(1.0,0.86,0.32),font_size:int=48) -> void:
 	#世界坐标 -> 屏幕坐标（自动带上当前相机的位置和缩放）
 	var screen_pos:Vector2=get_viewport().get_canvas_transform()*world_position
 	#随机偏移，避免连续命中时数字完全重叠
 	screen_pos+=Vector2(randf_range(-24.0,24.0),randf_range(-16.0,16.0))
-	var font_size:int=get_damage_font_size(damage)
 
 	var label:=Label.new()
-	label.text=format_damage(damage)
+	label.text=text
 	label.add_theme_font_size_override("font_size",font_size)
 	label.add_theme_color_override("font_color",color)
 	label.add_theme_color_override("font_outline_color",Color.BLACK)

@@ -267,6 +267,15 @@ func play_animation(motion_name:String):
 	elif direction==Vector2.UP:
 		dirstr="up"
 	var animation=motion_name+"_"+dirstr
+	#贴图还没有这个动作的动画时，退回同名动画 / idle，别刷一堆报错
+	var frames=$AnimatedSprite2D.sprite_frames
+	if frames!=null and not frames.has_animation(animation):
+		if frames.has_animation(motion_name):
+			animation=motion_name
+		elif frames.has_animation("idle"):
+			animation="idle"
+		else:
+			return
 	$AnimatedSprite2D.play(animation)
 
 func _apply_separation(delta):

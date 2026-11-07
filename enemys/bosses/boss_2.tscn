@@ -1,0 +1,135 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://b0avydnc0hpde" path="res://enemys/base_enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://enemys/bosses/boss_2.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://gt1udgw1mdid" path="res://arts/texture/tutorial_enemy_idle.png" id="3_tex"]
+[ext_resource type="Texture2D" uid="uid://bx8dawoeueryl" path="res://arts/texture/shadow.png" id="4_shadow"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b0"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b1"]
+atlas = ExtResource("3_tex")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b2"]
+atlas = ExtResource("3_tex")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3"]
+atlas = ExtResource("3_tex")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b5"]
+atlas = ExtResource("3_tex")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b6"]
+atlas = ExtResource("3_tex")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b7"]
+atlas = ExtResource("3_tex")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b8"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b9"]
+atlas = ExtResource("3_tex")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b10"]
+atlas = ExtResource("3_tex")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b11"]
+atlas = ExtResource("3_tex")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b12"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_boss2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b9")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b10")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b11")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b12")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 12.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss2_body"]
+radius = 150.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss2_hitbox"]
+radius = 260.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss2_hurtbox"]
+radius = 240.0
+
+[node name="Boss2" instance=ExtResource("1_base")]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("2_script")
+
+[node name="Shadow" parent="." index="0"]
+position = Vector2(0, 220.0)
+texture = ExtResource("4_shadow")
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("CircleShape2D_boss2_body")
+
+[node name="CollisionShape2D" parent="Hitbox" parent_id_path=PackedInt32Array(1576395619) index="0"]
+shape = SubResource("CircleShape2D_boss2_hitbox")
+
+[node name="AnimatedSprite2D" parent="." index="3"]
+sprite_frames = SubResource("SpriteFrames_boss2")
+animation = &"idle"
+
+[node name="CollisionShape2D" parent="Hurtbox" parent_id_path=PackedInt32Array(436281964) index="0"]
+shape = SubResource("CircleShape2D_boss2_hurtbox")
