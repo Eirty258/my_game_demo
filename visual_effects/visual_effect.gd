@@ -74,54 +74,123 @@ func cutscene_in():
 func cutscene_out():
 	cutscene.iris_out()
 
-var _current_hint_layer: CanvasLayer = null
-var _current_hint_tween: Tween = null
+const HINT_MAX_VISIBLE:=2#屏幕上最多同时显示几条
+const HINT_BASE_DURATION:=5.0#单条基础显示时长
+const HINT_MIN_DURATION:=1.5#排队太长时的最短显示时长
+const HINT_QUEUE_SPEEDUP:=0.12#队列每多一条，显示时长缩短的比例
+const HINT_SLOT_Y:=0.05#第一条离屏幕顶部的位置（屏幕高度比例）
+const HINT_SLOT_GAP:=110.0#第二条往下偏多少像素
+const HINT_FONT_MAIN:=48
+const HINT_FONT_SUB:=36
+const HINT_ALPHA_MAIN:=1.0
+const HINT_ALPHA_SUB:=0.65#第二条更淡
+const HINT_SCALE_SUB:=0.92#第二条略小
+const HINT_MOVE_TIME:=0.2
+const HINT_FADE_TIME:=0.3
 
-func show_text_hint(text: String, duration: float = 5.0) -> void:
-	# 先清除上一个提示
-	if _current_hint_tween and _current_hint_tween.is_valid():
-		_current_hint_tween.kill()
-	if is_instance_valid(_current_hint_layer):
-		_current_hint_layer.queue_free()
+var _hint_layer:CanvasLayer=null
+var _hint_queue:Array=[]#排队等着显示的 {text,duration}
+var _hint_slots:Array=[]#正在显示的 {label,duration,layout_tween}
 
-	var label = Label.new()
-	label.text = text
-	label.add_theme_font_size_override("font_size", 48)
-	label.add_theme_color_override("font_color", Color.WHITE)
-	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 4)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+#屏幕上方的说明文字：最多同时显示两条，多的排队，前一条消失后依次往上补
+func show_text_hint(text: String, duration: float = HINT_BASE_DURATION) -> void:
+	_hint_queue.append({"text":text,"duration":duration})
+	_pump_hints()
 
-	var screen_size = get_viewport().get_visible_rect().size
-	label.size = Vector2(screen_size.x, 100)
-	label.position = Vector2(0, screen_size.y * 0.05)
-	label.pivot_offset = label.size / 2.0
+func _get_hint_layer() -> CanvasLayer:
+	if not is_instance_valid(_hint_layer):
+		_hint_layer=CanvasLayer.new()
+		_hint_layer.layer=100
+		add_child(_hint_layer)
+	return _hint_layer
 
-	label.modulate.a = 0.0
-	label.scale = Vector2(0.8, 0.8)
+#补位 + 重新排版
+func _pump_hints() -> void:
+	while _hint_slots.size()<HINT_MAX_VISIBLE&&not _hint_queue.is_empty():
+		var item:Dictionary=_hint_queue.pop_front()
+		#后面排队越多，这条显示得越短，免得越堆越多
+		var wait_count:=_hint_queue.size()
+		var show_time:float=maxf(HINT_MIN_DURATION,float(item["duration"])*(1.0-HINT_QUEUE_SPEEDUP*wait_count))
+		_spawn_hint(str(item["text"]),show_time)
+	for i in range(_hint_slots.size()):
+		_apply_slot(_hint_slots[i],i,true)
 
-	var canvas_layer = CanvasLayer.new()
-	canvas_layer.layer = 100
-	canvas_layer.add_child(label)
-	add_child(canvas_layer)
+func _spawn_hint(text:String,duration:float) -> void:
+	var label:=Label.new()
+	label.text=text
+	label.add_theme_color_override("font_color",Color.WHITE)
+	label.add_theme_color_override("font_outline_color",Color.BLACK)
+	label.add_theme_constant_override("outline_size",4)
+	label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	var screen_size:=get_viewport().get_visible_rect().size
+	label.size=Vector2(screen_size.x,100)
+	label.pivot_offset=label.size/2.0
+	#先按自己那一档摆好，再淡入
+	var slot:=_hint_slots.size()
+	var layout:=_slot_layout(slot)
+	label.position=Vector2(0,float(layout["y"]))
+	label.add_theme_font_size_override("font_size",int(layout["font"]))
+	label.modulate.a=0.0
+	label.scale=Vector2(0.85,0.85)
+	_get_hint_layer().add_child(label)
+	var entry:Dictionary={"label":label,"duration":duration,"layout_tween":null}
+	_hint_slots.append(entry)
+	_expire_hint(entry)
 
-	_current_hint_layer = canvas_layer
+#每一条的样式：0 = 主位（大、亮、靠上），1 = 次位（小一点、淡一点、更靠下）
+func _slot_layout(slot:int) -> Dictionary:
+	var screen_h:=get_viewport().get_visible_rect().size.y
+	if slot<=0:
+		return {"y":screen_h*HINT_SLOT_Y,"font":HINT_FONT_MAIN,"alpha":HINT_ALPHA_MAIN,"scale":1.0}
+	return {
+		"y":screen_h*HINT_SLOT_Y+HINT_SLOT_GAP,
+		"font":HINT_FONT_SUB,
+		"alpha":HINT_ALPHA_SUB,
+		"scale":HINT_SCALE_SUB,
+	}
 
-	_current_hint_tween = create_tween()
-	_current_hint_tween.set_parallel(true)
-	_current_hint_tween.tween_property(label, "modulate:a", 1.0, 0.2)
-	_current_hint_tween.tween_property(label, "scale", Vector2.ONE, 0.2)\
-		.set_trans(Tween.TRANS_BACK)\
-		.set_ease(Tween.EASE_OUT)
-	_current_hint_tween.chain().tween_interval(duration)
-	_current_hint_tween.chain().tween_property(label, "modulate:a", 0.0, 0.3)
-	_current_hint_tween.chain().tween_callback(func():
-		if is_instance_valid(canvas_layer):
-			canvas_layer.queue_free()
-		if _current_hint_layer == canvas_layer:
-			_current_hint_layer = null
-	)
+func _apply_slot(entry:Dictionary,slot:int,animate:bool) -> void:
+	var label:Label=entry["label"]
+	if not is_instance_valid(label):
+		return
+	var layout:=_slot_layout(slot)
+	label.add_theme_font_size_override("font_size",int(layout["font"]))
+	var old_tween=entry.get("layout_tween")
+	if old_tween!=null and old_tween.is_valid():
+		old_tween.kill()
+	var target_pos:=Vector2(0,float(layout["y"]))
+	var target_scale:=Vector2.ONE*float(layout["scale"])
+	var target_alpha:=float(layout["alpha"])
+	if not animate:
+		label.position=target_pos
+		label.scale=target_scale
+		label.modulate.a=target_alpha
+		return
+	var tween:=label.create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label,"position",target_pos,HINT_MOVE_TIME)
+	tween.tween_property(label,"scale",target_scale,HINT_MOVE_TIME)
+	tween.tween_property(label,"modulate:a",target_alpha,HINT_MOVE_TIME)
+	entry["layout_tween"]=tween
+
+func _expire_hint(entry:Dictionary) -> void:
+	await get_tree().create_timer(entry["duration"]).timeout
+	var label:Label=entry.get("label")
+	if not is_instance_valid(label):
+		return
+	var old_tween=entry.get("layout_tween")
+	if old_tween!=null and old_tween.is_valid():
+		old_tween.kill()
+	var fade:=label.create_tween()
+	fade.tween_property(label,"modulate:a",0.0,HINT_FADE_TIME)
+	await fade.finished
+	if is_instance_valid(label):
+		label.queue_free()
+	_hint_slots.erase(entry)
+	_pump_hints()
 
 #------------------------------------------------------------------
 #伤害数字

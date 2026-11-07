@@ -11,13 +11,13 @@ func _ready() -> void:
 	SignalBus.item_dealt.connect(spawn_and_get)
 	SignalBus.void_egg_droped.connect(spawn_void_egg)
 #---------------------------------------------------------
-	spawn_drop_specific_chess(Vector2(0,0),"red_ju")
-	spawn_drop_specific_chess(Vector2(0,0),"red_shuai")
-	spawn_drop_specific_chess(Vector2(0,0),"red_ju")
-	spawn_drop_specific_chess(Vector2(0,0),"red_ju")
-	spawn_drop_specific_chess(Vector2(0,0),"red_ju")
-	#spawn_item(Vector2(0,0),"god_right_hand")
-	#spawn_item(Vector2(0,0),"red_chain")
+	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
+	#spawn_drop_specific_chess(Vector2(0,0),"red_shuai")
+	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
+	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
+	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
+	spawn_item(Vector2(0,0),"god_right_hand")
+	spawn_item(Vector2(0,0),"red_chain")
 
 
 
