@@ -9,6 +9,8 @@ var parent
 var to_apply_enemies:Array=[]
 var move_list:Array=["move_1","move_2","move_3","move_random"]
 func _ready() -> void:
+	#它没有左右两套动画，朝向固定向右
+	direction=Vector2.RIGHT
 	super._ready()
 	add_to_group("boss")
 	board=get_tree().get_first_node_in_group("board")
@@ -37,6 +39,21 @@ func _physics_process(delta: float) -> void:
 	handle_ai()
 
 func _init() -> void:
+	pass
+
+#黑鼹鼠的动画不分方向（appear/idle/takehit…），基础类那种“动作_方向”的拼法会找不到动画
+func play_animation(motion_name:String) -> void:
+	motion=motion_name
+	var sprite:AnimatedSprite2D=$AnimatedSprite2D
+	var anim_name:=motion_name
+	if anim_name=="walk":
+		anim_name="idle"
+	if sprite.sprite_frames!=null&&sprite.sprite_frames.has_animation(anim_name):
+		sprite.play(anim_name)
+
+#Boss 靠瞬移换位置，落点都是棋盘外的固定点；不做“不许进棋盘”的夹取，
+#否则朝向固定向右后，它瞬移到棋盘右侧会被夹回左边
+func _keep_outside_board() -> void:
 	pass
 
 func handle_ai():
