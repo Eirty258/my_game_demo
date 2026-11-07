@@ -55,31 +55,43 @@ func _physics_process(delta: float) -> void:
 	_apply_separation(delta)
 	velocity = ai_velocity + separation_velocity
 	move_and_slide()
+	_apply_knockback(delta)
 	_keep_outside_board()#兜底：不允许任何推动把它挤进棋盘
+
+#击退用"速度冲量 + 指数衰减"，不再用 tween：
+#tween 每次都会从当前位置重设目标点，多段击退互相抢位置，所以叠不满。
+#改成速度之后，同时受到的几段击退直接向量相加，位移能全额叠加，衰减也自然。
+func _apply_knockback(delta:float) -> void:
+	if knock_velocity==Vector2.ZERO:
+		return
+	position+=knock_velocity*delta
+	knock_velocity*=exp(-KNOCK_DECAY*delta)
+	if knock_velocity.length_squared()<64.0:
+		knock_velocity=Vector2.ZERO
 
 func take_hit(damage:float,knocked_back:Vector2,type:String):
 	is_stunned=true
-	if type==weekness:
+	var is_weakness:=type==weekness
+	if is_weakness:
 		damage*=2
 	health=health-damage
-	show_damage(damage)
+	#属性克制翻倍时用另一种颜色，一眼能看出来
+	show_damage(damage,WEAKNESS_DAMAGE_COLOR if is_weakness else NORMAL_DAMAGE_COLOR)
 	#播放受击动画
 	play_animation("takehit")
-	#position改变用tween做，时长刚好和受击动画一致
-	#击退目标点也要夹在棋盘外，否则会把敌人顶进棋盘里
-	var knock_world:Vector2=_clamp_outside_board(global_position+knocked_back)
-	var target_pos := position + (knock_world-global_position)
-	var tween := create_tween()
-	tween.set_trans(Tween.TRANS_QUAD)
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "position", target_pos, 0.8)
-	tween.tween_property(self, "position", target_pos, 0.2)
+	#击退：冲量 = 位移 × 衰减率，单次总位移正好等于 knocked_back
+	knock_velocity+=knocked_back*KNOCK_DECAY
 	await get_tree().create_timer(1.0).timeout
 	is_stunned=false
 	if !is_dying:#TODO 临时用，最好加变量锁
 		play_animation("walk")
 
 const DAMAGE_NUMBER_OFFSET:=Vector2(0,-160)#数字出现在敌人头顶
+const NORMAL_DAMAGE_COLOR:=Color(1.0,0.86,0.32)#普通伤害数字颜色
+const WEAKNESS_DAMAGE_COLOR:=Color(0.45,0.95,1.0)#属性克制（翻倍）时的伤害数字颜色
+const KNOCK_DECAY:=3.7#击退速度衰减率：越大停得越快
+
+var knock_velocity:Vector2=Vector2.ZERO#当前击退速度（多段击退会累加）
 
 #显示这次受到的伤害数值（弱点翻倍后也是显示实际数值）
 func show_damage(damage:float,color:Color=Color(1.0,0.86,0.32)) -> void:

@@ -19,10 +19,10 @@ var _attack_timer:float=0.0
 
 func _ready() -> void:
 	super._ready()
-	weekness="null"
+	weekness="fire"
 	health=10
-	close_attack_damage=5
-	energy=10
+	close_attack_damage=4
+	energy=15
 	#入场即滚动
 	enter_rolling()
 

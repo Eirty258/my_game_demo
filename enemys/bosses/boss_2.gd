@@ -120,15 +120,8 @@ func _push_marker(type:String) -> void:
 
 #只被推开，不掉血（免疫时用）
 func _knock_only(knocked_back:Vector2) -> void:
-	if knocked_back==Vector2.ZERO:
-		return
-	var knock_world:=_clamp_outside_board(global_position+knocked_back)
-	var target_pos:=position+(knock_world-global_position)
-	var tween:=create_tween()
-	tween.set_trans(Tween.TRANS_QUAD)
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(self,"position",target_pos,0.8)
-	tween.tween_property(self,"position",target_pos,0.2)
+	#和普通受击一样走速度冲量，这样免疫期间的击退也能正常叠加
+	knock_velocity+=knocked_back*KNOCK_DECAY
 
 #================ 头顶队列 UI ================
 

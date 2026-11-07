@@ -43,7 +43,7 @@ var boss_weights_tables=[
 	},
 	#二层
 	{
-		"black_mole":1,
+		#"black_mole":1,
 		"boss_2":1,
 	},
 ]
