@@ -6,10 +6,9 @@ extends Projectile
 #爆炸交给通用组件 explosion.gd（受击盒判定 + 原地炸开）
 
 const EXPLOSION=preload("res://projectiles/explosion.gd")
-const RED_PAO_TEXTURE=preload("res://arts/texture/chesses/red_pao.png")
 
 @export var explosion_radius:float=512.0*1.5
-@export var explosion_damage_multiplier:float=3.0
+@export var explosion_damage_multiplier:float=5.0
 @export var knock_back_force:float=100.0
 @export var projectile_speed_scale:float=0.8
 
@@ -19,8 +18,8 @@ var is_exploded:bool=false
 func _ready() -> void:
 	speed=4096*projectile_speed_scale
 	super._ready()
-	#棋子保持正立，不做方向旋转
-	$AnimatedSprite2D.rotation=0.0
+	#贴图默认朝右，按发射方向转
+	$AnimatedSprite2D.rotation=direction.angle()
 	#继承火属性加成：木炭等监听 fire_ball_spawned 的道具会加到本炮弹上
 	SignalBus.fire_ball_spawned.emit(self)
 
@@ -49,6 +48,6 @@ func explode() -> void:
 		return
 	is_exploded=true
 	var blast=EXPLOSION.new()
-	blast.setup(global_position,final_damage*explosion_damage_multiplier,explosion_radius,knock_back_force,type,RED_PAO_TEXTURE)
+	blast.setup(global_position,final_damage*explosion_damage_multiplier,explosion_radius,knock_back_force,type)
 	get_tree().root.add_child(blast)
 	queue_free()

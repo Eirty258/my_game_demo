@@ -15,11 +15,14 @@ const EXPLOSION_DAMAGE_SCALE:=3.0
 @export var explode_on_hit:bool=false
 @export var drop_egg_on_hit:bool=false
 @export var align_to_direction:bool=false#整个节点跟着发射方向转（宽体载具用）
+@export var flip_h_by_direction:bool=false#贴图默认朝右：向左飞时水平翻转（还没有上下方向的贴图）
 
 func _ready() -> void:
 	super._ready()
 	#贴图不单独转，方向由节点整体决定，避免非等比缩放被拧变形
 	$AnimatedSprite2D.rotation=0.0
+	if flip_h_by_direction:
+		$AnimatedSprite2D.flip_h=direction.x<0.0
 	if align_to_direction:
 		#载具的长边要始终垂直于前进方向：纵向飞时形态天然是横的，
 		#横向飞时转 90° 让“三格宽”落在竖直方向上
@@ -60,14 +63,8 @@ func _on_area_entered(area: Area2D) -> void:
 		queue_free()
 
 func _explode() -> void:
-	#爆炸特效就地用载具自己的贴图和颜色，判定留在原地，不跟随任何位移
-	var texture:Texture2D=null
-	var tint:=Color.WHITE
-	var sprite:AnimatedSprite2D=$AnimatedSprite2D
-	if sprite.sprite_frames!=null&&sprite.sprite_frames.has_animation("default")&&sprite.sprite_frames.get_frame_count("default")>0:
-		texture=sprite.sprite_frames.get_frame_texture("default",0)
-		tint=sprite.modulate
+	#爆炸共用同一套 spritesheet（和红炮的爆炸是同一个组件），尺寸由 EXPLOSION_RADIUS 决定
 	var blast=EXPLOSION.new()
-	blast.setup(global_position,final_damage*EXPLOSION_DAMAGE_SCALE,EXPLOSION_RADIUS,200.0,type,texture,tint)
+	blast.setup(global_position,final_damage*EXPLOSION_DAMAGE_SCALE,EXPLOSION_RADIUS,200.0,type)
 	get_tree().root.add_child(blast)
 	queue_free()

@@ -16,18 +16,20 @@ var origin:Vector2=Vector2.ZERO
 var direction:Vector2=Vector2.RIGHT
 var count:int=1
 var interval:float=0.08
+var first_interval:float=-1.0#第一节和第二节之间的间隔（负数=和 interval 一样）
 var damage_mul:float=1.0
 var attack_type:String="ju"
 var knockback:Vector2=Vector2.ZERO
 var chain_count:int=1#这次发射一共几颗蛋（五连之类的道具要判定它）
 
-func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2,p_chain_count:int=1) -> Node:
+func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2,p_chain_count:int=1,p_first_interval:float=-1.0) -> Node:
 	first_scene=p_first
 	repeat_scene=p_repeat
 	origin=p_origin
 	direction=p_direction
 	count=p_count
 	interval=p_interval
+	first_interval=p_first_interval
 	damage_mul=p_damage_mul
 	attack_type=p_type
 	knockback=p_knockback
@@ -40,7 +42,10 @@ func _ready() -> void:
 func _run() -> void:
 	for i in range(count):
 		if i>0:
-			await get_tree().create_timer(interval).timeout
+			var wait:float=interval
+			if i==1&&first_interval>=0.0:
+				wait=first_interval
+			await get_tree().create_timer(wait).timeout
 		if not is_inside_tree():
 			return
 		_fire_one(i)

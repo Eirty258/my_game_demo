@@ -3,42 +3,48 @@ extends Node2D
 #通用爆炸（可复用组件）
 #- 判定：延迟一帧后对受击盒做一次圆形范围查询，命中范围内所有敌人
 #        （用受击盒而不是“到中心的距离”，所以被变大 buff 撑大的敌人也能炸到）
-#- 视觉：把传入的贴图放大到爆炸直径，在原地缩没，节点本身不位移
+#- 视觉：播一张 spritesheet（4列×3行，每帧512×512，0间距，从左到右逐行数）
 #
 #用法：
 #	const EXPLOSION=preload("res://projectiles/explosion.gd")
 #	var blast=EXPLOSION.new()
-#	blast.setup(中心点, 总伤害, 半径, 击退力度, "ju", 贴图, 颜色)
+#	blast.setup(中心点, 总伤害, 半径, 击退力度, "ju")
 #	get_tree().root.add_child(blast)
 #
 #为什么延迟一帧：爆炸基本都在 area_entered 回调里触发，那一刻物理空间是锁着的，
 #不能做 intersect_shape 查询；等过一帧才安全。
 
 const ENEMY_AREA_MASK:=2#敌人受击盒/攻击盒所在的物理层
+const EXPLOSION_SHEET=preload("res://arts/texture/projectile/explosion.png")
+const FRAME_SIZE:=512#单帧边长
+const SHEET_COLUMNS:=4
+const SHEET_ROWS:=3
+const FRAME_COUNT:=SHEET_COLUMNS*SHEET_ROWS
+#贴图里可见火球的最大宽度（约354px，四周留白），缩放时按它对齐爆炸直径
+const BLAST_PIXEL_WIDTH:=354.0
 
 @export var radius:float=512.0
 @export var damage:float=10.5
 @export var knock_force:float=200.0
 @export var attack_type:String="ju"
-@export var burst_texture:Texture2D=null
-@export var burst_tint:Color=Color.WHITE
-@export var burst_duration:float=0.35
+@export var tint:Color=Color.WHITE
+@export var burst_duration:float=0.45
 @export var max_targets:int=256
 
 var center:Vector2=Vector2.ZERO
 
-func setup(p_center:Vector2,p_damage:float,p_radius:float=512.0,p_knock:float=200.0,p_type:String="ju",texture:Texture2D=null,tint:Color=Color.WHITE) -> Node2D:
+func setup(p_center:Vector2,p_damage:float,p_radius:float=512.0,p_knock:float=200.0,p_type:String="ju",p_tint:Color=Color.WHITE) -> Node2D:
 	center=p_center
 	damage=p_damage
 	radius=p_radius
 	knock_force=p_knock
 	attack_type=p_type
-	burst_texture=texture
-	burst_tint=tint
+	tint=p_tint
 	return self
 
 func _ready() -> void:
 	global_position=center
+	z_index=50
 	_spawn_burst()
 	_run()
 
@@ -47,9 +53,9 @@ func _run() -> void:
 	if not is_inside_tree():
 		return
 	_apply_damage()
-	#等特效播完再销毁：贴图是这个节点的子节点，提前 free 会把特效一起掐掉
-	if burst_duration>0.0:
-		await get_tree().create_timer(burst_duration).timeout
+	#等特效播完再销毁：特效是这个节点的子节点，提前 free 会把它一起掐掉
+	var duration:float=maxf(burst_duration,0.05)
+	await get_tree().create_timer(duration).timeout
 	if is_inside_tree():
 		queue_free()
 
@@ -83,19 +89,28 @@ func _apply_damage() -> void:
 		enemy.take_hit(damage,push.normalized()*knock_force,attack_type)
 
 func _spawn_burst() -> void:
-	if burst_texture==null:
+	if EXPLOSION_SHEET==null:
 		return
-	var texture_width:=float(burst_texture.get_width())
-	if texture_width<=0.0:
-		return
-	var sprite:=Sprite2D.new()
-	sprite.texture=burst_texture
-	var burst_scale:=radius*2.0/texture_width
-	sprite.scale=Vector2(burst_scale,burst_scale)
-	sprite.modulate=Color(burst_tint.r,burst_tint.g,burst_tint.b,0.8)
+	var sprite:=AnimatedSprite2D.new()
+	sprite.sprite_frames=_build_frames()
+	sprite.animation="default"
+	var s:=radius*2.0/BLAST_PIXEL_WIDTH
+	sprite.scale=Vector2(s,s)
+	sprite.modulate=tint
 	#挂在爆炸节点自己身上：节点就在爆炸中心，这里不能往 root 上加兄弟节点
 	add_child(sprite)
-	var tween:=sprite.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(sprite,"scale",Vector2.ZERO,burst_duration)
-	tween.tween_property(sprite,"modulate:a",0.0,burst_duration)
+	sprite.play("default")
+
+#把整张表切成 12 帧：从左往右、一行一行往下
+func _build_frames() -> SpriteFrames:
+	var frames:=SpriteFrames.new()#新建的 SpriteFrames 自带一个空的 "default" 动画
+	frames.set_animation_loop("default",false)
+	frames.set_animation_speed("default",FRAME_COUNT/maxf(burst_duration,0.05))
+	for i in range(FRAME_COUNT):
+		var col:int=i%SHEET_COLUMNS
+		var row:=floori(float(i)/float(SHEET_COLUMNS))
+		var atlas:=AtlasTexture.new()
+		atlas.atlas=EXPLOSION_SHEET
+		atlas.region=Rect2(col*FRAME_SIZE,row*FRAME_SIZE,FRAME_SIZE,FRAME_SIZE)
+		frames.add_frame("default",atlas)
+	return frames

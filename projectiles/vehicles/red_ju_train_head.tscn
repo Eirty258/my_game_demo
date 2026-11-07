@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dl0rhqmjbbinv" path="res://projectiles/base_projectile.tscn" id="1_base"]
 [ext_resource type="Script" path="res://projectiles/red_ju_train_head.gd" id="2_script"]
-[ext_resource type="Texture2D" uid="uid://bec2dqu0ut1de" path="res://arts/texture/chesses/red_ju.png" id="3_tex"]
+[ext_resource type="Texture2D" path="res://arts/texture/projectile/vehicles/red_ju_train_head.png" id="3_tex"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_train_head"]
 animations = [{
@@ -15,19 +15,18 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_train_head"]
-radius = 128.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_train_head"]
+size = Vector2(1481, 380)
 
 [node name="JuTrainHead" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 damage = 2.0
 speed = 8192.0
 forced_pierce = true
+flip_h_by_direction = true
 
 [node name="CollisionShape2D" parent="." index="0"]
-shape = SubResource("CircleShape2D_train_head")
+shape = SubResource("RectangleShape2D_train_head")
 
 [node name="AnimatedSprite2D" parent="." index="1"]
-modulate = Color(0.85, 0.9, 1, 1)
-scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_train_head")

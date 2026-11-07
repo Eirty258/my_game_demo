@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dl0rhqmjbbinv" path="res://projectiles/base_projectile.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://2tx5sxke080g" path="res://projectiles/red_pao_ball.gd" id="2_script"]
-[ext_resource type="Texture2D" uid="uid://cbe85occsuj0c" path="res://arts/texture/chesses/red_pao.png" id="3_tex"]
+[ext_resource type="Texture2D" uid="uid://20h1f3srj8yq" path="res://arts/texture/projectile/red_pao_ball.png" id="3_tex"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pao_ball"]
 radius = 128.0

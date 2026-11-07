@@ -1,14 +1,14 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://t42rbi4d2hyr"]
 
-[ext_resource type="Script" path="res://projectiles/red_shuai_wave.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dnfg1jfgbm6rf" path="res://projectiles/red_shuai_wave.gd" id="1_script"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wave"]
 radius = 1.0
 
-[node name="ShuaiWave" type="Area2D"]
+[node name="ShuaiWave" type="Area2D" unique_id=1313508763]
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2027070844]
 shape = SubResource("CircleShape2D_wave")

@@ -33,7 +33,9 @@ func handle_click():
 	queue_free()
 
 func setup():
-	$Icon.texture=load("res://arts/texture/%s.png"%item_name)
+	#贴图留空的道具（还没做图）不要报错，Icon 空着就行
+	var path="res://arts/texture/%s.png"%item_name
+	$Icon.texture=load(path) if ResourceLoader.exists(path) else null
 
 func float_up_down(sprite: Sprite2D, amplitude: float = 30.0, duration: float = 1.5) -> void:
 	if sprite == null or not is_instance_valid(sprite):
