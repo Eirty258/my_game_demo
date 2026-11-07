@@ -25,6 +25,30 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
+const SCREEN_MARGIN:=512.0#掉落物离画面边缘至少留这么多，免得半个身子露在画面外
+const DROP_SCATTER:=256.0#落点在这个范围内随机散开
+
+#屏幕在世界坐标系里的矩形（相机有缩放，不能直接用视口像素）
+func screen_rect(margin:float=0.0) -> Rect2:
+	var view_size:Vector2=get_viewport().get_visible_rect().size
+	var camera:=get_viewport().get_camera_2d()
+	if camera==null:
+		return Rect2(Vector2(margin,margin),view_size-Vector2(margin,margin)*2.0)
+	var half:=view_size*0.5/camera.zoom
+	var center:=camera.get_screen_center_position()
+	return Rect2(center-half+Vector2(margin,margin),half*2.0-Vector2(margin,margin)*2.0)
+
+#把一个世界坐标夹进屏幕内
+func clamp_to_screen(point:Vector2,margin:float=SCREEN_MARGIN) -> Vector2:
+	var rect:=screen_rect(margin)
+	return Vector2(clampf(point.x,rect.position.x,rect.end.x),clampf(point.y,rect.position.y,rect.end.y))
+
+#掉落物的落点：先按原地稍微散开，再保证一定落在屏幕里
+#（敌人在画面外被打死时，掉落物不会再掉在看不见的地方）
+func get_drop_position(pos:Vector2) -> Vector2:
+	var scattered:=pos+Vector2(randf_range(-DROP_SCATTER,DROP_SCATTER),randf_range(-DROP_SCATTER,DROP_SCATTER))
+	return clamp_to_screen(scattered)
+
 func spawn_drop(pos:Vector2,drop_name:String):
 	if drop_name=="egg":
 		spawn_drop_egg(pos)
@@ -44,13 +68,13 @@ func spawn_drop_egg(pos:Vector2,type:String="null"):
 	var drop_egg_scene:PackedScene=load("res://drop/drop_egg.tscn")
 	var drop_egg=drop_egg_scene.instantiate()
 	drop_egg.type=type
-	drop_egg.global_position=pos+Vector2(randf_range(-256,256),randf_range(-256,256))
+	drop_egg.global_position=get_drop_position(pos)
 	add_child(drop_egg)
 
 func spawn_drop_order(pos:Vector2)->Drop:
 	var drop_order_scene:PackedScene=load("res://drop/drop_order.tscn")
 	var drop_order=drop_order_scene.instantiate()
-	drop_order.global_position=pos+Vector2(randf_range(-256,256),randf_range(-256,256))
+	drop_order.global_position=get_drop_position(pos)
 	add_child(drop_order)
 	return drop_order
 
@@ -60,13 +84,13 @@ func spawn_drop_specific_chess(pos:Vector2,type:String="null"):
 		push_warning("drop_manager：没有这颗棋子的掉落物 %s" % type)
 		return
 	var drop_chess=load(path).instantiate()
-	drop_chess.global_position=pos+Vector2(randf_range(-256,256),randf_range(-256,256))
+	drop_chess.global_position=get_drop_position(pos)
 	add_child(drop_chess)
 
 func spawn_item(pos:Vector2,item_name:String)->Drop:
 	var item_scene:PackedScene=load("res://drop/item.tscn")
 	var item=item_scene.instantiate()
-	item.global_position=pos
+	item.global_position=clamp_to_screen(pos)
 	item.item_name=item_name
 	add_child(item)
 	return item
