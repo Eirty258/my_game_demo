@@ -24,6 +24,11 @@ var boss_weights:Dictionary={}
 var wave:int=0
 var budget:int=0
 var base_budget:int=10
+#难度随层数（GameState.floor，从 0 开始）增长
+const BUDGET_PER_FLOOR:=5.0#每层每波预算 +5
+const COOLDOWN_PER_FLOOR:=0.8#每层组间冷却 -0.8 秒
+const COOLDOWN_MIN:=1.5#冷却下限
+const WAVE_GAP:=8.0#两波之间的间隔
 var budget_limit:int=20
 var enemy_spawn_point_left=[]
 var enemy_spawn_point_right=[]
@@ -129,16 +134,23 @@ func pick_by_weight(weights: Dictionary) -> String:
 
 func spawn_random_enemy(dir:Vector2,coord:Vector2)->float:
 	if GameState.is_floor_cleared:
-		return 0
-	#随机挑选敌人;判断并减少预算；在坐标生成对应朝向的敌人;小组敌人数量+1
-	var cost=0
-	var enemy_name=pick_by_weight(enemy_weights)
-	while budget<enemy_cost[enemy_name]:
-		enemy_name=pick_by_weight(enemy_weights)
-	budget-=enemy_cost[enemy_name]
-	cost+=enemy_cost[enemy_name]
+		return 0.0
+	#先把“当前预算买得起的敌人”筛出来再按权重抽。
+	#原来的写法是抽到买不起的就重新抽，预算不够时可能永远抽不到（死循环）。
+	var affordable:Dictionary={}
+	for enemy_name in enemy_weights:
+		var weight:float=enemy_weights[enemy_name]
+		if weight<=0.0:
+			continue
+		if float(enemy_cost.get(enemy_name,0))<=budget:
+			affordable[enemy_name]=weight
+	if affordable.is_empty():
+		return 0.0
+	var picked:String=pick_by_weight(affordable)
+	var cost:float=float(enemy_cost.get(picked,0))
+	budget-=cost
 	var pos=coord_to_pos(coord)
-	spawn_enemy(enemy_name,pos,dir)
+	spawn_enemy(picked,pos,dir)
 	enemy_number+=1
 	return cost
 
@@ -199,10 +211,21 @@ func direction_to_board(cell:Vector2i,board_size:Vector2i) -> Vector2:
 	return Vector2.DOWN if delta.y>0.0 else Vector2.UP
 
 func get_next_wave_budget():
-	await get_tree().create_timer(8).timeout
-	print("新波次")
-	budget=base_budget*randf_range(0.7,1.3)
-	print("budget:",budget)
+	await get_tree().create_timer(WAVE_GAP).timeout
+	budget=get_wave_budget()
+	print("新波次 budget:",budget)
+
+#每波预算：基础预算 + 每层递增，再乘一个随机浮动
+#兜底保证至少买得起一个敌人，否则会刷出一波空波
+func get_wave_budget() -> float:
+	var value:float=(base_budget+BUDGET_PER_FLOOR*GameState.floor)*randf_range(0.7,1.3)
+	var cheapest:=INF
+	for enemy_name in enemy_weights:
+		if enemy_weights[enemy_name]>0.0:
+			cheapest=minf(cheapest,float(enemy_cost.get(enemy_name,1)))
+	if cheapest==INF:
+		cheapest=1.0
+	return maxf(value,cheapest)
 
 func random_cardinal() -> Vector2:
 	return CARDINALS.pick_random()
@@ -221,12 +244,36 @@ func spawn_a_wave_of_enemy():
 		if not can_spawn:
 			await $EnemySpawnCooldown.timeout
 			continue
-		var cooldown=spawn_a_group_of_enemy(random_cardinal())
-		group_cooldown(cooldown)
+		var spawned:=spawn_a_group_of_enemy(random_cardinal())
+		if spawned<=0:
+			budget=0.0#预算已经买不起任何一个敌人了，收掉这波，等下一波
+			break
+		group_cooldown()
 
-func spawn_a_group_of_enemy(dir:Vector2)->float:
+#出生线在棋盘外几格：棋盘越大、镜头越远，这条线就跟着往外推，保证敌人在画面外出现
+func get_spawn_offset() -> Vector2i:
+	var cam_half:=Vector2(6400.0,3600.0)
+	var camera:=get_viewport().get_camera_2d()
+	if camera!=null&&camera.zoom.x>0.001&&camera.zoom.y>0.001:
+		cam_half=get_viewport().get_visible_rect().size*0.5/camera.zoom
+	var board_node=get_tree().get_first_node_in_group("board")
+	var board_size:=Vector2i(8,8)
+	if board_node!=null:
+		board_size=board_node.size
+	var board_half:=Vector2(board_size)*256.0
+	#比画面边缘再多留 1 格
+	var out_x:int=int(ceil((cam_half.x-board_half.x)/512.0))+1
+	var out_y:int=int(ceil((cam_half.y-board_half.y)/512.0))+1
+	return Vector2i(maxi(1,out_x),maxi(1,out_y))
+
+func spawn_a_group_of_enemy(dir:Vector2)->int:
 	if GameState.is_floor_cleared:
 		return 0
+	var board_node=get_tree().get_first_node_in_group("board")
+	if board_node==null:
+		return 0
+	var board_size:Vector2i=board_node.size
+	var spawn_offset:=get_spawn_offset()
 	var x=0
 	var y=0
 	var limit=0
@@ -235,22 +282,22 @@ func spawn_a_group_of_enemy(dir:Vector2)->float:
 	enemy_spawn_point_up.shuffle()
 	enemy_spawn_point_down.shuffle()
 	if dir==Vector2.DOWN:
-		y=-6
+		y=-spawn_offset.y
 		limit=min(enemy_limit,enemy_spawn_point_down.size())
 	elif dir==Vector2.LEFT:
-		x=17
+		x=board_size.x-1+spawn_offset.x
 		limit=min(enemy_limit,enemy_spawn_point_left.size())
 	elif dir==Vector2.UP:
-		y=11
+		y=board_size.y-1+spawn_offset.y
 		limit=min(enemy_limit,enemy_spawn_point_up.size())
 	elif dir==Vector2.RIGHT:
-		x=-10
+		x=-spawn_offset.x
 		limit=min(enemy_limit,enemy_spawn_point_right.size())
 	var count=0
-	var cost=0
+	var cost:=0.0
 	while enemy_number<limit&&budget>0:
 		if GameState.is_floor_cleared:
-			return 0
+			break
 		if dir==Vector2.DOWN:
 			x=enemy_spawn_point_down[enemy_number]
 		elif dir==Vector2.UP:
@@ -261,18 +308,21 @@ func spawn_a_group_of_enemy(dir:Vector2)->float:
 			y=enemy_spawn_point_left[enemy_number]
 		else:
 			print("enemy_manager.gd:spawn_a_group_of_enemy():方向有误")
-		var coord=Vector2(x,y)
-		cost+=spawn_random_enemy(dir,coord)
+		var spent:=spawn_random_enemy(dir,Vector2(x,y))
+		if spent<=0.0:
+			break#预算买不起任何一个敌人了
+		cost+=spent
 		count+=1
-	var cooldown=3.0 + count * 1.2 * (1.0 + cost * 0.05)
-	print("数量:",count,"花费:",cost,"冷却:",cooldown)
-	return cooldown
+	print("数量:",count,"花费:",cost)
+	return count
 
-func group_cooldown(budget:int):
-	#生成一组敌人后的冷却
+func group_cooldown():
+	#生成一组敌人后的冷却：随层数缩短
 	can_spawn=false
-	var cooldown:float=4+budget
-	$EnemySpawnCooldown.start(randf_range(4,8))
+	var shrink:=COOLDOWN_PER_FLOOR*GameState.floor
+	var low:float=maxf(COOLDOWN_MIN,4.0-shrink)
+	var high:float=maxf(low+0.8,8.0-shrink*1.5)
+	$EnemySpawnCooldown.start(randf_range(low,high))
 	var next_enemy_limit=enemy_limit+randi_range(-1,1)
 	if next_enemy_limit<=0:
 		next_enemy_limit=1
@@ -289,31 +339,31 @@ func _on_total_enemy_number_changed():
 		spawn_a_wave_of_enemy()
 
 func spawn_random_boss():
+	#一层的 Boss 只出一次：打完（is_boss_cleared）之后能量再满也不再刷
+	if GameState.is_boss_cleared:
+		return
+	if GameState.is_floor_cleared:
+		return
+	var board_node=get_tree().get_first_node_in_group("board")
+	if board_node==null:
+		return
+	var board_size:Vector2i=board_node.size
+	var spawn_offset:=get_spawn_offset()
 	var dir=CARDINALS.pick_random()
 	var x=0
 	var y=0
-	enemy_spawn_point_left.shuffle()
-	enemy_spawn_point_right.shuffle()
-	enemy_spawn_point_up.shuffle()
-	enemy_spawn_point_down.shuffle()
 	if dir==Vector2.DOWN:
-		y=-4
-	elif dir==Vector2.LEFT:
-		x=17
-	elif dir==Vector2.UP:
-		y=11
-	elif dir==Vector2.RIGHT:
-		x=-10
-	if dir==Vector2.DOWN:
+		y=-spawn_offset.y
 		x=enemy_spawn_point_down.pick_random()
 	elif dir==Vector2.UP:
+		y=board_size.y-1+spawn_offset.y
 		x=enemy_spawn_point_up.pick_random()
 	elif dir==Vector2.RIGHT:
+		x=-spawn_offset.x
 		y=enemy_spawn_point_right.pick_random()
 	elif dir==Vector2.LEFT:
+		x=board_size.x-1+spawn_offset.x
 		y=enemy_spawn_point_left.pick_random()
-	else:
-		print("enemy_manager.gd:spawn_a_group_of_enemy():方向有误")
 	var coord=Vector2(x,y)
 	var boss_name=pick_by_weight(boss_weights)
 	var pos=coord_to_pos(coord)
@@ -358,7 +408,7 @@ func init():
 	#-------------------
 	enemy_weights=FloorData.enemy_weights_tables[GameState.floor].pick_random()
 	boss_weights=FloorData.boss_weights_tables[GameState.floor]
-	budget=base_budget
+	budget=get_wave_budget()
 	var board=get_tree().get_first_node_in_group("board")
 	enemy_spawn_point_left=board.enemy_spawn_point_left.duplicate()
 	enemy_spawn_point_right=board.enemy_spawn_point_right.duplicate()
