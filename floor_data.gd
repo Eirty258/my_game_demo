@@ -31,6 +31,7 @@ var enemy_weights_tables=[
 		{
 			"flamaleon":1,
 			"green_snake":3,
+			"spin_turtle":1,
 		}
 	]
 ]

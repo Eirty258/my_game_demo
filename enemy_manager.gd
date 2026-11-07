@@ -6,18 +6,21 @@ var green_snake_scene=preload("res://enemys/green_snake.tscn")
 var black_mole_scene=preload("res://enemys/bosses/black_mole.tscn")
 var origami_dove_scene=preload("res://enemys/origami_dove.tscn")
 var tutorial_enemy_scene=preload("res://enemys/tutorial_enemy.tscn")
+var spin_turtle_scene=preload("res://enemys/spin_turtle.tscn")
 var enemy_dic:Dictionary={
 	"flamaleon":flamaleon_scene,
 	"green_snake":green_snake_scene,
 	"origami_dove":origami_dove_scene,
 	"tutorial_enemy":tutorial_enemy_scene,
+	"spin_turtle":spin_turtle_scene,
 }
 var boss_dic:Dictionary={
 	"black_mole":black_mole_scene
 }
 var enemy_cost:Dictionary={
 	"flamaleon":3,
-	"green_snake":1
+	"green_snake":1,
+	"spin_turtle":4,
 }
 var enemy_weights:Dictionary={}
 var boss_weights:Dictionary={}

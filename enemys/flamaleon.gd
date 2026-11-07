@@ -14,7 +14,7 @@ func _ready() -> void:
 	scale=Vector2(2.0,2.0)
 	close_attack_damage=8
 	ai_velocity=speed*direction
-	energy=15
+	energy=10
 	var params={
 		"size":2
 	}
