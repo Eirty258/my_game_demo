@@ -7,7 +7,25 @@ var offset
 var enemy_nodes:Array=[]
 var parent
 var to_apply_enemies:Array=[]
-var move_list:Array=["move_1","move_2","move_3","move_random"]
+
+#技能节奏
+const IDLE_MIN:=1#出手前先发几段呆（段数随机，玩家看不出固定节奏）
+const IDLE_MAX:=2
+const GAP_MIN:=0.8#两次技能之间的间隔（秒）
+const GAP_MAX:=2.0
+const REPEAT_PENALTY:=0.2#最近用过的技能权重打折
+const RECENT_MEMORY:=2#记住最近用过的几个技能
+
+var move_weights:Dictionary={
+	"move_1":1.0,#变大
+	"move_2":1.0,#变小
+	"move_3":1.2,#泥地
+	"move_random":1.0,#瞬移
+}
+var recent_moves:Array[String]=[]
+var is_acting:bool=false
+var act_cooldown:float=0.0
+var can_act:bool=false#入场演出播完之前不放技能
 func _ready() -> void:
 	#它没有左右两套动画，朝向固定向右
 	direction=Vector2.RIGHT
@@ -57,26 +75,84 @@ func _keep_outside_board() -> void:
 	pass
 
 func handle_ai():
-	if is_dying:
+	if is_dying||is_acting||not can_act:
 		return
-	pick_move()
+	#入场、受击这些动画播完再出手
+	if $AnimatedSprite2D.is_playing()&&$AnimatedSprite2D.animation!="idle":
+		return
+	act_cooldown-=get_physics_process_delta_time()
+	if act_cooldown>0.0:
+		return
+	act()
 
-func pick_move():
-	if $AnimatedSprite2D.is_playing():
+#放一次技能：先发会呆再出手，整段（含技能演出）用一个锁挡住重入
+func act():
+	if is_acting:
 		return
-	var num=randi_range(1,3)
-	for i in range(num):
-		$AnimatedSprite2D.play("idle")
-		await $AnimatedSprite2D.animation_finished
-	var move=move_list.pick_random()
-	if move=="move_1":
-		move_1()
-	elif move=="move_2":
-		move_2()
-	elif move=="move_3":
-		move_3()
-	elif move=="move_random":
-		move_random()
+	is_acting=true
+	await _idle_stretch()
+	if not is_inside_tree()||is_dying:
+		return
+	var move_name:=pick_move_name()
+	recent_moves.append(move_name)
+	while recent_moves.size()>RECENT_MEMORY:
+		recent_moves.pop_front()
+	if move_name=="move_1":
+		await move_1()
+	elif move_name=="move_2":
+		await move_2()
+	elif move_name=="move_3":
+		await move_3()
+	else:
+		await move_random()
+	if not is_inside_tree():
+		return
+	act_cooldown=randf_range(GAP_MIN,GAP_MAX)
+	is_acting=false
+
+#先发一会呆（1~2 段 idle）
+func _idle_stretch() -> void:
+	for i in range(randi_range(IDLE_MIN,IDLE_MAX)):
+		if is_dying or not is_inside_tree():
+			return
+		await _play_anim("idle")
+
+#等一段动画播完；用计时器而不是 animation_finished，
+#这样中途被打断（受击）也不会把协程永远挂住
+func _play_anim(anim_name:String) -> void:
+	var sprite:AnimatedSprite2D=$AnimatedSprite2D
+	if sprite==null or sprite.sprite_frames==null or not sprite.sprite_frames.has_animation(anim_name):
+		return
+	sprite.play(anim_name)
+	await get_tree().create_timer(_anim_length(anim_name)).timeout
+
+#动画时长（帧数 / 帧率）
+func _anim_length(anim_name:String) -> float:
+	var sprite:AnimatedSprite2D=$AnimatedSprite2D
+	if sprite==null or sprite.sprite_frames==null or not sprite.sprite_frames.has_animation(anim_name):
+		return 0.2
+	var frames:=sprite.sprite_frames.get_frame_count(anim_name)
+	var speed:=sprite.sprite_frames.get_animation_speed(anim_name)
+	return maxf(0.2,float(frames)/maxf(speed,1.0))
+
+#按权重抽技能；最近用过的打折，所以不会连着放同一个，但也不是严格轮换
+func pick_move_name() -> String:
+	var weights:Dictionary={}
+	for key in move_weights:
+		weights[key]=move_weights[key]
+	for used in recent_moves:
+		if weights.has(used):
+			weights[used]*=REPEAT_PENALTY
+	var total:=0.0
+	for key in weights:
+		total+=weights[key]
+	var roll:=randf()*total
+	var acc:=0.0
+	for key in weights:
+		acc+=weights[key]
+		if roll<acc:
+			return key
+	return weights.keys()[0]
 
 const CELL_SIZE := 512
 
@@ -159,9 +235,11 @@ func move_3():
 
 func entrance_animation():
 	appear()
-	await $AnimatedSprite2D.animation_finished
+	await _play_anim("appear")
 	$AnimatedSprite2D.play("entrance")
 	$AnimationPlayer.play("giant")
+	await get_tree().create_timer(_anim_length("entrance")).timeout
+	can_act=true
 
 func giant_enemies(e:Array):
 	$AnimatedSprite2D.play("hat_snake")
@@ -216,7 +294,7 @@ func move_1():
 		#}
 		#i.add_buff("chill",params)
 	#对选好的敌人进行变大
-	giant_enemies(to_apply_enemies)
+	await giant_enemies(to_apply_enemies)
 #技能2，随机选中2~3个敌人赋予变小buff
 func move_2():
 	var enemies:Array=parent.enemy_nodes.duplicate()
@@ -242,7 +320,7 @@ func move_2():
 		#}
 		#i.add_buff("chill",params)
 	#对选好的敌人进行变小
-	tiny_enemies(to_apply_enemies)
+	await tiny_enemies(to_apply_enemies)
 
 func take_hit(damage:float,knocked_back:Vector2,type:String):
 	is_stunned=true
