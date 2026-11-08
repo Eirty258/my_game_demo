@@ -53,8 +53,8 @@ func _ready() -> void:
 	#move_1()
 
 func _physics_process(delta: float) -> void:
+	#handle_ai 已经在父类 _physics_process 里调过了，这里不要再调一次
 	super._physics_process(delta)
-	handle_ai()
 
 func _init() -> void:
 	pass

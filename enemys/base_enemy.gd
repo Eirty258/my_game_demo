@@ -46,16 +46,22 @@ func _ready() -> void:
 	pass
 
 func _physics_process(delta: float) -> void:
+	#击退每帧都要走：被一击打死、正在播死亡动画的敌人也要被推一下
+	_apply_knockback(delta)
 	if is_dying:
+		_keep_outside_board()
 		return
 	#贴着墙的每一帧都重新算一次索敌，避免只在进入时算一次算错就再也不更新
 	if is_instance_valid(tilemap_body):
 		touch_cell=_cell_ahead(tilemap_body)
-	handle_ai()
+	#受击硬直期间不往前走（击退本身照常生效）
+	if is_stunned:
+		ai_velocity=Vector2.ZERO
+	else:
+		handle_ai()
 	_apply_separation(delta)
 	velocity = ai_velocity + separation_velocity
 	move_and_slide()
-	_apply_knockback(delta)
 	_keep_outside_board()#兜底：不允许任何推动把它挤进棋盘
 
 #击退用"速度冲量 + 指数衰减"，不再用 tween：
@@ -92,6 +98,27 @@ const WEAKNESS_DAMAGE_COLOR:=Color(0.45,0.95,1.0)#属性克制（翻倍）时的
 const KNOCK_DECAY:=3.7#击退速度衰减率：越大停得越快
 
 var knock_velocity:Vector2=Vector2.ZERO#当前击退速度（多段击退会累加）
+
+#受击盒中心（世界坐标）：爆炸/命中特效定位"碰撞点"时用
+func get_hurt_center() -> Vector2:
+	var node:CollisionShape2D=get_node_or_null("Hurtbox/CollisionShape2D")
+	if node==null:
+		return global_position
+	return node.global_position
+
+#受击盒半径（考虑缩放）：爆炸/命中特效定位"碰撞点"时用
+func get_hurt_radius() -> float:
+	var node:CollisionShape2D=get_node_or_null("Hurtbox/CollisionShape2D")
+	var radius:=200.0
+	if node!=null:
+		var shape:=node.shape
+		if shape is CircleShape2D:
+			radius=(shape as CircleShape2D).radius
+		elif shape is CapsuleShape2D:
+			radius=(shape as CapsuleShape2D).radius+(shape as CapsuleShape2D).height*0.5
+		elif shape is RectangleShape2D:
+			radius=(shape as RectangleShape2D).size.length()*0.5
+	return radius*maxf(absf(global_scale.x),absf(global_scale.y))
 
 #显示这次受到的伤害数值（弱点翻倍后也是显示实际数值）
 func show_damage(damage:float,color:Color=Color(1.0,0.86,0.32)) -> void:

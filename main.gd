@@ -25,13 +25,15 @@ func resume_game():
 func restart():
 	VisualEffect.cutscene_out()
 	await get_tree().create_timer(2).timeout
+	#先重置局内状态，再建新的 GameSession：
+	#否则 Board._ready() 抽棋盘时会读到上一局残留的 floor（比如死在第 2 层就会抽到第 2 层的棋盘）
+	GameState.restart()
 	WeightTable.reset()#新一局：所有概率表回到初始状态
 	if get_node("GameSession") !=null:
 		get_node("GameSession").queue_free()
 		await get_tree().process_frame
 	var game_session=game_session_scene.instantiate()
 	add_child(game_session)
-	GameState.restart()
 	resume_game()
 	VisualEffect.cutscene_in()
 
@@ -44,12 +46,13 @@ func tutorial():
 func tutorial_finish():
 	VisualEffect.cutscene_out()
 	await get_tree().create_timer(2).timeout
+	#同样要先重置状态再建新场景，避免抽到教程/上一局残留的楼层棋盘
+	GameState.restart()
 	WeightTable.reset()#从教程进正式局，也当成新一局
 	if get_node("Tutorial") !=null:
 		get_node("Tutorial").queue_free()
 		await get_tree().process_frame
 	var game_session=game_session_scene.instantiate()
 	add_child(game_session)
-	GameState.restart()
 	resume_game()
 	VisualEffect.cutscene_in()

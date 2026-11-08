@@ -71,6 +71,20 @@ func _on_area_entered(area: Area2D) -> void:
 			return
 		queue_free()
 
+#命中点：取"敌人受击盒表面、朝向弹体那一侧"的点，
+#爆炸/命中特效用它定位，就不会因为高速穿透而炸在敌人身后
+func impact_point(area:Area2D) -> Vector2:
+	if area==null:
+		return global_position
+	var enemy=area.get_parent()
+	if enemy==null or not (enemy is Enemy):
+		return global_position
+	var center:Vector2=enemy.get_hurt_center()
+	var to_self:Vector2=global_position-center
+	if to_self.length_squared()<0.01:
+		return center
+	return center+to_self.normalized()*enemy.get_hurt_radius()
+
 #func update_scale():
 	#scale=Vector2(1,1)*final_damage_scale*scale_factor
 	#print("scale:",scale)

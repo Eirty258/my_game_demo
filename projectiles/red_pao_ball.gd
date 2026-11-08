@@ -39,16 +39,18 @@ func _on_area_entered(area: Area2D) -> void:
 	enemy_hit_count+=1
 	#第一个敌人照常吃伤害，炮弹继续飞行（没有灼烧等附加状态）
 	if enemy_hit_count>=2:
-		explode()
+		explode(area)
 		return
 	has_hit=true
 	body.take_hit(final_damage,knocked_back,type)
 
-func explode() -> void:
+func explode(area:Area2D=null) -> void:
 	if is_exploded:
 		return
 	is_exploded=true
+	#炸在碰撞点上（敌人受击盒朝向弹体的那一侧），而不是弹体自己的中心
+	var center:=impact_point(area) if area!=null else global_position
 	var blast=EXPLOSION.new()
-	blast.setup(global_position,final_damage*explosion_damage_multiplier,explosion_radius,knock_back_force,type)
+	blast.setup(center,final_damage*explosion_damage_multiplier,explosion_radius,knock_back_force,type)
 	get_tree().root.add_child(blast)
 	queue_free()

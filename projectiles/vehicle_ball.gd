@@ -78,7 +78,7 @@ func _on_area_entered(area: Area2D) -> void:
 	hit_targets[body]=true
 	has_hit=true
 	if explode_on_hit:
-		_explode()
+		_explode(area)
 		return
 	body.take_hit(final_damage,knocked_back,type)
 	if drop_egg_on_hit:
@@ -86,9 +86,11 @@ func _on_area_entered(area: Area2D) -> void:
 	if not is_piercing():
 		queue_free()
 
-func _explode() -> void:
+func _explode(area:Area2D=null) -> void:
 	#爆炸共用同一套 spritesheet（和红炮的爆炸是同一个组件），尺寸由 EXPLOSION_RADIUS 决定
+	#炸在碰撞点上（敌人受击盒朝向弹体的那一侧），而不是弹体自己的中心
+	var center:=impact_point(area) if area!=null else global_position
 	var blast=EXPLOSION.new()
-	blast.setup(global_position,final_damage*EXPLOSION_DAMAGE_SCALE,EXPLOSION_RADIUS,200.0,type)
+	blast.setup(center,final_damage*EXPLOSION_DAMAGE_SCALE,EXPLOSION_RADIUS,200.0,type)
 	get_tree().root.add_child(blast)
 	queue_free()
