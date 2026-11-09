@@ -81,8 +81,8 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	if is_weakness:
 		damage*=2
 	health=health-damage
-	#属性克制翻倍时用另一种颜色，一眼能看出来
-	show_damage(damage,WEAKNESS_DAMAGE_COLOR if is_weakness else NORMAL_DAMAGE_COLOR)
+	#属性克制翻倍时用另一种颜色，一眼能看出来；颜色按"打进弱点的属性"区分
+	show_damage(damage,get_weakness_damage_color(type) if is_weakness else NORMAL_DAMAGE_COLOR)
 	#播放受击动画
 	play_animation("takehit")
 	#击退：冲量 = 位移 × 衰减率，单次总位移正好等于 knocked_back
@@ -94,7 +94,17 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 
 const DAMAGE_NUMBER_OFFSET:=Vector2(0,-160)#数字出现在敌人头顶
 const NORMAL_DAMAGE_COLOR:=Color(1.0,0.86,0.32)#普通伤害数字颜色
-const WEAKNESS_DAMAGE_COLOR:=Color(0.45,0.95,1.0)#属性克制（翻倍）时的伤害数字颜色
+const WEAKNESS_DAMAGE_COLOR:=Color(0.45,0.95,1.0)#属性克制（翻倍）时的默认伤害数字颜色（冰属性就用它）
+#克制伤害数字颜色：按"打出克制的属性"区分，一眼看出是哪种属性打痛了它
+const WEAKNESS_DAMAGE_COLORS:={
+	"fire":Color(1.0,0.42,0.12),#火：橙红
+	"ice":Color(0.45,0.95,1.0),#冰：原来的浅青
+	"electricity":Color(0.72,0.45,1.0),#电：紫
+}
+
+#取某个属性克制时该用的伤害数字颜色（没有专门配色的属性退回默认色）
+func get_weakness_damage_color(type:String) -> Color:
+	return WEAKNESS_DAMAGE_COLORS.get(type,WEAKNESS_DAMAGE_COLOR)
 const KNOCK_DECAY:=3.7#击退速度衰减率：越大停得越快
 
 var knock_velocity:Vector2=Vector2.ZERO#当前击退速度（多段击退会累加）
