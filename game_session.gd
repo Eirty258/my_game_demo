@@ -20,6 +20,7 @@ func goto_next_floor():
 	await get_tree().create_timer(2).timeout
 	GameState.init()
 	GameState.floor+=1
+	Weather.start_floor(GameState.floor)#第一层无天气，之后每层随机
 	#Background
 	await $Board.init()
 	$Camera2D.zoom=Vector2(0.15,0.15)

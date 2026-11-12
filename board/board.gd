@@ -647,7 +647,7 @@ func spawn_egg_at_random_position(type:String):
 	spawn_egg(coord,type)
 
 func spawn_random_egg():
-	var egg_type=pick_by_weight(WeightTable.random_eggs)
+	var egg_type=WeightTable.pick_egg_type()
 	spawn_egg_at_random_position(egg_type)
 
 func spawn_initial_eggs():

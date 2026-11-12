@@ -14,7 +14,7 @@ var egg_sprite_dictionary:Dictionary={
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if type=="null":
-		type=pick_by_weight(WeightTable.random_eggs)
+		type=WeightTable.pick_egg_type()
 	scale=Vector2.ONE*0.5
 	$Sprite2D.texture=get_egg_texture(type)
 

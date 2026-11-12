@@ -77,6 +77,8 @@ func _apply_knockback(delta:float) -> void:
 
 func take_hit(damage:float,knocked_back:Vector2,type:String):
 	is_stunned=true
+	#天气加成先乘：伤害数字显示的就是加成后的实际伤害
+	damage*=Weather.get_damage_multiplier(type)
 	var is_weakness:=type==weekness
 	if is_weakness:
 		damage*=2

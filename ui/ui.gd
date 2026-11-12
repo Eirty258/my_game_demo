@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+const TooltipStyle=preload("res://ui/tooltip_style.gd")
+
 @export var egg_shards=0
 @export var energy=0
 var board:Board
@@ -21,6 +23,8 @@ func _ready() -> void:
 	SignalBus.energy_full.connect(_on_energy_full)
 	SignalBus.boss_cleared.connect(_on_boss_cleared)
 	SignalBus.edge_destroyed.connect(gameover)
+	SignalBus.weather_changed.connect(update_weather)
+	update_weather(Weather.get_weather_id())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,6 +40,20 @@ func update_egg_shards_label(value):
 	var difference=value-egg_shards
 	egg_shards=value
 	$HUD/TopLeft/PanelContainer/EggShardsUI/Count.text=str(egg_shards)
+
+#天气面板：蛋壳碎片旁边显示当前天气，鼠标悬浮看效果
+func update_weather(weather_id:String="") -> void:
+	var panel:PanelContainer=$HUD/TopLeft/WeatherPanel
+	var icon:TextureRect=$HUD/TopLeft/WeatherPanel/WeatherUI/Icon
+	var name_label:Label=$HUD/TopLeft/WeatherPanel/WeatherUI/Name
+	var texture:=Weather.get_icon()
+	icon.texture=texture
+	icon.visible=texture!=null#图标还没做的天气先只显示文字
+	name_label.text=Weather.get_weather_name()
+	#无天气时整块压暗，表示"现在没有额外效果"
+	panel.modulate=Color(1,1,1,0.55) if Weather.is_clear() else Color.WHITE
+	panel.tooltip_text="%s：%s"%[Weather.get_weather_name(),Weather.get_description()]
+	TooltipStyle.apply(panel)
 
 
 #func update_energy(value):
@@ -140,3 +158,4 @@ func init():
 	#--------------------
 	board=get_tree().get_first_node_in_group("board")
 	update_all()
+	update_weather(Weather.get_weather_id())

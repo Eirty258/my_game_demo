@@ -13,6 +13,13 @@ var random_eggs:Dictionary={#自然生成蛋的权重
 	"red_shuai":0,#红帅
 }
 
+#新一层随机天气的权重：第一层固定无天气，不走这张表，所以这里没有 "none"
+var weathers:Dictionary={
+	"sunny":1,#大晴天
+	"snow":1,#雪天
+	"storm":1,#雷暴天
+}
+
 #敌人死亡时的掉落表：每个掉落槽位抽一次，"null" 表示这次不掉
 var enemy_drops:Dictionary={
 	"null":2,
@@ -77,6 +84,7 @@ var _default_state:Dictionary={}
 func _ready() -> void:
 	_default_state={
 		"random_eggs":random_eggs.duplicate(),
+		"weathers":weathers.duplicate(),
 		"enemy_drops":enemy_drops.duplicate(),
 		"chess_pieces":chess_pieces.duplicate(),
 		"red_ju_vehicles":red_ju_vehicles.duplicate(),
@@ -94,6 +102,10 @@ func _process(delta: float) -> void:
 func reset() -> void:
 	for key in _default_state:
 		set(key,_default_state[key].duplicate())
+
+#抽一颗自然生成的蛋：基础权重 + 当前天气加成（天气的加成只在这里临时生效）
+func pick_egg_type() -> String:
+	return pick_by_weight(Weather.apply_egg_bonus(random_eggs))
 
 func pick_by_weight(weights: Dictionary) -> String:
 	var total = 0.0

@@ -29,6 +29,7 @@ func restart():
 	#否则 Board._ready() 抽棋盘时会读到上一局残留的 floor（比如死在第 2 层就会抽到第 2 层的棋盘）
 	GameState.restart()
 	WeightTable.reset()#新一局：所有概率表回到初始状态
+	Weather.reset()#新一局：天气回到无天气
 	if get_node("GameSession") !=null:
 		get_node("GameSession").queue_free()
 		await get_tree().process_frame
@@ -49,6 +50,7 @@ func tutorial_finish():
 	#同样要先重置状态再建新场景，避免抽到教程/上一局残留的楼层棋盘
 	GameState.restart()
 	WeightTable.reset()#从教程进正式局，也当成新一局
+	Weather.reset()#从教程进正式局：天气也清回无天气
 	if get_node("Tutorial") !=null:
 		get_node("Tutorial").queue_free()
 		await get_tree().process_frame

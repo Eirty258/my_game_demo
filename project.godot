@@ -24,6 +24,7 @@ WeightTable="*uid://bt7x5ivfb3apq"
 VisualEffect="*uid://5ecyaxcs2v0i"
 ItemData="*uid://bqsjxwthqq1jo"
 FloorData="*uid://sy0l8g656kun"
+Weather="*res://weather.gd"
 
 [display]
 
