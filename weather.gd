@@ -16,13 +16,13 @@ const STORM:="storm"
 const WEATHERS:Dictionary={
 	NONE:{"name":"无天气","icon":"","element":"","egg_bonus":0.0,"damage_mul":1.0,
 		"description":"没有特殊效果"},
-	SUNNY:{"name":"大晴天","icon":"res://arts/texture/items/sunshine.png","element":"fire",
+	SUNNY:{"name":"大晴天","icon":"res://arts/texture/sunshine.png","element":"fire",
 		"egg_bonus":0.5,"damage_mul":1.2,
 		"description":"火蛋权重+0.5，火属性伤害×1.2"},
-	SNOW:{"name":"雪天","icon":"res://arts/texture/items/snowfall.png","element":"ice",
+	SNOW:{"name":"雪天","icon":"res://arts/texture/snowfall.png","element":"ice",
 		"egg_bonus":0.5,"damage_mul":1.2,
 		"description":"冰蛋权重+0.5，冰属性伤害×1.2"},
-	STORM:{"name":"雷暴天","icon":"","element":"electricity",
+	STORM:{"name":"雷暴天","icon":"res://arts/texture/storm.png","element":"electricity",
 		"egg_bonus":0.5,"damage_mul":1.2,
 		"description":"电蛋权重+0.5，电属性伤害×1.2"},
 }
