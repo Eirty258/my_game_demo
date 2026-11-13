@@ -2,6 +2,7 @@ extends Node
 
 signal egg_shot(projectile:Node)#蛋变成子弹时,传递子弹
 signal eggs_fired(eggs:Array,chain_count:int)#一整组蛋一起发射时，传递这一组的蛋和连锁数
+signal eggs_regrouped#棋盘重新分组完成后（蛋的连组状态可能有变化）
 signal projectile_spawned(projectile:Node)#子弹生成时,传递子弹
 signal drop_egg_picked(type:String)#拾取蛋时，传递蛋种
 signal egg_droped(pos:Vector2,type:String)#即将掉落蛋时，传递掉落蛋的位置和种类(弃用）

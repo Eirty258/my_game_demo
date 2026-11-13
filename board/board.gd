@@ -320,6 +320,8 @@ func rescan_groups():
 			group.clear()
 			directions.clear()
 			current_type="null"
+	#整盘分组刷新完：给"连组状态"类道具（五子棋金边等）一个统一刷新点
+	SignalBus.eggs_regrouped.emit()
 func scan(current_cell_coord:Vector2i):
 	var current_cell=find_cell(current_cell_coord)
 	var current_egg=find_egg(current_cell_coord)
