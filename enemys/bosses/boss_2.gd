@@ -121,7 +121,7 @@ func _push_marker(type:String) -> void:
 #只被推开，不掉血（免疫时用）
 func _knock_only(knocked_back:Vector2) -> void:
 	#和普通受击一样走速度冲量，这样免疫期间的击退也能正常叠加
-	knock_velocity+=knocked_back*KNOCK_DECAY
+	knock_velocity+=knocked_back*KNOCK_DECAY*KNOCKBACK_SCALE
 
 #================ 头顶队列 UI ================
 

@@ -1,108 +1,9 @@
 [gd_scene format=3 uid="uid://cu30ph175ofip"]
 
 [ext_resource type="PackedScene" uid="uid://b0avydnc0hpde" path="res://enemys/base_enemy.tscn" id="1_base"]
-[ext_resource type="Script" path="res://enemys/spin_turtle.gd" id="2_script"]
-[ext_resource type="Texture2D" uid="uid://gt1udgw1mdid" path="res://arts/texture/tutorial_enemy_idle.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://dymxay5qdqy2i" path="res://enemys/spin_turtle.gd" id="2_script"]
+[ext_resource type="SpriteFrames" uid="uid://cwgctm3fgstm5" path="res://enemys/spin_turtle_frames.tres" id="3_frames"]
 [ext_resource type="Texture2D" uid="uid://bx8dawoeueryl" path="res://arts/texture/shadow.png" id="4_shadow"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t0"]
-atlas = ExtResource("3_tex")
-region = Rect2(0, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t1"]
-atlas = ExtResource("3_tex")
-region = Rect2(512, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t2"]
-atlas = ExtResource("3_tex")
-region = Rect2(1024, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t3"]
-atlas = ExtResource("3_tex")
-region = Rect2(1536, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t4"]
-atlas = ExtResource("3_tex")
-region = Rect2(0, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t5"]
-atlas = ExtResource("3_tex")
-region = Rect2(512, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t6"]
-atlas = ExtResource("3_tex")
-region = Rect2(1024, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t7"]
-atlas = ExtResource("3_tex")
-region = Rect2(1536, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t8"]
-atlas = ExtResource("3_tex")
-region = Rect2(0, 1024, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t9"]
-atlas = ExtResource("3_tex")
-region = Rect2(512, 1024, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t10"]
-atlas = ExtResource("3_tex")
-region = Rect2(1024, 1024, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t11"]
-atlas = ExtResource("3_tex")
-region = Rect2(1536, 1024, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t12"]
-atlas = ExtResource("3_tex")
-region = Rect2(0, 1536, 512, 512)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_turtle"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t9")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t10")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t11")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t12")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 12.0
-}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 140.0
@@ -111,25 +12,75 @@ radius = 140.0
 radius = 200.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
-radius = 190.0
+radius = 256.0
 
-[node name="SpinTurtle" instance=ExtResource("1_base")]
+[sub_resource type="Animation" id="Animation_attack_down"]
+resource_name = "attack_down"
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.4783),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"close_attack"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_attack_right"]
+resource_name = "attack_right"
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.4348),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"close_attack"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_attack"]
+_data = {
+&"attack_down": SubResource("Animation_attack_down"),
+&"attack_right": SubResource("Animation_attack_right")
+}
+
+[node name="SpinTurtle" unique_id=158114268 instance=ExtResource("1_base")]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("2_script")
+rolling_speed = 800.0
+normal_speed = 120.0
+edge_damage_multiplier = 3.0
+edge_attack_interval = 1.0
 
-[node name="Shadow" parent="." index="0"]
-position = Vector2(0, 204.0)
+[node name="Shadow" parent="." index="0" unique_id=893756249]
+position = Vector2(0, 108)
+scale = Vector2(1.5013021, 1.5013021)
 texture = ExtResource("4_shadow")
 
-[node name="CollisionShape2D" parent="." index="1"]
+[node name="CollisionShape2D" parent="." index="1" unique_id=1685219780]
 shape = SubResource("CircleShape2D_body")
 
-[node name="CollisionShape2D" parent="Hitbox" parent_id_path=PackedInt32Array(1576395619) index="0"]
+[node name="CollisionShape2D" parent="Hitbox" parent_id_path=PackedInt32Array(1576395619) index="0" unique_id=567650131]
 shape = SubResource("CircleShape2D_hitbox")
 
-[node name="AnimatedSprite2D" parent="." index="3"]
-sprite_frames = SubResource("SpriteFrames_turtle")
-animation = &"idle"
+[node name="AnimatedSprite2D" parent="." index="3" unique_id=634295820]
+scale = Vector2(1.1523438, 1.1523438)
+sprite_frames = ExtResource("3_frames")
+animation = &"outshell_right"
 
-[node name="CollisionShape2D" parent="Hurtbox" parent_id_path=PackedInt32Array(436281964) index="0"]
+[node name="CollisionShape2D" parent="Hurtbox" parent_id_path=PackedInt32Array(436281964) index="0" unique_id=2096971420]
 shape = SubResource("CircleShape2D_hurtbox")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="6" unique_id=416935135]
+root_node = NodePath("../AnimatedSprite2D")
+libraries/ = SubResource("AnimationLibrary_attack")

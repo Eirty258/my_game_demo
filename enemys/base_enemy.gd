@@ -87,8 +87,8 @@ func take_hit(damage:float,knocked_back:Vector2,type:String):
 	show_damage(damage,get_weakness_damage_color(type) if is_weakness else NORMAL_DAMAGE_COLOR)
 	#播放受击动画
 	play_animation("takehit")
-	#击退：冲量 = 位移 × 衰减率，单次总位移正好等于 knocked_back
-	knock_velocity+=knocked_back*KNOCK_DECAY
+	#击退：冲量 = 位移 × 衰减率，单次总位移正好等于 knocked_back × KNOCKBACK_SCALE
+	knock_velocity+=knocked_back*KNOCK_DECAY*KNOCKBACK_SCALE
 	await get_tree().create_timer(1.0).timeout
 	is_stunned=false
 	if !is_dying:#TODO 临时用，最好加变量锁
@@ -108,6 +108,7 @@ const WEAKNESS_DAMAGE_COLORS:={
 func get_weakness_damage_color(type:String) -> Color:
 	return WEAKNESS_DAMAGE_COLORS.get(type,WEAKNESS_DAMAGE_COLOR)
 const KNOCK_DECAY:=3.7#击退速度衰减率：越大停得越快
+const KNOCKBACK_SCALE:=2.0#所有来源的击退统一倍率（1 = 原始手感）
 
 var knock_velocity:Vector2=Vector2.ZERO#当前击退速度（多段击退会累加）
 

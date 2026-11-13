@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q3voqq70f808"
-path="res://.godot/imported/snowfall.png-f642a6c5d1aa0750ca62151166fe4c2d.ctex"
+uid="uid://df5or4w2oinm2"
+path="res://.godot/imported/spin_turtle_walk_down.png-a10a657735692faef988b557569cf61e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://arts/texture/items/snowfall.png"
-dest_files=["res://.godot/imported/snowfall.png-f642a6c5d1aa0750ca62151166fe4c2d.ctex"]
+source_file="res://arts/texture/enemies/spin_turtle_walk_down.png"
+dest_files=["res://.godot/imported/spin_turtle_walk_down.png-a10a657735692faef988b557569cf61e.ctex"]
 
 [params]
 

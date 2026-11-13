@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bagw7k1obqu40"
-path="res://.godot/imported/fine-edited (6).png-e3a30fd67d519a7e30ab4521656fd2e3.ctex"
+uid="uid://bsgjt8w7lyjuw"
+path="res://.godot/imported/spin_turtle_outshell_down.png-037b2aaf063d0ff8409ae288cbf3e455.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://arts/texture/items/fine-edited (6).png"
-dest_files=["res://.godot/imported/fine-edited (6).png-e3a30fd67d519a7e30ab4521656fd2e3.ctex"]
+source_file="res://arts/texture/enemies/spin_turtle_outshell_down.png"
+dest_files=["res://.godot/imported/spin_turtle_outshell_down.png-037b2aaf063d0ff8409ae288cbf3e455.ctex"]
 
 [params]
 

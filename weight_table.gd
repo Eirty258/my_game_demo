@@ -67,6 +67,7 @@ var order_item_pool:Dictionary={#订单道具池
 	"driving_license":1,
 	"god_right_hand":1,
 	"red_chain":1,
+	"emergency_exit":1,#紧急出口
 }
 
 var boss_item_pool:Dictionary={

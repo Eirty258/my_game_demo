@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fp4xrn3fvt5a"
-path="res://.godot/imported/spin_turtle_attack_up.png-5330af8e0200de8ab7e76f07c6a950ad.ctex"
+uid="uid://rii0opprdfv2"
+path="res://.godot/imported/emergency_exit.png-131d0e9fcc8b7f74660f85eb0cba7b37.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://arts/texture/enemies/spin_turtle_attack_up.png"
-dest_files=["res://.godot/imported/spin_turtle_attack_up.png-5330af8e0200de8ab7e76f07c6a950ad.ctex"]
+source_file="res://arts/texture/items/emergency_exit.png"
+dest_files=["res://.godot/imported/emergency_exit.png-131d0e9fcc8b7f74660f85eb0cba7b37.ctex"]
 
 [params]
 

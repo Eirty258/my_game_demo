@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3ifxyyvqxf6h"
-path="res://.godot/imported/sunshine.png-67589aeb34cd542bc80760cc76c2e1b6.ctex"
+uid="uid://d0yr3uq3fq1yn"
+path="res://.godot/imported/spin_turtle_takehit_down.png-e214ded364005eb109744d75213ec652.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://arts/texture/items/sunshine.png"
-dest_files=["res://.godot/imported/sunshine.png-67589aeb34cd542bc80760cc76c2e1b6.ctex"]
+source_file="res://arts/texture/enemies/spin_turtle_takehit_down.png"
+dest_files=["res://.godot/imported/spin_turtle_takehit_down.png-e214ded364005eb109744d75213ec652.ctex"]
 
 [params]
 

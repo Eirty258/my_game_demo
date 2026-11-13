@@ -14,6 +14,7 @@ var item_chinese_name:Dictionary={
 	"magnetic_anomaly":"磁场异常",
 	"god_right_hand":"神之右手",
 	"red_chain":"红色锁链",
+	"emergency_exit":"紧急出口",
 }
 
 var item_description:Dictionary={
@@ -30,6 +31,7 @@ var item_description:Dictionary={
 	"magnetic_anomaly":"电蛋出现概率提高",
 	"god_right_hand":"幻想杀手，右键抑制蛋的力量",
 	"red_chain":"知识！情感！意志！最少连锁数-1",
+	"emergency_exit":"额外出口",
 }
 
 #图标：先找 arts/texture/items/ ，再退回 arts/texture/（老道具图标在根目录）
