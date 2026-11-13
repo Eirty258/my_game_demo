@@ -379,6 +379,14 @@ func spawn_drops():
 	var to_spawn_drops=sample_drops()
 	for drop in to_spawn_drops:
 		SignalBus.something_droped.emit(global_position,drop)
+	#镀金：额外掉一个金色道具池里的道具
+	if has_buff("gilded"):
+		var gold_item:String=WeightTable.pick_by_weight(WeightTable.gold_item_pool)
+		SignalBus.item_droped.emit(global_position,gold_item)
+
+func has_buff(buff_type:String) -> bool:
+	var manager=get_node_or_null("BuffManager")
+	return manager!=null and manager.active_buff.has(buff_type)
 
 func apply_chill(time_scale: float = 0.7):
 	var sprite = get_node_or_null("AnimatedSprite2D")

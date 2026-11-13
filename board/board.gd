@@ -360,10 +360,14 @@ func _on_click_only(egg:Egg):
 		if i.group_id==group_id:
 			egg_count+=1
 	if group_id!=-1&&egg.directions.size()>0:
+		var firing_eggs:=[]
 		for e in egg_nodes.values():
 			if e.group_id==group_id:
 				e.shoot(egg_count)
+				firing_eggs.append(e)
 				to_remove.append(e)
+		#这一组整体发射：把成员蛋和连锁数传出去（五子棋之类的道具要拿它做表现）
+		SignalBus.eggs_fired.emit(firing_eggs,egg_count)
 	for e in to_remove:
 		remove_egg(e)
 	#print(egg_nodes)

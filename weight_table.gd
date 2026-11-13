@@ -78,6 +78,11 @@ var boss_item_pool:Dictionary={
 	"fume":1,
 	"magnetic_anomaly":1,
 }
+
+#金色道具池：镀金怪物死亡时从这里抽一个道具掉落
+var gold_item_pool:Dictionary={
+	"sharp_shards":1,
+}
 #开局时录下来的原始权重，reset() 照它还原
 var _default_state:Dictionary={}
 
@@ -91,6 +96,7 @@ func _ready() -> void:
 		"red_ju_vehicles":red_ju_vehicles.duplicate(),
 		"order_item_pool":order_item_pool.duplicate(),
 		"boss_item_pool":boss_item_pool.duplicate(),
+		"gold_item_pool":gold_item_pool.duplicate(),
 	}
 
 

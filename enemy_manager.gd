@@ -113,6 +113,9 @@ func spawn_enemy(enemyname:String,pos:Vector2,dir:Vector2):
 	enemy.global_position=pos
 	enemy.direction=dir
 	add_child(enemy)
+	#能量 ≥30：这个阶段生成的怪物镀金（无属性加成，死后额外掉金色道具）
+	if GameState.energy>=30.0:
+		enemy.add_buff("gilded",{})
 	total_enemy_number+=1
 	enemy_nodes.append(enemy)
 

@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://cdqaqvetqpeug" path="res://enemys/buff/buff_manager.tscn" id="1_base"]
+[ext_resource type="Script" path="res://enemys/buff/gilded.gd" id="2_script"]
+
+[node name="Gilded" unique_id=1867971539 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+duration = 3.0
+params = {}

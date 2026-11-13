@@ -6,7 +6,7 @@ extends Item
 #每 30 秒换一格；切换楼层时棋盘会重建，也会重新选。
 
 const REROLL_INTERVAL:=30.0#多久换一格
-const GLOW_DURATION:=5.0#重新选好之后，金边高亮持续多久
+const GLOW_DURATION:=5.0#金边时长：选好之后的提示 + 换格前 5 秒的预警都用它
 const GOLD_GLOW=preload("res://visual_effects/gold_glow_edge.gd")
 const TILE2_SOURCE:=0#箭头层（grid/tile2）的 TileSet source
 const TILE2_ATLAS:=Vector2i(0,0)
@@ -14,6 +14,7 @@ const GREEN_ALTERNATIVE:=1#tile2 的备选1：绿色箭头（0 是原来的黄�
 const DIRECTIONS:=[Vector2.UP,Vector2.DOWN,Vector2.LEFT,Vector2.RIGHT]
 
 var _timer:Timer=null
+var _warn_timer:Timer=null
 var _board:Board=null
 var _cell:Cell=null
 var _glow:Node2D=null
@@ -21,11 +22,18 @@ var _last_floor:int=-1
 
 func _ready() -> void:
 	item_name="emergency_exit"
+	#换格计时
 	_timer=Timer.new()
 	_timer.wait_time=REROLL_INTERVAL
 	_timer.autostart=true
 	_timer.timeout.connect(reroll)
 	add_child(_timer)
+	#预警计时：比换格早 GLOW_DURATION 秒，在旧格子上再镀一次金边
+	_warn_timer=Timer.new()
+	_warn_timer.wait_time=maxf(REROLL_INTERVAL-GLOW_DURATION,0.1)
+	_warn_timer.autostart=true
+	_warn_timer.timeout.connect(_show_warning)
+	add_child(_warn_timer)
 	_last_floor=GameState.floor
 	reroll()
 
@@ -90,6 +98,15 @@ func _clear_current() -> void:
 	_cell=null
 
 #——选中格的金边高亮：复用 visual_effects/gold_glow_edge.gd ——
+#换格前 5 秒的预警：在旧格子上再镀一次金边，提示"马上要换位置了"
+func _show_warning() -> void:
+	if _board==null or _cell==null:
+		return
+	if not is_instance_valid(_board) or not is_instance_valid(_cell):
+		return
+	_kill_glow()
+	_spawn_glow(_cell)
+
 func _spawn_glow(cell:Cell) -> void:
 	if _board==null or not is_instance_valid(_board):
 		return
