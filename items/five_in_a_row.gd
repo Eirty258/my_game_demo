@@ -7,11 +7,8 @@ extends Item
 
 const REQUIRED_CHAIN:=5
 const DAMAGE_MULTIPLY:=1.5
-const GOLD_OUTLINE=preload("res://visual_effects/gold_outline.gd")
-const OUTLINE_PX:=10.0
-const GLOW_PX:=22.0
 
-#蛋 instance_id -> {"egg":Egg, "sprite":AnimatedSprite2D, "material":原材质}
+#蛋 instance_id -> Egg（金边由 Egg 自己维护，和"可发射金边"共用材质）
 var _outlined:Dictionary={}
 
 func _ready() -> void:
@@ -39,8 +36,8 @@ func _refresh_outlines() -> void:
 	#摘掉不再满足的（拆开、数量变了、蛋已经没了）
 	var stale=[]
 	for id in _outlined:
-		var entry:Dictionary=_outlined[id]
-		if not wanted.has(id) or not is_instance_valid(entry["egg"]):
+		var egg:Egg=_outlined[id]
+		if not wanted.has(id) or not is_instance_valid(egg):
 			stale.append(id)
 	for id in stale:
 		_clear_outline(id)
@@ -86,21 +83,14 @@ func _collect_five_groups(board:Board) -> Array:
 	return result
 
 func _apply_outline(egg:Egg) -> void:
-	var sprite:AnimatedSprite2D=egg.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-	if sprite==null:
-		return
-	var original:Material=sprite.material
-	sprite.material=GOLD_OUTLINE.make_material(OUTLINE_PX,GLOW_PX)
-	_outlined[egg.get_instance_id()]={"egg":egg,"sprite":sprite,"material":original}
+	egg.set_five_outline(true)
+	_outlined[egg.get_instance_id()]=egg
 
 func _clear_outline(id:int) -> void:
-	var entry:Dictionary=_outlined.get(id,{})
+	var egg:Egg=_outlined.get(id)
 	_outlined.erase(id)
-	if entry.is_empty():
-		return
-	var sprite:AnimatedSprite2D=entry["sprite"]
-	if is_instance_valid(sprite):
-		sprite.material=entry["material"]
+	if is_instance_valid(egg):
+		egg.set_five_outline(false)
 
 #发射：金边立刻消失（蛋也要飞走了）
 func _on_eggs_fired(eggs:Array,_chain_count:int) -> void:

@@ -22,8 +22,17 @@ const HOVER_TIME:=0.12
 var _hover_tween:Tween=null
 var _playing_death:bool=false
 
+#可发射的金边：棋类（车/炮）没有真正的"active"动画，靠金边提示可发射
+const GOLD_OUTLINE=preload("res://visual_effects/gold_outline.gd")
+const OUTLINE_PX:=10.0
+const GLOW_PX:=22.0
+var _plain_material:Material=null#原本的材质，摘掉金边时还回去
+var _outline_material:ShaderMaterial=null
+var _five_outline:bool=false#五子棋道具专用的金边开关
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_plain_material=$AnimatedSprite2D.material
 	spawn_animation()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
@@ -77,7 +86,44 @@ func _on_group_id_changed(value):
 		$AnimatedSprite2D.play("idle")
 	else:
 		$AnimatedSprite2D.frame=0
-		$AnimatedSprite2D.play("active")
+		#有真正的 active 动画就播放；没有（棋类）就保持 idle，用金边提示
+		if has_active_animation():
+			$AnimatedSprite2D.play("active")
+		else:
+			$AnimatedSprite2D.play("idle")
+	_refresh_outline()
+
+#这个蛋的贴图资源里，active 是否是"不一样的动画"（不是和 idle 同一张图）
+func has_active_animation() -> bool:
+	var frames:SpriteFrames=$AnimatedSprite2D.sprite_frames
+	if frames==null or not frames.has_animation("active"):
+		return false
+	var active_count:=frames.get_frame_count("active")
+	if not frames.has_animation("idle"):
+		return active_count>1
+	if active_count!=frames.get_frame_count("idle"):
+		return true
+	for i in range(active_count):
+		if frames.get_frame_texture("active",i)!=frames.get_frame_texture("idle",i):
+			return true
+	return false
+
+#五子棋道具：外部开关，和"可发射金边"共用同一块材质
+func set_five_outline(enabled:bool) -> void:
+	_five_outline=enabled
+	_refresh_outline()
+
+func _refresh_outline() -> void:
+	var sprite:AnimatedSprite2D=$AnimatedSprite2D
+	if sprite==null:
+		return
+	var want_gold:bool=_five_outline or (group_id!=-1 and not has_active_animation())
+	if want_gold:
+		if _outline_material==null:
+			_outline_material=GOLD_OUTLINE.make_material(OUTLINE_PX,GLOW_PX)
+		sprite.material=_outline_material
+	else:
+		sprite.material=_plain_material
 
 func shoot(chain_count:int):
 	pass

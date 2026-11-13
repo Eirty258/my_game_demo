@@ -54,6 +54,10 @@ var total_enemy_number:int=0:
 var can_spawn:bool=true
 var offset:Vector2=Vector2.ZERO
 var total_boss_hp:float=0
+#能量≥30时只镀金一只怪：用过就置 true，换层/重开时在 init() 里重置
+var _gilded_spawn_used:bool=false
+#这些怪不参与"能量镀金"，也不会消耗镀金名额（鸽子是能量奖励、教学怪是教程专用）
+const GILDED_EXCLUDED:=["origami_dove","tutorial_enemy"]
 var current_boss_hp:float:
 	get():
 		var sum=0
@@ -113,9 +117,10 @@ func spawn_enemy(enemyname:String,pos:Vector2,dir:Vector2):
 	enemy.global_position=pos
 	enemy.direction=dir
 	add_child(enemy)
-	#能量 ≥30：这个阶段生成的怪物镀金（无属性加成，死后额外掉金色道具）
-	if GameState.energy>=30.0:
+	#能量≥30：下一只生成的怪物镀金，每层只给一只（鸽子/教学怪不占名额）
+	if not _gilded_spawn_used and not GILDED_EXCLUDED.has(enemyname) and GameState.energy>=30.0:
 		enemy.add_buff("gilded",{})
+		_gilded_spawn_used=true
 	total_enemy_number+=1
 	enemy_nodes.append(enemy)
 
@@ -402,6 +407,7 @@ func spawn_dove():
 	spawn_enemy("origami_dove",Vector2(-4096*1.8,-2048-1024),Vector2.RIGHT)
 
 func init():
+	_gilded_spawn_used=false#新一层：能量到 30 后可以再镀金一只
 	wave=0
 	budget=0
 	base_budget=10#

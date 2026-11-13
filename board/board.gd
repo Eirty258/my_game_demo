@@ -305,7 +305,7 @@ func rescan_groups():
 				min_group_size=1
 			elif current_type=="shuai"||current_type=="shi":
 				can_group=false
-			if can_group&&group.size()>=min_group_size:#达到门槛则分配新id
+			if can_group&&group.size()>=min_group_size&&!directions.is_empty():#达到门槛且有方向格才算可发射
 				var group_id=alloc_group_id()
 				for e in group:
 					e.group_id=group_id
