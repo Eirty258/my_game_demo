@@ -6,6 +6,8 @@ extends Item
 #每 30 秒换一格；切换楼层时棋盘会重建，也会重新选。
 
 const REROLL_INTERVAL:=30.0#多久换一格
+const GLOW_DURATION:=5.0#重新选好之后，金边高亮持续多久
+const GOLD_GLOW=preload("res://visual_effects/gold_glow_edge.gd")
 const TILE2_SOURCE:=0#箭头层（grid/tile2）的 TileSet source
 const TILE2_ATLAS:=Vector2i(0,0)
 const GREEN_ALTERNATIVE:=1#tile2 的备选1：绿色箭头（0 是原来的黄色）
@@ -14,6 +16,7 @@ const DIRECTIONS:=[Vector2.UP,Vector2.DOWN,Vector2.LEFT,Vector2.RIGHT]
 var _timer:Timer=null
 var _board:Board=null
 var _cell:Cell=null
+var _glow:Node2D=null
 var _last_floor:int=-1
 
 func _ready() -> void:
@@ -31,6 +34,7 @@ func _process(_delta:float) -> void:
 	#旧格子作废，等一帧确认新棋盘铺好，再在新棋盘上重新选
 	if GameState.floor!=_last_floor:
 		_last_floor=GameState.floor
+		_kill_glow()
 		_board=null
 		_cell=null
 		await get_tree().process_frame
@@ -46,6 +50,7 @@ func reroll() -> void:
 	if board!=_board:
 		_board=board
 		_cell=null
+	_kill_glow()
 	_clear_current()
 	var cell:Cell=_pick_cell(board)
 	if cell!=null:
@@ -53,6 +58,7 @@ func reroll() -> void:
 		cell.direction=direction
 		_cell=cell
 		_paint(cell.coord,direction)
+		_spawn_glow(cell)
 	#方向变了，蛋组的发射方向要立刻刷新（不然要等蛋动一下才生效）
 	board.rescan_groups()
 
@@ -82,6 +88,21 @@ func _clear_current() -> void:
 		_cell.direction=Vector2.ZERO
 		_erase(_cell.coord)
 	_cell=null
+
+#——选中格的金边高亮：复用 visual_effects/gold_glow_edge.gd ——
+func _spawn_glow(cell:Cell) -> void:
+	if _board==null or not is_instance_valid(_board):
+		return
+	var fx=GOLD_GLOW.new()
+	fx.position=Vector2(cell.coord)*512.0+Vector2(256,256)
+	fx.setup(GLOW_DURATION,512.0)
+	_board.add_child(fx)
+	_glow=fx
+
+func _kill_glow() -> void:
+	if _glow!=null and is_instance_valid(_glow):
+		_glow.queue_free()
+	_glow=null
 
 #——棋盘贴图：绿色箭头 = 备选1 + 方向对应的翻转 ——
 func _paint(coord:Vector2i,direction:Vector2) -> void:

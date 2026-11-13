@@ -16,8 +16,7 @@ func _ready() -> void:
 	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
 	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
 	#spawn_drop_specific_chess(Vector2(0,0),"red_ju")
-	spawn_item(Vector2(0,0),"god_right_hand")
-	spawn_item(Vector2(0,0),"red_chain")
+	spawn_item(Vector2(0,0),"emergency_exit")
 
 
 

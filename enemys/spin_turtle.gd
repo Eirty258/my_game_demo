@@ -12,7 +12,7 @@ extends Enemy
 #以后补了 up 贴图，只要改 _direction_sheet() 一处
 
 @export var rolling_speed:float=800.0#滚动状态速度
-@export var normal_speed:float=120.0#常规状态速度
+@export var normal_speed:float=100.0#常规状态速度
 @export var edge_damage_multiplier:float=3.0#滚动撞边时的伤害倍率（乘面板伤害）
 @export var edge_attack_interval:float=2#常规状态贴着边界时的攻击间隔
 

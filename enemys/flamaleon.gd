@@ -13,6 +13,7 @@ func _ready() -> void:
 	weekness="ice"
 	scale=Vector2(2.0,2.0)
 	close_attack_damage=8
+	speed=150
 	ai_velocity=speed*direction
 	energy=10
 	#var params={
