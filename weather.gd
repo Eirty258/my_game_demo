@@ -5,12 +5,18 @@ extends Node
 #效果分两块：
 #1.自然生成蛋的权重：抽蛋时临时 +egg_bonus，不改 WeightTable.random_eggs 本体，
 #  所以天气消失后权重自动恢复，也不会和道具的永久加权重叠写坏
-#2.对应属性的伤害：在敌人 take_hit 里乘 damage_mul，所以伤害数字显示的就是加成后的值
+#2.属性伤害：对应属性 ×damage_mul，另外两种元素属性 ×WEAKEN_MUL（减弱），
+#  在敌人 take_hit 里乘，所以伤害数字显示的就是加成后的值
 
 const NONE:="none"
 const SUNNY:="sunny"
 const SNOW:="snow"
 const STORM:="storm"
+
+#三种元素属性；天气只影响这三种，帅/炮/车之类的伤害不变
+const ELEMENTS:Array[String]=["fire","ice","electricity"]
+#被天气压制的那两种属性：伤害 ×0.9
+const WEAKEN_MUL:=0.9
 
 #icon 留空表示图标还没做，HUD 只显示文字；做好之后把路径填进来就行
 const WEATHERS:Dictionary={
@@ -18,13 +24,13 @@ const WEATHERS:Dictionary={
 		"description":"没有特殊效果"},
 	SUNNY:{"name":"大晴天","icon":"res://arts/texture/sunshine.png","element":"fire",
 		"egg_bonus":0.5,"damage_mul":1.2,
-		"description":"火蛋权重+0.5，火属性伤害×1.2"},
+		"description":"火蛋权重+0.5，火伤害×1.2；冰/电伤害×0.9"},
 	SNOW:{"name":"雪天","icon":"res://arts/texture/snowfall.png","element":"ice",
 		"egg_bonus":0.5,"damage_mul":1.2,
-		"description":"冰蛋权重+0.5，冰属性伤害×1.2"},
+		"description":"冰蛋权重+0.5，冰伤害×1.2；火/电伤害×0.9"},
 	STORM:{"name":"雷暴天","icon":"res://arts/texture/storm.png","element":"electricity",
 		"egg_bonus":0.5,"damage_mul":1.2,
-		"description":"电蛋权重+0.5，电属性伤害×1.2"},
+		"description":"电蛋权重+0.5，电伤害×1.2；火/冰伤害×0.9"},
 }
 
 #当前天气（同时只有一种）
@@ -97,11 +103,19 @@ func get_egg_bonus() -> float:
 	return get_data()["egg_bonus"]
 
 
-#属性伤害倍率：只对当前天气对应的属性生效
+#属性伤害倍率：
+#- 当前天气对应的属性 ×damage_mul（1.2）
+#- 另外两种元素属性 ×WEAKEN_MUL（0.9）
+#- 无天气 / 非元素伤害（帅、车、炮等）不变
 func get_damage_multiplier(type:String) -> float:
-	if type=="" or type!=get_egg_bonus_type():
+	var element:=get_egg_bonus_type()
+	if element=="":
 		return 1.0
-	return get_data()["damage_mul"]
+	if type==element:
+		return get_data()["damage_mul"]
+	if ELEMENTS.has(type):
+		return WEAKEN_MUL
+	return 1.0
 
 
 #给一份蛋权重表加上天气加成，返回新表（不改传入的原表）
