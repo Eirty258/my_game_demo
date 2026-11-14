@@ -21,6 +21,8 @@ class_name Enemy
 var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 @export var is_stunned:bool=false
 @export var is_dying:bool=false
+#是否在空中飞：地面上的陷阱（反步兵地雷之类）踩不到它，目前只有纸鸽子会是 true
+@export var is_airborne:bool=false
 #切关清场（虚空之蛋）时为 true：这只怪死了也不掉东西
 @export var block_drops:bool=false
 @export var motion:String=""

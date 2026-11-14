@@ -8,6 +8,7 @@ var screen_exit_count=0:
 			leave()
 func _ready() -> void:
 	super._ready()
+	is_airborne=true#纸鸽子在天上飞：地雷这类地面陷阱踩不到它
 	weekness="electricity"
 	speed=1024
 	health=1

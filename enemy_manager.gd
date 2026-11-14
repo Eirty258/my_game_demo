@@ -226,6 +226,8 @@ func direction_to_board(cell:Vector2i,board_size:Vector2i) -> Vector2:
 func get_next_wave_budget():
 	await get_tree().create_timer(WAVE_GAP).timeout
 	budget=get_wave_budget()
+	#新一波的预算已经重置、马上要刷出这一波敌人：让"每波重置"的东西（反步兵地雷等）响应
+	SignalBus.wave_started.emit()
 	print("新波次 budget:",budget)
 
 #每波预算：基础预算 + 每层递增，再乘一个随机浮动
