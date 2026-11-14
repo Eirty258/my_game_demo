@@ -13,36 +13,26 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func pick_by_weight(weights: Dictionary) -> String:
-	var total = 0.0
-	for key in weights:
-		total += weights[key]
-	var roll = randf() * total
-	var acc = 0.0
-	for key in weights:
-		acc += weights[key]
-		if roll < acc:
-			return key
-	print("道具池过空，保底")
-	return weights.keys()[0]   # 兜底
-
 func setup_random()->Dictionary:
 	var dic={}
 	#需求：
 	var requirement=[{"type":"egg_shard","amount":50}]
 	dic["requirements"]=requirement
-	#TODO 抽道具可以独立出去
-	var item=pick_by_weight(WeightTable.order_item_pool)
-	WeightTable.order_item_pool[item]=0
-	
+	#三个道具池共用"已刷出"记录，pick_item 会把抽中的道具在所有池里清零
+	var item=WeightTable.pick_item("order_item_pool")
+	if item=="":
+		return {}#道具都刷完了：这次不生成订单
 	var reward=[{"type":"item","amount":1,"item_name":item}]
 	dic["rewards"]=reward
 	return dic
 
 func spawn_order(pos:Vector2):
+	var data:=setup_random()
+	if data.is_empty():
+		return
 	var order_scene:PackedScene=load("res://shop/order.tscn")
 	var order=order_scene.instantiate()
-	order.setup(setup_random())
+	order.setup(data)
 	order.global_position=pos
 	add_child(order)
 	float_up_and_fade(order)

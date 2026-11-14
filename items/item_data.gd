@@ -8,7 +8,7 @@ var item_chinese_name:Dictionary={
 	"ice_cube":"一块蓝冰",
 	"sharp_shards":"锋利蛋片",
 	"five_in_a_row":"五子棋必胜阵法",
-	"driving_license":"机动车驾驶证",
+	"driving_license":"机动車驾驶证",
 	"cold_wave":"寒流",
 	"fume":"怒火中烧",
 	"magnetic_anomaly":"磁场异常",

@@ -385,8 +385,9 @@ func spawn_drops():
 		SignalBus.something_droped.emit(global_position,drop)
 	#镀金：额外掉一个金色道具池里的道具
 	if has_buff("gilded"):
-		var gold_item:String=WeightTable.pick_by_weight(WeightTable.gold_item_pool)
-		SignalBus.item_droped.emit(global_position,gold_item)
+		var gold_item:String=WeightTable.pick_item("gold_item_pool")
+		if gold_item!="":
+			SignalBus.item_droped.emit(global_position,gold_item)
 
 func has_buff(buff_type:String) -> bool:
 	var manager=get_node_or_null("BuffManager")

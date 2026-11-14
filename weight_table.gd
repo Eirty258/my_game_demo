@@ -82,7 +82,16 @@ var boss_item_pool:Dictionary={
 #金色道具池：镀金怪物死亡时从这里抽一个道具掉落
 var gold_item_pool:Dictionary={
 	"sharp_shards":1,
+	"five_in_a_row":1,
+	"driving_license":1,
+	"god_right_hand":1,
+	"red_chain":1,
+	"emergency_exit":1,
 }
+#所有"自然刷道具"的池子；三个池共用一个已刷出记录，避免同一个道具从别的池再刷一次
+const ITEM_POOL_NAMES:Array[String]=["order_item_pool","boss_item_pool","gold_item_pool"]
+#已经自然刷出过的道具：抽中后从所有池里清零，本局不再出现（重开时 reset 清空）
+var obtained_items:Dictionary={}
 #开局时录下来的原始权重，reset() 照它还原
 var _default_state:Dictionary={}
 
@@ -107,8 +116,36 @@ func _process(delta: float) -> void:
 #重开一局时调用：所有概率表回到初始值（道具加的权重要靠这里清掉）
 #以后新增表，记得在上面 _ready 的 _default_state 里补一行
 func reset() -> void:
+	obtained_items.clear()
 	for key in _default_state:
 		set(key,_default_state[key].duplicate())
+
+#从某个道具池抽一个"还没自然刷出过"的道具；抽中后标记，并从三个池里一起清零。
+#池子被抽空时返回 ""，调用方跳过这次掉落即可
+func pick_item(pool_name:String) -> String:
+	if not ITEM_POOL_NAMES.has(pool_name):
+		push_warning("道具池名不存在：%s" % pool_name)
+		return ""
+	var pool:Dictionary=get(pool_name)
+	var available:Dictionary={}
+	for item_name in pool:
+		if float(pool[item_name])>0.0 and not obtained_items.has(item_name):
+			available[item_name]=pool[item_name]
+	if available.is_empty():
+		return ""
+	var picked:String=pick_by_weight(available)
+	mark_item_obtained(picked)
+	return picked
+
+#标记某个道具已经自然刷出：之后任何池都不会再抽到它
+func mark_item_obtained(item_name:String) -> void:
+	if item_name=="":
+		return
+	obtained_items[item_name]=true
+	for pool_name in ITEM_POOL_NAMES:
+		var pool:Dictionary=get(pool_name)
+		if pool.has(item_name):
+			pool[item_name]=0.0
 
 #抽一颗自然生成的蛋：基础权重 + 当前天气加成（天气的加成只在这里临时生效）
 func pick_egg_type() -> String:

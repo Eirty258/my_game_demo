@@ -396,9 +396,9 @@ func _on_boss_cleared():
 	#Boss 打完后能量条保持满格；能量模式继续留在 "boss"，
 	#这样之后再涨能量也不会再触发“能量满”事件（Boss 一局只出一个）
 	GameState.energy=100
-	var item_name=WeightTable.pick_by_weight(WeightTable.boss_item_pool)
-	SignalBus.item_droped.emit(boss_pos,item_name)
-	WeightTable.boss_item_pool[item_name]=0
+	var item_name=WeightTable.pick_item("boss_item_pool")
+	if item_name!="":
+		SignalBus.item_droped.emit(boss_pos,item_name)
 	SignalBus.void_egg_droped.emit(boss_pos)
 
 func spawn_dove():
