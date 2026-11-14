@@ -1,10 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cm87owkag3ba7"]
 
-[ext_resource type="Script" path="res://familiar/familiar.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://arts/texture/familiar/iron_rooster_walk_right.png" id="2_walk"]
-[ext_resource type="Texture2D" path="res://arts/texture/familiar/iron_rooster_idle_right.png" id="3_idle"]
-[ext_resource type="Texture2D" path="res://arts/texture/familiar/iron_rooster_discharge_right.png" id="4_discharge"]
-[ext_resource type="Texture2D" path="res://arts/texture/familiar/iron_rooster_charge_right.png" id="5_charge"]
+[ext_resource type="Script" uid="uid://c3tq40uwsqxpx" path="res://familiar/familiar.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b6n30xkk8wqw8" path="res://arts/texture/familiar/iron_rooster_walk_right.png" id="2_walk"]
+[ext_resource type="Texture2D" uid="uid://b08mwu5vxb2rs" path="res://arts/texture/familiar/iron_rooster_idle_right.png" id="3_idle"]
+[ext_resource type="Texture2D" uid="uid://dn1vc166gt2pg" path="res://arts/texture/familiar/iron_rooster_discharge_right.png" id="4_discharge"]
+[ext_resource type="Texture2D" uid="uid://dyol1q8m14bcq" path="res://arts/texture/familiar/iron_rooster_charge_right.png" id="5_charge"]
+[ext_resource type="Texture2D" uid="uid://bx8dawoeueryl" path="res://arts/texture/shadow.png" id="6_skarc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 150.0
@@ -12,7 +13,7 @@ radius = 150.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
 radius = 170.0
 
-[node name="IronRooster" type="CharacterBody2D"]
+[node name="IronRooster" type="CharacterBody2D" unique_id=1661726263]
 collision_layer = 16
 collision_mask = 0
 script = ExtResource("1_script")
@@ -21,22 +22,27 @@ idle_texture = ExtResource("3_idle")
 discharge_texture = ExtResource("4_discharge")
 charge_texture = ExtResource("5_charge")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=637497714]
 shape = SubResource("CircleShape2D_body")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2034476051]
 
-[node name="Hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1047689349]
 collision_layer = 2
 collision_mask = 0
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=694387790]
 shape = SubResource("CircleShape2D_hurt")
 disabled = true
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=522097354]
 collision_layer = 0
 collision_mask = 0
 monitoring = false
 monitorable = false
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=1891930490]
+modulate = Color(1, 1, 1, 0.49803922)
+position = Vector2(0, 160)
+texture = ExtResource("6_skarc")

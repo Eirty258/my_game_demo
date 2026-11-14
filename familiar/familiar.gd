@@ -105,7 +105,7 @@ func _start_seeking() -> void:
 	_enter_seeking()
 
 func _enter_seeking() -> void:
-	_seeking_target=_nearest_lane_midpoint()
+	_seeking_target=_nearest_lane_point()
 	state=State.SEEKING
 	$AnimatedSprite2D.play("walk")
 
@@ -188,13 +188,17 @@ func _random_lane_position() -> Vector2:
 			return Vector2(center.x,rect.position.y-lane_outset)
 		return Vector2(center.x,rect.end.y+lane_outset)
 	var lane:=int(lanes.pick_random())
-	if side==0:#左侧：lane 是行号
+	return _lane_point(side,lane)
+
+#某条车道在棋盘外的落点（left/right 的 lane 是行号，up/down 是列号）
+func _lane_point(side:int,lane:int) -> Vector2:
+	var rect:=_board_rect()
+	if side==0:
 		return Vector2(rect.position.x-lane_outset,rect.position.y+(lane+0.5)*CELL_SIZE)
-	elif side==1:#右侧
+	elif side==1:
 		return Vector2(rect.end.x+lane_outset,rect.position.y+(lane+0.5)*CELL_SIZE)
-	elif side==2:#上侧：lane 是列号
+	elif side==2:
 		return Vector2(rect.position.x+(lane+0.5)*CELL_SIZE,rect.position.y-lane_outset)
-	#下侧
 	return Vector2(rect.position.x+(lane+0.5)*CELL_SIZE,rect.end.y+lane_outset)
 
 func _lanes_for_side(side:int) -> Array:
@@ -209,8 +213,27 @@ func _lanes_for_side(side:int) -> Array:
 			return _board.enemy_spawn_point_down
 	return []
 
-#最近的一侧车道中点（寻路目标）
-func _nearest_lane_midpoint() -> Vector2:
+#最近的一条"实际车道"外侧点（寻路目标）。
+#不能再用"某条边的中点"——L 形/双棋盘（board_8）的边中点会落在两块棋盘中间的空槽里，
+#那里没有车道，蛋也打不到。
+func _nearest_lane_point() -> Vector2:
+	var best:=Vector2.ZERO
+	var best_dist:=INF
+	var found:=false
+	for side in range(4):
+		for lane in _lanes_for_side(side):
+			var point:=_lane_point(side,int(lane))
+			var dist:=global_position.distance_squared_to(point)
+			if not found or dist<best_dist:
+				found=true
+				best_dist=dist
+				best=point
+	if found:
+		return best
+	return _nearest_side_midpoint()
+
+#没有任何车道配置时的兜底：最近一侧的中点
+func _nearest_side_midpoint() -> Vector2:
 	var rect:=_board_rect()
 	var center:=rect.get_center()
 	var dl:=absf(global_position.x-rect.position.x)
