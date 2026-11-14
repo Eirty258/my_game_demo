@@ -56,8 +56,8 @@ func _collect_five_groups(board:Board) -> Array:
 		if visited.has(coord):
 			continue
 		var first:Egg=board.egg_nodes.get(coord)
-		if first==null or first.disabled:
-			continue
+		if first==null or first.disabled or first.is_wildcard():
+			continue#相是万用蛋，不参与"恰好 5 颗同种蛋"的判定
 		var stack:=[coord]
 		visited[coord]=true
 		var members:=[]
@@ -72,7 +72,7 @@ func _collect_five_groups(board:Board) -> Array:
 				if visited.has(next):
 					continue
 				var next_egg:Egg=board.egg_nodes.get(next)
-				if next_egg==null or next_egg.disabled:
+				if next_egg==null or next_egg.disabled or next_egg.is_wildcard():
 					continue
 				if next_egg.type!=first.type:
 					continue

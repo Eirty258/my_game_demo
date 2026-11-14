@@ -28,7 +28,7 @@ var enemy_drops:Dictionary={
 }
 
 #中国象棋棋子权重表：权重 = 一副棋里该棋子的数量
-#红黑各7种共14种；红方：车2 马2 炮2 相2 仕2 帅1 兵5，黑方同数
+#红黑各7种共14种；红方：车2 马2 炮2 相2 仕2 帅1 兵5（共16个），黑方同数
 #还没实装的先注释掉，做完把注释放开就行（键名要和 weight_table 之外的 spawn 逻辑对得上）
 var chess_pieces:Dictionary={
 	#——红方——
@@ -37,8 +37,8 @@ var chess_pieces:Dictionary={
 	"red_ju":2,#车
 	"red_xiang":2,#相
 	"red_shi":2,#仕
+	"red_ma":2,#马
 	"red_shuai":1,#帅
-	#"red_ma":2,#马：未实装
 	#——黑方——
 	#"black_bing":5,#卒
 	#"black_pao":2,#炮

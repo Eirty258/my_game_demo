@@ -55,7 +55,7 @@ func spawn_drop(pos:Vector2,drop_name:String):
 		spawn_drop_order(pos)
 	elif drop_name=="chess":
 		spawn_drop_random_chess(pos)
-	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai"||drop_name=="red_xiang"||drop_name=="red_shi"||drop_name=="red_ju":
+	elif drop_name=="red_bing"||drop_name=="red_pao"||drop_name=="red_shuai"||drop_name=="red_xiang"||drop_name=="red_shi"||drop_name=="red_ju"||drop_name=="red_ma":
 		spawn_drop_specific_chess(pos,drop_name)
 
 #随机掉一颗棋子：种类从 WeightTable.chess_pieces 里按权重抽

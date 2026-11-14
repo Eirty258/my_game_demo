@@ -13,6 +13,7 @@ const red_pao_egg=preload("res://eggs/red_pao_egg.tscn")
 const red_shuai_egg=preload("res://eggs/red_shuai_egg.tscn")
 const red_ju_egg=preload("res://eggs/red_ju_egg.tscn")
 const red_shi_egg=preload("res://eggs/red_shi_egg.tscn")
+const red_xiang_egg=preload("res://eggs/red_xiang_egg.tscn")
 const EDGE_SHIELD_SCRIPT=preload("res://visual_effects/edge_shield.gd")
 
 
@@ -37,12 +38,12 @@ var dragging_egg:Egg=null
 var _drag_arrow:Sprite2D=null#拖动时提示方向的箭头
 
 #分配堆id相关
-var visited:Dictionary={}#Vector2i:bool
 var next_group_id:int=0
 var free_group_ids:Array[int]=[]
-var group=[]#临时组
-var current_type:String="null"#临时蛋种
-var directions=[]#临时方向组
+#分组结果：gid -> {type:String, dirs:Array, members:Array[Egg]}
+#（相是万用蛋，同一颗蛋可能出现在多个 gid 的 members 里，所以分组的真假以这里为准）
+var groups:Dictionary={}
+const GROUP_TYPES:Array[String]=["fire","ice","electricity","pao","ju"]
 
 #刷怪相关
 var enemy_spawn_point_left=[]#用inner_cell计算所有可刷怪范围
@@ -142,6 +143,8 @@ func spawn_egg(coord:Vector2i,type:String):
 		egg=red_ju_egg.instantiate()
 	elif type=="shi":
 		egg=red_shi_egg.instantiate()
+	elif type=="xiang":
+		egg=red_xiang_egg.instantiate()
 	else:
 		print("蛋种类名错误")
 		return
@@ -290,65 +293,93 @@ func alloc_group_id()->int:#
 		return id
 
 #连通块算法
+#相（万用蛋）可以当任何蛋种用，而且能同时连在两个组里，所以改成"按蛋种各扫一遍"：
+#   T 组 = 同种蛋 + 相邻的相（相可以继续把 T 蛋接起来）
+#   整组都是相的连通块不成组（相不能单独发射）
 func rescan_groups():
-	visited.clear()
-	group.clear()
-	directions.clear()
-	current_type="null"
-	for i in range(size.x):
-		for j in range(size.y):
-			scan(Vector2i(i,j))
-			#成组门槛：电力蛋少一颗，红炮一颗即可；帅不成组（不参与发射）
-			var min_group_size:int=max(GameState.min_chain,1)
-			var can_group:bool=true
-			if current_type=="electricity":
-				min_group_size=max(GameState.min_chain-1,1)
-			elif current_type=="pao"||current_type=="ju":
-				min_group_size=1
-			elif current_type=="shuai"||current_type=="shi":
-				can_group=false
-			if can_group&&group.size()>=min_group_size&&!directions.is_empty():#达到门槛且有方向格才算可发射
-				var group_id=alloc_group_id()
-				for e in group:
-					e.group_id=group_id
-					e.directions=directions.duplicate()
-					#print(e.directions)
-			else:#否则不成组，id重置为-1
-				for e in group:
-					e.group_id=-1
-					e.directions.clear()
-					#print(e.coordinate,":","clear")
-			#重置临时变量
-			group.clear()
-			directions.clear()
-			current_type="null"
+	#先记下旧的成员关系、清空，再按蛋种各扫一遍
+	var previous:Dictionary={}
+	for coord in egg_nodes.keys():
+		var egg:Egg=find_egg(coord)
+		if egg!=null:
+			previous[egg.get_instance_id()]=egg.group_ids.duplicate()
+			egg.group_ids.clear()
+	groups.clear()
+	for t:String in GROUP_TYPES:
+		_scan_type(t)
+	#写回：只有成员关系真的变了的蛋才更新视觉（不然每次重扫都会把动画打回第 0 帧）
+	for coord in egg_nodes.keys():
+		var egg:Egg=find_egg(coord)
+		if egg==null:
+			continue
+		var before:Array=previous.get(egg.get_instance_id(),[])
+		if before==egg.group_ids:
+			continue
+		egg.sync_group_visual()
 	#整盘分组刷新完：给"连组状态"类道具（五子棋金边等）一个统一刷新点
 	SignalBus.eggs_regrouped.emit()
-func scan(current_cell_coord:Vector2i):
-	var current_cell=find_cell(current_cell_coord)
-	var current_egg=find_egg(current_cell_coord)
-	if current_egg:#如果当前单元格有蛋，且是新元素或与前一个元素相同，且没有被访问过
-		if (current_type=="null"||current_type==current_egg.type)&&!current_egg.disabled:
-			if !visited.has(current_cell_coord):
-				#访问并添加访问标记,加入临时组
-				visited[current_cell_coord]=true
-				current_type=current_egg.type
-				group.append(current_egg)
-				if current_cell.direction!=Vector2.ZERO:
-					if !directions.has(current_cell.direction):
-						directions.append(current_cell.direction)
-						#print(directions)
-				#向四个联通方向继续寻找
-				var next_cell_coord=current_cell_coord+Vector2i.RIGHT
-				scan(next_cell_coord)
-				next_cell_coord=current_cell_coord+Vector2i.UP
-				scan(next_cell_coord)
-				next_cell_coord=current_cell_coord+Vector2i.LEFT
-				scan(next_cell_coord)
-				next_cell_coord=current_cell_coord+Vector2i.DOWN
-				scan(next_cell_coord)
-		else:#有蛋但元素不同,结束
-			return
+
+#按某个蛋种扫一遍棋盘，每块连通区域成一组
+func _scan_type(t:String) -> void:
+	var visited:Dictionary={}
+	for i in range(size.x):
+		for j in range(size.y):
+			_collect_group(t,Vector2i(i,j),visited)
+
+#从 start 开始把"t 蛋 + 相"连通的一块收集起来，够门槛就成组
+func _collect_group(t:String,start:Vector2i,visited:Dictionary) -> void:
+	if visited.has(start):
+		return
+	if not _egg_fits_type(find_egg(start),t):
+		return
+	var members:Array=[]
+	var dirs:Array=[]
+	var has_typed:bool=false
+	var stack:Array[Vector2i]=[start]
+	visited[start]=true
+	while not stack.is_empty():
+		var coord:Vector2i=stack.pop_back()
+		var egg:Egg=find_egg(coord)
+		if egg==null or not _egg_fits_type(egg,t):
+			continue
+		members.append(egg)
+		if egg.type==t:
+			has_typed=true
+		var cell:Cell=find_cell(coord)
+		if cell!=null and cell.direction!=Vector2.ZERO and not dirs.has(cell.direction):
+			dirs.append(cell.direction)
+		for offset:Vector2i in [Vector2i.RIGHT,Vector2i.UP,Vector2i.LEFT,Vector2i.DOWN]:
+			var next:Vector2i=coord+offset
+			if visited.has(next):
+				continue
+			if not _egg_fits_type(find_egg(next),t):
+				continue
+			visited[next]=true
+			stack.append(next)
+	#只有相的连通块不成组：相只能"和其他蛋组合"发射
+	if not has_typed:
+		return
+	if members.size()<_min_group_size(t) or dirs.is_empty():
+		return
+	var gid:=alloc_group_id()
+	groups[gid]={"type":t,"dirs":dirs,"members":members}
+	for e:Egg in members:
+		e.add_group_id(gid)
+
+#这块蛋算不算"t 组"的成员：同种蛋，或者相（万用蛋）；失活的蛋挡在中间
+func _egg_fits_type(egg:Egg,t:String) -> bool:
+	if egg==null or egg.disabled:
+		return false
+	return egg.type==t or egg.is_wildcard()
+
+#成组门槛：电力蛋少一颗，红炮/红车一颗即可
+func _min_group_size(t:String) -> int:
+	var min_group_size:int=maxi(GameState.min_chain,1)
+	if t=="electricity":
+		min_group_size=maxi(GameState.min_chain-1,1)
+	elif t=="pao" or t=="ju":
+		min_group_size=1
+	return min_group_size
 
 #测试
 func output():
@@ -356,28 +387,52 @@ func output():
 		print(i.coordinate,":",i.directions)
 		
 #单击发射
+#相是万用蛋：点它本身不发（它只会作为某个组的成员，被同组的其他蛋带着发射）
 func _on_click_only(egg:Egg):
-	var group_id=egg.group_id
-	var to_remove=[]
-	var egg_count=0
-	for i in egg_nodes.values():
-		if i.group_id==group_id:
-			egg_count+=1
-	if group_id!=-1&&egg.directions.size()>0:
-		var firing_eggs:=[]
-		for e in egg_nodes.values():
-			if e.group_id==group_id:
-				firing_eggs.append(e)
-				to_remove.append(e)
-		#发射前先通知道具（人口红利之类要按"发射前的蛋数"算伤害倍率）
-		SignalBus.eggs_firing.emit(firing_eggs,egg_count)
-		for e in firing_eggs:
-			e.shoot(egg_count)
-		#这一组整体发射：把成员蛋和连锁数传出去（五子棋之类的道具要拿它做表现）
-		SignalBus.eggs_fired.emit(firing_eggs,egg_count)
-	for e in to_remove:
-		remove_egg(e)
-	#print(egg_nodes)
+	if egg==null or egg.is_wildcard():
+		return
+	var gid:=egg.group_id
+	if gid==-1 or not groups.has(gid):
+		return
+	var info:Dictionary=groups[gid]
+	var members:Array=info["members"]
+	var dirs:Array=info["dirs"]
+	var group_type:String=String(info["type"])
+	if dirs.is_empty() or members.is_empty():
+		return
+	#本组里有几颗相：每颗让这一组所有弹体的伤害在根号里 +1
+	var wildcard_count:=0
+	var firing_eggs:Array=[]
+	for node in members:
+		if not is_instance_valid(node):
+			continue
+		var e:Egg=node as Egg
+		if e==null:
+			continue
+		if e.is_wildcard():
+			wildcard_count+=1
+		firing_eggs.append(e)
+	if firing_eggs.is_empty():
+		return
+	var egg_count:=firing_eggs.size()
+	#发射前把每颗蛋这次要用的方向/弹种/额外伤害写好（相靠这个装成组里的蛋种）
+	for node in firing_eggs:
+		var e:Egg=node as Egg
+		e.directions=dirs.duplicate()
+		e.shot_type=group_type
+		e.shot_damage_add=float(wildcard_count)
+		e.shot_damage_mul=1.0
+	#发射前先通知道具（人口红利之类要按"发射前的蛋数"算伤害倍率）
+	SignalBus.eggs_firing.emit(firing_eggs,egg_count)
+	for node in firing_eggs:
+		var e:Egg=node as Egg
+		e.shoot(egg_count)
+	#这一组整体发射：把成员蛋和连锁数传出去（五子棋之类的道具要拿它做表现）
+	SignalBus.eggs_fired.emit(firing_eggs,egg_count)
+	for node in firing_eggs:
+		remove_egg(node as Egg)
+	#这一组没了：相可能还连着别的组，成员关系立刻重算，不然别的组里会留着已经飞走的蛋
+	rescan_groups()
 
 #删除蛋时维护数据；蛋在三方面存在：具体节点 字典 cell的属性
 func remove_egg(egg:Egg):
@@ -394,6 +449,8 @@ func remove_egg_broken(egg:Egg):
 	egg.on_broken()#破碎效果（帅的冲击波在这里）
 	egg.die()#节点本身
 	SignalBus.egg_broken.emit()
+	#被打碎的如果是相，别的组的成员表里还留着它，立刻重算
+	rescan_groups()
 
 #边界被击破时的“帅”的护驾：场上有帅就献祭一枚、把这面墙修回 1 点耐久
 #返回 true 表示这次破坏被顶替，不触发游戏失败
@@ -468,6 +525,7 @@ func _clear_stray_eggs():
 		if is_instance_valid(egg):
 			egg.queue_free()
 	egg_nodes.clear()
+	groups.clear()
 	for child in get_children():
 		if child is Egg:
 			child.queue_free()

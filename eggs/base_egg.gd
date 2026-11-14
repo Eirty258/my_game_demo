@@ -11,11 +11,16 @@ var group_id: int = -1:
 			return   # 值没变，不触发
 		group_id = value
 		_on_group_id_changed(value)
+var group_ids:Array[int]=[]#所在的所有组；普通蛋最多一个，"相"（万用蛋）可能同时连在多个组里
 var directions=[]#待发射的有方向
 var shards_number:int=1
 var disabled:bool=false
 #这次发射由道具追加的伤害倍率（人口红利等），发射前写入，shoot() 里乘进去
 var shot_damage_mul:float=1.0
+#这次发射用的弹种：普通蛋用自己的 type；"相"由棋盘按所在组写入，装成那一组的蛋种
+var shot_type:String=""
+#这次发射额外加在伤害公式根号里的伤害（本组里有相就 +1，几颗相就 +几）
+var shot_damage_add:float=0.0
 
 #鼠标悬停时微微放大 + 提亮
 const HOVER_SCALE:=1.12
@@ -95,6 +100,20 @@ func _on_group_id_changed(value):
 			$AnimatedSprite2D.play("idle")
 	_refresh_outline()
 
+#棋盘重扫分组时调用：只记录成员关系，不动贴图（重扫很频繁，不能每次都重置动画）
+#相可能被调用多次，每次是一个不同的组
+func add_group_id(gid:int) -> void:
+	if not group_ids.has(gid):
+		group_ids.append(gid)
+
+#重扫结束后调用：成员关系变了的蛋才更新 group_id（贴图和金边按它刷新）
+func sync_group_visual() -> void:
+	group_id=-1 if group_ids.is_empty() else group_ids[0]
+
+#万用蛋（相）：自身没有弹种，只能跟着组里其他蛋一起发射，点它自己不发射
+func is_wildcard() -> bool:
+	return type=="xiang"
+
 #这个蛋的贴图资源里，active 是否是"不一样的动画"（不是和 idle 同一张图）
 func has_active_animation() -> bool:
 	var frames:SpriteFrames=$AnimatedSprite2D.sprite_frames
@@ -119,7 +138,8 @@ func _refresh_outline() -> void:
 	var sprite:AnimatedSprite2D=$AnimatedSprite2D
 	if sprite==null:
 		return
-	var want_gold:bool=_five_outline or (group_id!=-1 and not has_active_animation())
+	#相是万用蛋，点它不发射，所以不镀"可点击发射"的金边（它跟着组里的蛋一起发）
+	var want_gold:bool=_five_outline or (group_id!=-1 and not has_active_animation() and not is_wildcard())
 	if want_gold:
 		if _outline_material==null:
 			_outline_material=GOLD_OUTLINE.make_material(OUTLINE_PX,GLOW_PX)

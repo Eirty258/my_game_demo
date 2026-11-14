@@ -18,11 +18,12 @@ var count:int=1
 var interval:float=0.08
 var first_interval:float=-1.0#第一节和第二节之间的间隔（负数=和 interval 一样）
 var damage_mul:float=1.0
+var damage_add:float=0.0#加在伤害公式根号里的额外伤害（本组里的"相"提供）
 var attack_type:String="ju"
 var knockback:Vector2=Vector2.ZERO
 var chain_count:int=1#这次发射一共几颗蛋（五连之类的道具要判定它）
 
-func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2,p_chain_count:int=1,p_first_interval:float=-1.0) -> Node:
+func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction:Vector2,p_count:int,p_interval:float,p_damage_mul:float,p_type:String,p_knockback:Vector2,p_chain_count:int=1,p_first_interval:float=-1.0,p_damage_add:float=0.0) -> Node:
 	first_scene=p_first
 	repeat_scene=p_repeat
 	origin=p_origin
@@ -31,6 +32,7 @@ func setup(p_first:PackedScene,p_repeat:PackedScene,p_origin:Vector2,p_direction
 	interval=p_interval
 	first_interval=p_first_interval
 	damage_mul=p_damage_mul
+	damage_add=p_damage_add
 	attack_type=p_type
 	knockback=p_knockback
 	chain_count=p_chain_count
@@ -64,6 +66,7 @@ func _fire_one(index:int) -> void:
 	projectile.knocked_back=knockback
 	projectile.global_position=origin
 	projectile.damage_mul*=damage_mul
+	projectile.damage_add+=damage_add
 	#只有第一节参与“双黄蛋/锋利蛋片”这类发射时道具，避免一次刷出十几份
 	if index==0:
 		SignalBus.egg_shot.emit(projectile)
