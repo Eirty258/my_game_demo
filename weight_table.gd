@@ -68,6 +68,8 @@ var order_item_pool:Dictionary={#订单道具池
 	"god_right_hand":1,
 	"red_chain":1,
 	"emergency_exit":1,#紧急出口
+	"baby_boom":1,#婴儿潮
+	"demographic_dividend":1,#人口红利
 }
 
 var boss_item_pool:Dictionary={
@@ -77,6 +79,7 @@ var boss_item_pool:Dictionary={
 	"cold_wave":1,
 	"fume":1,
 	"magnetic_anomaly":1,
+	"baby_boom":1,#婴儿潮
 }
 
 #金色道具池：镀金怪物死亡时从这里抽一个道具掉落
@@ -87,6 +90,8 @@ var gold_item_pool:Dictionary={
 	"god_right_hand":1,
 	"red_chain":1,
 	"emergency_exit":1,
+	"baby_boom":1,#婴儿潮
+	"demographic_dividend":1,#人口红利
 }
 #所有"自然刷道具"的池子；三个池共用一个已刷出记录，避免同一个道具从别的池再刷一次
 const ITEM_POOL_NAMES:Array[String]=["order_item_pool","boss_item_pool","gold_item_pool"]

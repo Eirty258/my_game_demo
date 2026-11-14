@@ -367,9 +367,12 @@ func _on_click_only(egg:Egg):
 		var firing_eggs:=[]
 		for e in egg_nodes.values():
 			if e.group_id==group_id:
-				e.shoot(egg_count)
 				firing_eggs.append(e)
 				to_remove.append(e)
+		#发射前先通知道具（人口红利之类要按"发射前的蛋数"算伤害倍率）
+		SignalBus.eggs_firing.emit(firing_eggs,egg_count)
+		for e in firing_eggs:
+			e.shoot(egg_count)
 		#这一组整体发射：把成员蛋和连锁数传出去（五子棋之类的道具要拿它做表现）
 		SignalBus.eggs_fired.emit(firing_eggs,egg_count)
 	for e in to_remove:

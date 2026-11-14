@@ -14,6 +14,8 @@ var group_id: int = -1:
 var directions=[]#待发射的有方向
 var shards_number:int=1
 var disabled:bool=false
+#这次发射由道具追加的伤害倍率（人口红利等），发射前写入，shoot() 里乘进去
+var shot_damage_mul:float=1.0
 
 #鼠标悬停时微微放大 + 提亮
 const HOVER_SCALE:=1.12

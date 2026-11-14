@@ -1,6 +1,7 @@
 extends Node
 
 signal egg_shot(projectile:Node)#蛋变成子弹时,传递子弹
+signal eggs_firing(eggs:Array,chain_count:int)#一整组蛋即将发射：道具可以在这里改这一批蛋的伤害倍率
 signal eggs_fired(eggs:Array,chain_count:int)#一整组蛋一起发射时，传递这一组的蛋和连锁数
 signal eggs_regrouped#棋盘重新分组完成后（蛋的连组状态可能有变化）
 signal projectile_spawned(projectile:Node)#子弹生成时,传递子弹

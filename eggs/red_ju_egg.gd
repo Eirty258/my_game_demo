@@ -40,7 +40,7 @@ func shoot(chain_count:int):
 		push_warning("红车：权重表里的载具 %s 没有对应场景" % vehicle_type)
 		return
 	var vehicle_scene:PackedScene=VEHICLE_SCENES[vehicle_type]
-	var damage_multiply:float=1+(chain_count-1)/5
+	var damage_multiply:float=(1+(chain_count-1)/5)*shot_damage_mul
 	for i in directions:
 		if vehicle_scene==TRAIN_HEAD:
 			#高铁：从棋子位置一节节发出去，跟车头的位置、存活都无关

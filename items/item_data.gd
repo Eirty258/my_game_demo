@@ -15,6 +15,8 @@ var item_chinese_name:Dictionary={
 	"god_right_hand":"神之右手",
 	"red_chain":"红色锁链",
 	"emergency_exit":"紧急出口",
+	"baby_boom":"婴儿潮",
+	"demographic_dividend":"人口红利",
 }
 
 var item_description:Dictionary={
@@ -32,6 +34,8 @@ var item_description:Dictionary={
 	"god_right_hand":"幻想杀手，右键抑制蛋的力量",
 	"red_chain":"知识！情感！意志！最少连锁数-1",
 	"emergency_exit":"额外出口",
+	"baby_boom":"蛋的自然刷新率提高",
+	"demographic_dividend":"蛋多力量大",
 }
 
 #图标：先找 arts/texture/items/ ，再退回 arts/texture/（老道具图标在根目录）

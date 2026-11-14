@@ -15,7 +15,7 @@ func _process(delta: float) -> void:
 
 func shoot(chain_count:int):
 	var pao_ball_scene:PackedScene=load("res://projectiles/red_pao_ball.tscn")
-	var damage_multiply:float=1+(chain_count-1)/5
+	var damage_multiply:float=(1+(chain_count-1)/5)*shot_damage_mul
 	for i in directions:
 		var pao_ball=pao_ball_scene.instantiate()
 		pao_ball.direction=i

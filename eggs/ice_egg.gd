@@ -15,7 +15,7 @@ func _init() -> void:
 
 func shoot(chain_count:int):
 	var ice_ball_scene:PackedScene=load("res://projectiles/ice_ball.tscn")
-	var damage_multiply:float=1+(chain_count-max(GameState.min_chain,1))/5#TODO 硬编码要修改
+	var damage_multiply:float=(1+(chain_count-max(GameState.min_chain,1))/5)*shot_damage_mul#TODO 硬编码要修改
 	for i in directions:
 		var ice_ball=ice_ball_scene.instantiate()
 		ice_ball.direction=i
