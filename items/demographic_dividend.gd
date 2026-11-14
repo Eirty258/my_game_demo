@@ -1,11 +1,11 @@
 extends Item
 
 #人口红利：发射时按"发射前的蛋数 / 上限"给这一发伤害倍率
-#蛋数 ≤ 上限的 30% 时 1 倍；满上限时 2 倍；中间线性过渡
+#蛋数 ≤ 上限的 30% 时 1 倍；满上限时 1.5 倍；中间线性过渡
 #统计的是发射前的蛋数（eggs_firing 在 shoots 之前发出），所以一次把满上限的蛋全打出去能吃满
 
 const LOW_RATIO:=0.3
-const MAX_DAMAGE_MUL:=2.0
+const MAX_DAMAGE_MUL:=1.5#原来 2.0，实测伤害太高，2026-11-14 降到 1.5
 
 func _ready() -> void:
 	item_name="demographic_dividend"
