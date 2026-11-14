@@ -39,6 +39,8 @@ func edge():
 	is_collidable=true
 
 func take_hit(damage:float):
+	if is_steel_edge:
+		return#钢边界不可破坏：用来标记不需要防守的拐角
 	if is_shielded():
 		return#护盾期间敌人照常攻击，但不掉耐久
 	durability-=damage

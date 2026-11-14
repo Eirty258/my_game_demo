@@ -12,6 +12,7 @@ const BoardCanvasScript=preload("res://tools/board_editor/board_canvas.gd")
 const PALETTE:Array=[
 	{"id":"inner","name":"普通格"},
 	{"id":"edge","name":"边界(墙)"},
+	{"id":"steel_edge","name":"钢边界"},
 	{"id":"empty","name":"虚空"},
 	{"id":"left","name":"方向 ←"},
 	{"id":"right","name":"方向 →"},
@@ -21,6 +22,7 @@ const PALETTE:Array=[
 const BRUSH_COLORS:Dictionary={
 	"inner":Color(0.74,0.74,0.78),
 	"edge":Color(0.32,0.32,0.36),
+	"steel_edge":Color(0.55,0.60,0.68),
 	"empty":Color(0.14,0.14,0.16),
 	"left":Color(0.28,0.55,0.85),
 	"right":Color(0.28,0.55,0.85),
@@ -28,10 +30,10 @@ const BRUSH_COLORS:Dictionary={
 	"down":Color(0.28,0.55,0.85),
 }
 const SIDES:Array=[
-	{"id":"left","label":"左(行号)"},
-	{"id":"right","label":"右(行号)"},
-	{"id":"up","label":"上(列号)"},
-	{"id":"down","label":"下(列号)"},
+	{"id":"left","label":"左(进场·行)"},
+	{"id":"right","label":"右(进场·行)"},
+	{"id":"up","label":"上(进场·列)"},
+	{"id":"down","label":"下(进场·列)"},
 ]
 
 var board_data:BoardData=null
@@ -160,7 +162,7 @@ func _build_ui() -> void:
 	#——刷怪点——
 	vbox.add_child(_section_label("刷怪点"))
 	var spawn_hint:=Label.new()
-	spawn_hint.text="逗号分隔，空白=不刷；左/右填行号，上/下填列号"
+	spawn_hint.text="填敌人实际进场的那一侧；左/右填行号，上/下填列号\n逗号分隔，空白=该侧不刷"
 	spawn_hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	spawn_hint.add_theme_font_size_override("font_size",11)
 	spawn_hint.add_theme_color_override("font_color",Color(0.7,0.72,0.8))
@@ -170,11 +172,12 @@ func _build_ui() -> void:
 		row.add_theme_constant_override("separation",6)
 		vbox.add_child(row)
 		var label:=_small_label(String(side["label"]))
-		label.custom_minimum_size=Vector2(80,0)
+		label.custom_minimum_size=Vector2(88,0)
 		row.add_child(label)
 		var edit:=LineEdit.new()
 		edit.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 		edit.placeholder_text="1,2,3"
+		edit.tooltip_text="底层字段：%s" % _spawn_field(String(side["id"]))
 		edit.text_changed.connect(_on_spawn_edited)
 		row.add_child(edit)
 		_spawn_edits[side["id"]]=edit
@@ -324,6 +327,19 @@ func _parse_ints(text:String) -> Array[int]:
 				result.append(value)
 	return result
 
+#界面按"敌人从哪一侧进场"来写；BoardData 里的字段也按进场侧命名（up=上方进场），一一对应
+func _spawn_field(side_id:String) -> String:
+	match side_id:
+		"left":
+			return "enemy_spawn_point_left"
+		"right":
+			return "enemy_spawn_point_right"
+		"up":
+			return "enemy_spawn_point_up"
+		"down":
+			return "enemy_spawn_point_down"
+	return ""
+
 #把界面上的刷怪点写进 board_data，并刷新画布上的标记
 func _sync_spawn_from_ui() -> void:
 	if board_data==null:
@@ -332,6 +348,7 @@ func _sync_spawn_from_ui() -> void:
 	var right:=_parse_ints(_spawn_edits["right"].text)
 	var up:=_parse_ints(_spawn_edits["up"].text)
 	var down:=_parse_ints(_spawn_edits["down"].text)
+	#左/右/上/下 = 进场侧，一一对应
 	board_data.enemy_spawn_point_left=left
 	board_data.enemy_spawn_point_right=right
 	board_data.enemy_spawn_point_up=up
@@ -369,6 +386,7 @@ func load_board(path:String) -> int:
 	_w_spin.value=data.size.x
 	_h_spin.value=data.size.y
 	_name_edit.text=path.get_file().get_basename()
+	#进场侧 ← 同名字段
 	_spawn_edits["left"].text=_ints_to_text(data.enemy_spawn_point_left)
 	_spawn_edits["right"].text=_ints_to_text(data.enemy_spawn_point_right)
 	_spawn_edits["up"].text=_ints_to_text(data.enemy_spawn_point_up)
@@ -424,6 +442,8 @@ func _describe_cell(cell:CellData) -> String:
 			return "方向格 上"
 		elif cell.direction==Vector2.DOWN:
 			return "方向格 下"
+	if cell.is_steel_edge:
+		return "钢边界（不可破坏）"
 	if cell.is_edge:
 		return "边界"
 	if not cell.is_available:
@@ -494,6 +514,7 @@ func _update_info() -> void:
 		return
 	var playable:=0
 	var edge:=0
+	var steel:=0
 	var empty:=0
 	var direction:=0
 	for cell in board_data.grid:
@@ -502,13 +523,15 @@ func _update_info() -> void:
 			continue
 		if cell.direction!=Vector2.ZERO:
 			direction+=1
+		elif cell.is_steel_edge:
+			steel+=1
 		elif cell.is_edge:
 			edge+=1
 		elif not cell.is_available:
 			empty+=1
 		else:
 			playable+=1
-	_info_label.text="%d×%d　可放蛋 %d 格 / 边界 %d / 虚空 %d / 方向 %d" % [board_data.size.x,board_data.size.y,playable,edge,empty,direction]
+	_info_label.text="%d×%d　可放蛋 %d 格 / 边界 %d / 钢边界 %d / 虚空 %d / 方向 %d" % [board_data.size.x,board_data.size.y,playable,edge,steel,empty,direction]
 
 func _set_status(text:String) -> void:
 	if _status_label!=null:

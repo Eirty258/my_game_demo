@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BoardData" format=3]
+
+[ext_resource type="Script" path="res://board/cells/celldata.gd" id="1_hk6o7"]
+[ext_resource type="Resource" path="res://board/cells/steel_edge.tres" id="2_3u5tw"]
+[ext_resource type="Resource" path="res://board/cells/edge_cell.tres" id="3_e4opr"]
+[ext_resource type="Resource" path="res://board/cells/empty_cell.tres" id="4_4kl40"]
+[ext_resource type="Resource" path="res://board/cells/inner_cell.tres" id="5_lykcr"]
+[ext_resource type="Script" path="res://board/boarddata.gd" id="6_dsxis"]
+[ext_resource type="Resource" path="res://board/cells/up_cell.tres" id="6_lykcr"]
+[ext_resource type="Resource" path="res://board/cells/left_cell.tres" id="7_dsxis"]
+[ext_resource type="Resource" path="res://board/cells/right_cell.tres" id="8_u83di"]
+[ext_resource type="Resource" path="res://board/cells/down_cell.tres" id="9_o3ce3"]
+
+[resource]
+script = ExtResource("6_dsxis")
+size = Vector2i(11, 11)
+grid = Array[ExtResource("1_hk6o7")]([ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("7_dsxis"), ExtResource("5_lykcr"), ExtResource("8_u83di"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("7_dsxis"), ExtResource("5_lykcr"), ExtResource("8_u83di"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("5_lykcr"), ExtResource("9_o3ce3"), ExtResource("5_lykcr"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("2_3u5tw"), ExtResource("3_e4opr"), ExtResource("3_e4opr"), ExtResource("3_e4opr"), ExtResource("2_3u5tw"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("2_3u5tw"), ExtResource("3_e4opr"), ExtResource("3_e4opr"), ExtResource("3_e4opr"), ExtResource("2_3u5tw"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("5_lykcr"), ExtResource("6_lykcr"), ExtResource("5_lykcr"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("7_dsxis"), ExtResource("5_lykcr"), ExtResource("8_u83di"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("3_e4opr"), ExtResource("7_dsxis"), ExtResource("5_lykcr"), ExtResource("8_u83di"), ExtResource("3_e4opr"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("4_4kl40"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw"), ExtResource("2_3u5tw")])
+enemy_spawn_point_left = Array[int]([1, 2, 3, 7, 8, 9])
+enemy_spawn_point_right = Array[int]([1, 2, 3, 7, 8, 9])
+enemy_spawn_point_up = Array[int]([7, 8, 9])
+enemy_spawn_point_down = Array[int]([1, 2, 3])

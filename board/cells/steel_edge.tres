@@ -5,5 +5,6 @@
 [resource]
 script = ExtResource("1_jrvm0")
 is_collidable = true
+durability = 99999.0
 is_steel_edge = true
 metadata/_custom_type_script = "uid://88xhsqcguo42"

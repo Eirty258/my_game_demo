@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoardData" format=3]
+
+[ext_resource type="Script" path="res://board/cells/celldata.gd" id="1_s266s"]
+[ext_resource type="Resource" path="res://board/cells/steel_edge.tres" id="2_3alfv"]
+[ext_resource type="Resource" path="res://board/cells/edge_cell.tres" id="3_2mfwx"]
+[ext_resource type="Resource" path="res://board/cells/empty_cell.tres" id="4_l11dk"]
+[ext_resource type="Resource" path="res://board/cells/inner_cell.tres" id="5_uq1a0"]
+[ext_resource type="Resource" path="res://board/cells/up_cell.tres" id="6_i2e44"]
+[ext_resource type="Resource" path="res://board/cells/left_cell.tres" id="7_betxb"]
+[ext_resource type="Resource" path="res://board/cells/right_cell.tres" id="8_ddbyl"]
+[ext_resource type="Resource" path="res://board/cells/down_cell.tres" id="9_ec00r"]
+[ext_resource type="Script" path="res://board/boarddata.gd" id="10_1elst"]
+
+[resource]
+script = ExtResource("10_1elst")
+grid = Array[ExtResource("1_s266s")]([ExtResource("2_3alfv"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("2_3alfv"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("3_2mfwx"), ExtResource("5_uq1a0"), ExtResource("6_i2e44"), ExtResource("3_2mfwx"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("3_2mfwx"), ExtResource("7_betxb"), ExtResource("8_ddbyl"), ExtResource("3_2mfwx"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("3_2mfwx"), ExtResource("7_betxb"), ExtResource("8_ddbyl"), ExtResource("3_2mfwx"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("4_l11dk"), ExtResource("3_2mfwx"), ExtResource("7_betxb"), ExtResource("5_uq1a0"), ExtResource("2_3alfv"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("2_3alfv"), ExtResource("3_2mfwx"), ExtResource("7_betxb"), ExtResource("5_uq1a0"), ExtResource("5_uq1a0"), ExtResource("6_i2e44"), ExtResource("6_i2e44"), ExtResource("5_uq1a0"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("5_uq1a0"), ExtResource("9_ec00r"), ExtResource("9_ec00r"), ExtResource("9_ec00r"), ExtResource("9_ec00r"), ExtResource("8_ddbyl"), ExtResource("3_2mfwx"), ExtResource("2_3alfv"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("3_2mfwx"), ExtResource("2_3alfv")])
+enemy_spawn_point_left = Array[int]([1, 2, 3, 4, 5, 6])
+enemy_spawn_point_right = Array[int]([1, 2, 3, 5, 6])
+enemy_spawn_point_up = Array[int]([1, 2, 4, 5, 6])
+enemy_spawn_point_down = Array[int]([1, 2, 3, 4, 5, 6])

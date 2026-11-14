@@ -287,47 +287,56 @@ func spawn_a_group_of_enemy(dir:Vector2)->int:
 		return 0
 	var board_size:Vector2i=board_node.size
 	var spawn_offset:=get_spawn_offset()
-	var x=0
-	var y=0
-	var limit=0
 	enemy_spawn_point_left.shuffle()
 	enemy_spawn_point_right.shuffle()
 	enemy_spawn_point_up.shuffle()
 	enemy_spawn_point_down.shuffle()
-	if dir==Vector2.DOWN:
-		y=-spawn_offset.y
-		limit=min(enemy_limit,enemy_spawn_point_down.size())
-	elif dir==Vector2.LEFT:
-		x=board_size.x-1+spawn_offset.x
-		limit=min(enemy_limit,enemy_spawn_point_left.size())
-	elif dir==Vector2.UP:
-		y=board_size.y-1+spawn_offset.y
-		limit=min(enemy_limit,enemy_spawn_point_up.size())
-	elif dir==Vector2.RIGHT:
-		x=-spawn_offset.x
-		limit=min(enemy_limit,enemy_spawn_point_right.size())
+	#字段名是"进场的那一侧"：从上方进场 = 敌人向下走，用 up 的列号
+	var lanes:Array=get_spawn_lanes(dir)
+	if lanes.is_empty():
+		return 0
+	var limit:=mini(enemy_limit,lanes.size())
 	var count=0
 	var cost:=0.0
 	while enemy_number<limit&&budget>0:
 		if GameState.is_floor_cleared:
 			break
-		if dir==Vector2.DOWN:
-			x=enemy_spawn_point_down[enemy_number]
-		elif dir==Vector2.UP:
-			x=enemy_spawn_point_up[enemy_number]
-		elif dir==Vector2.RIGHT:
-			y=enemy_spawn_point_right[enemy_number]
-		elif dir==Vector2.LEFT:
-			y=enemy_spawn_point_left[enemy_number]
-		else:
-			print("enemy_manager.gd:spawn_a_group_of_enemy():方向有误")
-		var spent:=spawn_random_enemy(dir,Vector2(x,y))
+		var cell:=get_spawn_cell(dir,board_size,spawn_offset,enemy_number)
+		var spent:=spawn_random_enemy(dir,Vector2(cell.x,cell.y))
 		if spent<=0.0:
 			break#预算买不起任何一个敌人了
 		cost+=spent
 		count+=1
 	print("数量:",count,"花费:",cost)
 	return count
+
+#某个移动方向对应的"进场侧"刷怪点数组（数组里是另一条轴上的坐标）
+func get_spawn_lanes(dir:Vector2)->Array:
+	if dir==Vector2.DOWN:
+		return enemy_spawn_point_up
+	elif dir==Vector2.UP:
+		return enemy_spawn_point_down
+	elif dir==Vector2.RIGHT:
+		return enemy_spawn_point_left
+	elif dir==Vector2.LEFT:
+		return enemy_spawn_point_right
+	return []
+
+#按 方向+车道序号 算出生格（棋盘坐标，可以落在棋盘外）
+func get_spawn_cell(dir:Vector2,board_size:Vector2i,spawn_offset:Vector2i,lane:int)->Vector2i:
+	var lanes:Array=get_spawn_lanes(dir)
+	if lanes.is_empty():
+		return Vector2i(-1,-1)
+	var along:=int(lanes[clampi(lane,0,lanes.size()-1)])
+	if dir==Vector2.DOWN:#上方进场
+		return Vector2i(along,-spawn_offset.y)
+	elif dir==Vector2.UP:#下方进场
+		return Vector2i(along,board_size.y-1+spawn_offset.y)
+	elif dir==Vector2.RIGHT:#左方进场
+		return Vector2i(-spawn_offset.x,along)
+	elif dir==Vector2.LEFT:#右方进场
+		return Vector2i(board_size.x-1+spawn_offset.x,along)
+	return Vector2i(-1,-1)
 
 func group_cooldown():
 	#生成一组敌人后的冷却：随层数缩短
@@ -363,21 +372,10 @@ func spawn_random_boss():
 	var board_size:Vector2i=board_node.size
 	var spawn_offset:=get_spawn_offset()
 	var dir=CARDINALS.pick_random()
-	var x=0
-	var y=0
-	if dir==Vector2.DOWN:
-		y=-spawn_offset.y
-		x=enemy_spawn_point_down.pick_random()
-	elif dir==Vector2.UP:
-		y=board_size.y-1+spawn_offset.y
-		x=enemy_spawn_point_up.pick_random()
-	elif dir==Vector2.RIGHT:
-		x=-spawn_offset.x
-		y=enemy_spawn_point_right.pick_random()
-	elif dir==Vector2.LEFT:
-		x=board_size.x-1+spawn_offset.x
-		y=enemy_spawn_point_left.pick_random()
-	var coord=Vector2(x,y)
+	var lanes:Array=get_spawn_lanes(dir)
+	if lanes.is_empty():
+		return
+	var coord=get_spawn_cell(dir,board_size,spawn_offset,randi_range(0,lanes.size()-1))
 	var boss_name=pick_by_weight(boss_weights)
 	var pos=coord_to_pos(coord)
 	spawn_boss(boss_name,pos,dir)

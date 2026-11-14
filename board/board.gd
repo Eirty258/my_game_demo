@@ -264,7 +264,9 @@ func spawn_tile():
 		for j in range(size.y):
 			var cell=find_cell(Vector2i(i,j))
 			if cell.is_available:
-				if cell.is_edge:#标记
+				if cell.is_steel_edge:#钢边界：不能被打坏，用另一套贴图（source 4）
+					gridtile.set_cell(Vector2i(i,j),4,Vector2i(0,0))
+				elif cell.is_edge:#标记
 					gridtile.set_cell(Vector2i(i,j),2,Vector2i(0,0))
 				else:
 					gridtile.set_cell(Vector2i(i,j),1,Vector2i(1,1))
@@ -459,7 +461,9 @@ func loadboard(board_tres:BoardData):
 		var array=[]
 		for j in range(size.y):
 			var cell=Cell.new()
-			cell.is_edge=board_tres.grid[i+size.x*j].is_edge
+			#钢边界：同样是"边界"，可碰撞、不参与刷蛋/刷怪，但不能被攻击
+			cell.is_steel_edge=board_tres.grid[i+size.x*j].is_steel_edge
+			cell.is_edge=board_tres.grid[i+size.x*j].is_edge or cell.is_steel_edge
 			#if board_tres.grid[i+size.x*j].direction==Vector2.LEFT:
 				#if !enemy_spawn_point_left.has(j):
 					#enemy_spawn_point_left.append(j)

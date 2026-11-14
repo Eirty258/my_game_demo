@@ -84,6 +84,8 @@ texture_region_size = Vector2i(512, 512)
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vkrn4"]
 texture = ExtResource("6_4go2t")
 texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
 
 [sub_resource type="TileSet" id="TileSet_jqgjh"]
 tile_size = Vector2i(512, 512)

@@ -9,6 +9,7 @@ signal hovered(coord:Vector2i)
 const PRESETS:Dictionary={
 	"inner":preload("res://board/cells/inner_cell.tres"),
 	"edge":preload("res://board/cells/edge_cell.tres"),
+	"steel_edge":preload("res://board/cells/steel_edge.tres"),
 	"empty":preload("res://board/cells/empty_cell.tres"),
 	"left":preload("res://board/cells/left_cell.tres"),
 	"right":preload("res://board/cells/right_cell.tres"),
@@ -22,6 +23,7 @@ const MAX_CELL:=80.0
 
 const COLOR_INNER:=Color(0.74,0.74,0.78)
 const COLOR_EDGE:=Color(0.32,0.32,0.36)
+const COLOR_STEEL:=Color(0.55,0.60,0.68)
 const COLOR_EMPTY:=Color(0.12,0.12,0.14)
 const COLOR_DIRECTION:=Color(0.28,0.55,0.85)
 const COLOR_MARKER:=Color(1.0,0.62,0.18)
@@ -106,6 +108,9 @@ func _draw() -> void:
 			var rect:=Rect2(_origin+Vector2(i,j)*cs,Vector2(cs,cs))
 			draw_rect(rect,_cell_color(cell),true)
 			draw_rect(rect,Color(0,0,0,0.45),false,1.0)
+			if cell!=null and cell.is_steel_edge:
+				#钢边界：里面再描一圈，和普通边界区分
+				draw_rect(rect.grow(-4.0),Color(1,1,1,0.20),false,1.0)
 			if cell!=null and cell.direction!=Vector2.ZERO:
 				_draw_arrow(rect.get_center(),cell.direction,cs,Color(1,1,1,0.9))
 			elif cell==null or (not cell.is_available and not cell.is_edge):
@@ -153,6 +158,8 @@ func _cell_color(cell:CellData) -> Color:
 		return COLOR_EMPTY
 	if cell.direction!=Vector2.ZERO:
 		return COLOR_DIRECTION
+	if cell.is_steel_edge:
+		return COLOR_STEEL
 	if cell.is_edge:
 		return COLOR_EDGE
 	if not cell.is_available:
