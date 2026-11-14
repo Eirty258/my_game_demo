@@ -17,6 +17,7 @@ var item_chinese_name:Dictionary={
 	"emergency_exit":"紧急出口",
 	"baby_boom":"婴儿潮",
 	"demographic_dividend":"人口红利",
+	"iron_rooster":"铁公鸡",
 }
 
 var item_description:Dictionary={
@@ -36,6 +37,7 @@ var item_description:Dictionary={
 	"emergency_exit":"额外出口",
 	"baby_boom":"蛋的自然刷新率提高",
 	"demographic_dividend":"蛋多力量大",
+	"iron_rooster":"下蛋公鸡,可能要充电",
 }
 
 #图标：先找 arts/texture/items/ ，再退回 arts/texture/（老道具图标在根目录）

@@ -70,6 +70,7 @@ var order_item_pool:Dictionary={#订单道具池
 	"emergency_exit":1,#紧急出口
 	"baby_boom":1,#婴儿潮
 	"demographic_dividend":1,#人口红利
+	"iron_rooster":1,#铁公鸡
 }
 
 var boss_item_pool:Dictionary={
@@ -92,6 +93,7 @@ var gold_item_pool:Dictionary={
 	"emergency_exit":1,
 	"baby_boom":1,#婴儿潮
 	"demographic_dividend":1,#人口红利
+	"iron_rooster":1,#铁公鸡
 }
 #所有"自然刷道具"的池子；三个池共用一个已刷出记录，避免同一个道具从别的池再刷一次
 const ITEM_POOL_NAMES:Array[String]=["order_item_pool","boss_item_pool","gold_item_pool"]

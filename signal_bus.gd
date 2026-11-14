@@ -17,6 +17,7 @@ signal ice_ball_spawned(ice_ball:Projectile)#生成冰锥时传递冰锥
 signal electricity_ball_spawned(electricity_ball:Projectile)#生成电环时传递电环
 signal energy_full#能量满时
 signal weather_changed(weather_id:String)#天气切换时，传递新天气的 id
+signal floor_ready#新一层棋盘初始化完成（跟班等需要换位置的东西监听这个）
 signal boss_cleared#boss们被击败后
 signal item_clicked(item_name:String)#点击掉落的道具时传递道具名
 signal item_droped(pos:Vector2,item_name:String)#即将掉落道具时，传递位置和道具名

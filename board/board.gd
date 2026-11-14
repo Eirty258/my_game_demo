@@ -737,6 +737,8 @@ func init():
 	add_to_group("board")
 	spawn_initial_eggs()
 	spawn_tile()
+	#新一层棋盘就绪：跟班等需要换位置/重置状态的东西监听这个信号
+	SignalBus.floor_ready.emit()
 
 func load_tutorial():
 	clear_shields()

@@ -33,6 +33,8 @@ func _on_area_entered(area: Area2D) -> void:
 	var body=area.get_parent()
 	if not (body is Enemy):
 		return
+	if body.has_method("accepts_hit") and not body.accepts_hit(type):
+		return
 	if hit_targets.has(body):
 		return
 	hit_targets[body]=true
