@@ -450,6 +450,24 @@ func _spawn_shield_visual(coord:Vector2i,duration:float) -> void:
 	shield.position=Vector2(coord)*512.0+Vector2(256,256)
 	add_child(shield)
 	_shield_nodes[coord]=shield
+
+#清掉所有边界护盾（换层/重开时调用，否则仕的盾会跟到下一关）
+func clear_shields():
+	for coord in _shield_nodes.keys():
+		var node=_shield_nodes[coord]
+		if is_instance_valid(node):
+			node.queue_free()
+	_shield_nodes.clear()
+
+#清掉棋盘上残留的蛋节点（兜底：不在 egg_nodes 里的孤儿蛋也要清，避免跟到下一关）
+func _clear_stray_eggs():
+	for egg in egg_nodes.values():
+		if is_instance_valid(egg):
+			egg.queue_free()
+	egg_nodes.clear()
+	for child in get_children():
+		if child is Egg:
+			child.queue_free()
 func loadboard(board_tres:BoardData):
 	size=board_tres.size
 	offset=-256*Vector2(size)
@@ -643,6 +661,9 @@ func _exit_tree() -> void:
 		_clear_target_cursor()
 
 func spawn_egg_at_random_position(type:String):
+	#切关途中（虚空之蛋清完场后）不要再往旧棋盘上放蛋，否则会变成跟到下一关的孤儿节点
+	if GameState.is_floor_cleared or grid.is_empty():
+		return
 	if egg_number>=max_egg_number:
 		return
 	var x=randi_range(0,size.x-1)
@@ -694,6 +715,8 @@ func clear_eggs():
 	await get_tree().create_timer(0.5).timeout
 
 func init():
+	clear_shields()
+	_clear_stray_eggs()
 	grid.clear()
 	egg_nodes.clear()
 	#offset=Vector2.ZERO
@@ -713,6 +736,8 @@ func init():
 	spawn_tile()
 
 func load_tutorial():
+	clear_shields()
+	_clear_stray_eggs()
 	grid.clear()
 	egg_nodes.clear()
 	global_position=Vector2(0,0)

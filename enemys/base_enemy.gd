@@ -21,6 +21,8 @@ class_name Enemy
 var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 @export var is_stunned:bool=false
 @export var is_dying:bool=false
+#切关清场（虚空之蛋）时为 true：这只怪死了也不掉东西
+@export var block_drops:bool=false
 @export var motion:String=""
 @export var idle_count=0
 
@@ -376,6 +378,8 @@ func sample_drops()->Array:
 	return to_spawn_drops
 
 func spawn_drops():
+	if block_drops or GameState.is_floor_cleared:
+		return
 	var to_spawn_drops=sample_drops()
 	for drop in to_spawn_drops:
 		SignalBus.something_droped.emit(global_position,drop)

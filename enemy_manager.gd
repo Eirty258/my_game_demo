@@ -438,6 +438,7 @@ func init():
 func clear_enemies():
 	for i in enemy_nodes:
 		if is_instance_valid(i):
+			i.block_drops=true#虚空之蛋清场：这批怪不掉落
 			i.die()
 			await get_tree().create_timer(0.1).timeout
 	await get_tree().create_timer(1).timeout
