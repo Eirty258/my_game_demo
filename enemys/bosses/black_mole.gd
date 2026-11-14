@@ -184,27 +184,137 @@ func coord_to_pos(coord:Vector2i)->Vector2:
 	return pos
 
 
+#瞬移：以"这条车道最外侧的格子"为起点往外退，
+#距离随机，但至少 MOVE_MIN_CELLS 格（不贴着墙帮小怪挡枪），且整只落在镜头内
+const MOVE_MIN_CELLS:=2
+
 func move_random():
-	var dir=CARDINALS.pick_random()
-	var x=0
-	var y=0
-	if dir==Vector2.LEFT:
-		y=board.enemy_spawn_point_left.pick_random()
-		x=board.enemy_spawn_point_x[0]-5
-	elif dir==Vector2.DOWN:
-		x=board.enemy_spawn_point_down.pick_random()
-		y=board.enemy_spawn_point_y[-1]+4
-	elif dir==Vector2.RIGHT:
-		y=board.enemy_spawn_point_right.pick_random()
-		x=board.enemy_spawn_point_x[-1]+5
-	elif dir==Vector2.UP:
-		x=board.enemy_spawn_point_up.pick_random()
-		y=board.enemy_spawn_point_y[0]-3
-	var pos=coord_to_pos(Vector2i(x,y))
+	var target:=_pick_teleport_cell()
+	if target.x<0:
+		return
+	var pos=coord_to_pos(target)
 	disappear()
 	await get_tree().create_timer(2).timeout
+	if not is_inside_tree():
+		return
 	global_position=pos
 	appear()
+
+#按方向取对应的刷怪点车道数组（left/right 是行号，up/down 是列号）
+func _lanes_for(dir:Vector2)->Array:
+	if dir==Vector2.LEFT:
+		return board.enemy_spawn_point_left
+	elif dir==Vector2.RIGHT:
+		return board.enemy_spawn_point_right
+	elif dir==Vector2.UP:
+		return board.enemy_spawn_point_up
+	elif dir==Vector2.DOWN:
+		return board.enemy_spawn_point_down
+	return []
+
+#这条车道最外侧的那个格子（棋盘坐标）；整条车道都没格子时返回 (-1,-1)
+func _lane_edge_cell(dir:Vector2,lane:int)->Vector2i:
+	var size:Vector2i=board.size
+	if dir==Vector2.LEFT:
+		for i in range(size.x):
+			var c:Cell=board.find_cell(Vector2i(i,lane))
+			if c!=null&&c.is_available:
+				return Vector2i(i,lane)
+	elif dir==Vector2.RIGHT:
+		for i in range(size.x-1,-1,-1):
+			var c:Cell=board.find_cell(Vector2i(i,lane))
+			if c!=null&&c.is_available:
+				return Vector2i(i,lane)
+	elif dir==Vector2.UP:
+		for j in range(size.y):
+			var c:Cell=board.find_cell(Vector2i(lane,j))
+			if c!=null&&c.is_available:
+				return Vector2i(lane,j)
+	elif dir==Vector2.DOWN:
+		for j in range(size.y-1,-1,-1):
+			var c:Cell=board.find_cell(Vector2i(lane,j))
+			if c!=null&&c.is_available:
+				return Vector2i(lane,j)
+	return Vector2i(-1,-1)
+
+#这只 boss 在当前缩放下的半宽/半高（含一点余量），用来保证整只都留在镜头内
+func _sprite_half_extent() -> float:
+	var sprite:AnimatedSprite2D=$AnimatedSprite2D
+	var half:=512.0
+	if sprite!=null:
+		var frames:=sprite.sprite_frames
+		if frames!=null and frames.get_animation_names().size()>0:
+			var anim_name:="idle" if frames.has_animation("idle") else frames.get_animation_names()[0]
+			if frames.get_frame_count(anim_name)>0:
+				var tex:=frames.get_frame_texture(anim_name,0)
+				if tex!=null:
+					half=maxf(float(tex.get_width()),float(tex.get_height()))*0.5
+		var world_scale:=sprite.global_transform.get_scale()
+		half*=maxf(absf(world_scale.x),absf(world_scale.y))
+	return half+24.0
+
+#从这个车道边缘往外，最多还能退几格而整只仍在镜头内
+func _max_cells_in_view(dir:Vector2,edge_cell:Vector2i)->int:
+	var camera:=get_viewport().get_camera_2d()
+	if camera==null||camera.zoom.x<=0.001||camera.zoom.y<=0.001:
+		return 99
+	var view:=get_viewport().get_visible_rect().size
+	var half:=Vector2(view.x*0.5/camera.zoom.x,view.y*0.5/camera.zoom.y)
+	var center:=camera.get_screen_center_position()
+	var edge_pos:=coord_to_pos(edge_cell)
+	var sprite_half:=_sprite_half_extent()
+	var space:=0.0
+	if dir==Vector2.LEFT:
+		space=edge_pos.x-(center.x-half.x+sprite_half)
+	elif dir==Vector2.RIGHT:
+		space=(center.x+half.x-sprite_half)-edge_pos.x
+	elif dir==Vector2.UP:
+		space=edge_pos.y-(center.y-half.y+sprite_half)
+	elif dir==Vector2.DOWN:
+		space=(center.y+half.y-sprite_half)-edge_pos.y
+	return maxi(0,floori(space/float(CELL_SIZE)))
+
+#挑一个落点：优先选"能退够两格"的边，距离在 [2, 该边能退的最大格数] 里随机；
+#四条边都放不下两格时（超大棋盘/镜头拉近），退化成尽量远且仍留在镜头内
+func _pick_teleport_cell()->Vector2i:
+	var candidates:Array=[]
+	for dir in CARDINALS:
+		var lanes:Array=_lanes_for(dir)
+		var edges:Array=[]
+		for lane in lanes:
+			var edge:=_lane_edge_cell(dir,int(lane))
+			if edge.x>=0:
+				edges.append(edge)
+		if edges.is_empty():
+			continue
+		var edge_cell:Vector2i=edges.pick_random()
+		candidates.append({
+			"dir":dir,
+			"edge":edge_cell,
+			"max":_max_cells_in_view(dir,edge_cell),
+		})
+	if candidates.is_empty():
+		return Vector2i(-1,-1)
+
+	var good:Array=[]
+	for c in candidates:
+		if int(c["max"])>=MOVE_MIN_CELLS:
+			good.append(c)
+	if not good.is_empty():
+		var pick:Dictionary=good.pick_random()
+		var dist:=randi_range(MOVE_MIN_CELLS,int(pick["max"]))
+		var edge:Vector2i=pick["edge"]
+		var dir:Vector2=pick["dir"]
+		return edge+Vector2i(dir)*dist
+
+	var best:Dictionary=candidates[0]
+	for c in candidates:
+		if int(c["max"])>int(best["max"]):
+			best=c
+	var fallback_dist:=maxi(1,int(best["max"]))
+	var fallback_edge:Vector2i=best["edge"]
+	var fallback_dir:Vector2=best["dir"]
+	return fallback_edge+Vector2i(fallback_dir)*fallback_dist
 
 func giant_effect():
 	var tween = create_tween()
