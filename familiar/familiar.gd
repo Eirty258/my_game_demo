@@ -34,6 +34,8 @@ const FRAME_SIZE:=512.0
 @export var idle_interval_min:float=6.0
 @export var idle_interval_max:float=12.0
 
+const FLIP_EPSILON:=0.01#一帧里横向位移超过这个像素才判定为"在横向移动"
+
 var state:=State.POWERED
 var power_left:float=0.0
 var idle_timer:float=0.0
@@ -41,11 +43,13 @@ var _board:Board=null
 var _wander_dir:=Vector2.ZERO
 var _wander_left:float=0.0
 var _seeking_target:=Vector2.ZERO
+var _facing_right:bool=true#贴图只有朝右一套，flip_h = not _facing_right
 
 func _ready() -> void:
 	add_to_group("familiar")
 	_board=get_tree().get_first_node_in_group("board") as Board
 	_build_frames()
+	_facing_right=not $AnimatedSprite2D.flip_h
 	$AnimatedSprite2D.animation_finished.connect(_on_animation_finished)
 	SignalBus.floor_ready.connect(_on_floor_ready)
 	if _board!=null:
@@ -142,12 +146,14 @@ func _wander(delta:float) -> void:
 	if _wander_left<=0.0:
 		_wander_dir=_random_direction()
 		_wander_left=randf_range(0.6,1.8)
-	var next:=global_position+_wander_dir*move_speed*delta
-	var clamped:=_clamp_outside_board(next)
-	if clamped.distance_to(next)>0.5:
+	var from:=global_position
+	var wanted:=from+_wander_dir*move_speed*delta
+	var clamped:=_clamp_outside_board(wanted)
+	if clamped.distance_to(wanted)>0.5:
 		_wander_left=0.0
 	global_position=clamped
-	_update_flip(_wander_dir.x)
+	#转身看实际位移，不看方向向量：贴着棋盘被夹住时方向可能朝里，实际却是在往下滑
+	_update_flip(clamped.x-from.x)
 
 func _random_direction() -> Vector2:
 	var angle:=randf()*TAU
@@ -159,15 +165,22 @@ func _seek(delta:float) -> void:
 		global_position=_seeking_target
 		_start_discharging()
 		return
+	var from:=global_position
 	global_position+=to.normalized()*move_speed*delta
-	_update_flip(to.x)
+	_update_flip(global_position.x-from.x)
 
-#左右/斜向按 x 位移翻转；竖直移动（x≈0）保持原朝向
+#只要这一帧有横向位移就检查朝向；竖直移动（dx≈0）保持原朝向
 func _update_flip(dx:float) -> void:
-	if dx<-0.5:
-		$AnimatedSprite2D.flip_h=true
-	elif dx>0.5:
-		$AnimatedSprite2D.flip_h=false
+	var target_right:=_facing_right
+	if dx>FLIP_EPSILON:
+		target_right=true
+	elif dx<-FLIP_EPSILON:
+		target_right=false
+	else:
+		return
+	if target_right!=_facing_right:
+		_facing_right=target_right
+		$AnimatedSprite2D.flip_h=not _facing_right
 
 #——棋盘/车道位置——
 func _board_rect() -> Rect2:
