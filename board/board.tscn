@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://db77x6nt51s0r" path="res://arts/texture/grid2.png" id="3_8l818"]
 [ext_resource type="Texture2D" uid="uid://2ynd027ly4ry" path="res://arts/texture/edge.png" id="4_hecc7"]
 [ext_resource type="Texture2D" uid="uid://csydxa10wl12l" path="res://arts/texture/arrow.png" id="4_jqgjh"]
+[ext_resource type="Texture2D" uid="uid://bgbec4hhtdxpb" path="res://arts/texture/steel_edge.png" id="6_4go2t"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8l818"]
 texture = ExtResource("2_psm7c")
@@ -80,6 +81,10 @@ texture_region_size = Vector2i(512, 512)
 0:0/3/flip_v = true
 0:0/3/transpose = true
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vkrn4"]
+texture = ExtResource("6_4go2t")
+texture_region_size = Vector2i(512, 512)
+
 [sub_resource type="TileSet" id="TileSet_jqgjh"]
 tile_size = Vector2i(512, 512)
 physics_layer_0/collision_layer = 8
@@ -88,6 +93,7 @@ sources/0 = SubResource("TileSetAtlasSource_8l818")
 sources/1 = SubResource("TileSetAtlasSource_jqgjh")
 sources/2 = SubResource("TileSetAtlasSource_4go2t")
 sources/3 = SubResource("TileSetAtlasSource_hecc7")
+sources/4 = SubResource("TileSetAtlasSource_vkrn4")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vf5bc"]
 texture = ExtResource("4_jqgjh")

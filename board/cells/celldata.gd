@@ -8,3 +8,4 @@ class_name CellData
 @export var is_exist_egg:bool=false
 @export var durability:float=100
 @export var coord:Vector2i=Vector2i.ZERO
+@export var is_steel_edge:bool=false

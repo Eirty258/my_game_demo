@@ -7,6 +7,7 @@ var is_collidable:bool=false
 var is_available:bool=true
 var direction:Vector2=Vector2.ZERO
 var is_exist_egg:bool=false
+var is_steel_edge:bool=false
 #新加的变量
 var max_durability:float=100
 var durability:float=100:
