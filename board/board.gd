@@ -316,6 +316,11 @@ func rescan_groups():
 		if before==egg.group_ids:
 			continue
 		egg.sync_group_visual()
+	#含相的组：相和同组所有蛋一起镀金（元素蛋本来只播 active 动画，这里额外加金边提示会连相一起发）
+	for coord in egg_nodes.keys():
+		var egg:Egg=find_egg(coord)
+		if egg!=null:
+			egg.set_wildcard_outline(_in_wildcard_group(egg))
 	#整盘分组刷新完：给"连组状态"类道具（五子棋金边等）一个统一刷新点
 	SignalBus.eggs_regrouped.emit()
 
@@ -362,9 +367,24 @@ func _collect_group(t:String,start:Vector2i,visited:Dictionary) -> void:
 	if members.size()<_min_group_size(t) or dirs.is_empty():
 		return
 	var gid:=alloc_group_id()
-	groups[gid]={"type":t,"dirs":dirs,"members":members}
+	groups[gid]={"type":t,"dirs":dirs,"members":members,"wildcard_count":_count_wildcards(members)}
 	for e:Egg in members:
 		e.add_group_id(gid)
+
+#本组里有几颗相（万用蛋）
+func _count_wildcards(members:Array) -> int:
+	var count:=0
+	for e:Egg in members:
+		if e.is_wildcard():
+			count+=1
+	return count
+
+#这颗蛋所在的任意一个组里有相（有就整组镀金）
+func _in_wildcard_group(egg:Egg) -> bool:
+	for gid in egg.group_ids:
+		if groups.has(gid) and int((groups[gid] as Dictionary).get("wildcard_count",0))>0:
+			return true
+	return false
 
 #这块蛋算不算"t 组"的成员：同种蛋，或者相（万用蛋）；失活的蛋挡在中间
 func _egg_fits_type(egg:Egg,t:String) -> bool:

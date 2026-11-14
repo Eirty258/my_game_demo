@@ -36,6 +36,7 @@ const GLOW_PX:=22.0
 var _plain_material:Material=null#原本的材质，摘掉金边时还回去
 var _outline_material:ShaderMaterial=null
 var _five_outline:bool=false#五子棋道具专用的金边开关
+var _wildcard_outline:bool=false#本组里有相：相和同组所有蛋一起镀金
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -134,12 +135,17 @@ func set_five_outline(enabled:bool) -> void:
 	_five_outline=enabled
 	_refresh_outline()
 
+#棋盘开关：本组里有相（万用蛋）时，相和同组所有蛋一起镀金，
+#提示"这一组会连相一起发射"（元素蛋本来只播 active 动画，这里额外加金边）
+func set_wildcard_outline(enabled:bool) -> void:
+	_wildcard_outline=enabled
+	_refresh_outline()
+
 func _refresh_outline() -> void:
 	var sprite:AnimatedSprite2D=$AnimatedSprite2D
 	if sprite==null:
 		return
-	#相是万用蛋，点它不发射，所以不镀"可点击发射"的金边（它跟着组里的蛋一起发）
-	var want_gold:bool=_five_outline or (group_id!=-1 and not has_active_animation() and not is_wildcard())
+	var want_gold:bool=_five_outline or _wildcard_outline or (group_id!=-1 and not has_active_animation())
 	if want_gold:
 		if _outline_material==null:
 			_outline_material=GOLD_OUTLINE.make_material(OUTLINE_PX,GLOW_PX)
