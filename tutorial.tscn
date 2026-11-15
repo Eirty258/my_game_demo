@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://by0islktv1f4l" path="res://drop/drop_manager.tscn" id="6_tvjhf"]
 [ext_resource type="PackedScene" uid="uid://dgvkn28nfhs7u" path="res://ui/ui.tscn" id="7_vmw6g"]
 [ext_resource type="Texture2D" uid="uid://clr00f06f24mh" path="res://arts/texture/hand.png" id="8_4t6hg"]
+[ext_resource type="Script" path="res://drop/Background.gd" id="9_bg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7vrqn"]
 atlas = ExtResource("8_4t6hg")
@@ -58,17 +59,15 @@ animations = [{
 [node name="Tutorial" type="Node" unique_id=1883544618]
 script = ExtResource("1_7n6eb")
 
-[node name="Background" type="CanvasLayer" parent="." unique_id=1801307784]
-layer = -1
-
-[node name="Background" type="Sprite2D" parent="Background" unique_id=62369801]
-texture = ExtResource("2_0cr88")
-offset = Vector2(960, 540)
-
 [node name="Board" parent="." unique_id=750264424 instance=ExtResource("3_4t6hg")]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1204159795]
 zoom = Vector2(0.15, 0.15)
+
+[node name="Background" type="Sprite2D" parent="Camera2D" unique_id=62369801]
+z_index = -10
+texture = ExtResource("2_0cr88")
+script = ExtResource("9_bg")
 
 [node name="EnemyManager" parent="." unique_id=1804351131 instance=ExtResource("4_7vrqn")]
 
