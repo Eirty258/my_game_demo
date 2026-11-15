@@ -25,6 +25,12 @@ func update_background() -> void:
 	var index:=clampi(GameState.floor,0,FLOOR_BACKGROUNDS.size()-1)
 	bg.call("set_texture_path",FLOOR_BACKGROUNDS[index])
 
+#切关时清掉上一关剩下的所有地雷（地雷属于"这一关的布置"，不跟到下一关）
+func clear_mines() -> void:
+	for mine in get_tree().get_nodes_in_group("mine"):
+		if is_instance_valid(mine):
+			mine.queue_free()
+
 func goto_next_floor():
 	#await get_tree().create_timer(3).timeout
 	$UI.visible=false
@@ -37,6 +43,7 @@ func goto_next_floor():
 	GameState.floor+=1
 	Weather.start_floor(GameState.floor)#第一层无天气，之后每层随机
 	update_background()#换层背景（此刻画面是黑的，换完不会被看到）
+	clear_mines()#跟班不跨关：上一关的地雷全部清掉（新一关由道具在地上的 floor_ready 里重新放一颗）
 	await $Board.init()
 	$Camera2D.zoom=Vector2(0.15,0.15)
 	$EnemyManager.init()

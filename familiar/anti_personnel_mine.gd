@@ -6,7 +6,8 @@ extends Area2D
 #· 空中单位（纸鸽子 is_airborne）踩不到；触发后自己踩扁消失
 #· 道具 items/anti_personnel_mine.gd 每波敌人刷出时都再放一颗，所以场上可能同时有好几颗，
 #  摆位时会尽量避开已有的地雷（别叠在一起）
-#· 换层时棋盘重建，地雷跟着挪到新棋盘的车道上
+#· 换层时会被 game_session.clear_mines() 清掉（地雷属于这一关的布置，不跨关）
+#  新一关由道具 items/anti_personnel_mine.gd 在 Board.init() 的 floor_ready 里重新放一颗
 
 signal consumed#被踩掉了（留给以后的道具/统计用，目前道具不靠它决定补雷）
 
@@ -38,7 +39,6 @@ func _ready() -> void:
 	add_to_group("mine")
 	$Sprite2D.texture=MINE_TEXTURES.pick_random()
 	body_entered.connect(_on_body_entered)
-	SignalBus.floor_ready.connect(_on_floor_ready)
 	_place_on_random_lane()
 	_start_pulse()
 
@@ -50,10 +50,6 @@ func _start_pulse() -> void:
 	_pulse.tween_property(self,"modulate",Color(0.8,0.8,0.8,1.0),0.55)
 
 #——位置：随机侧、随机车道、离墙 1~3 格——
-func _on_floor_ready() -> void:
-	_board=get_tree().get_first_node_in_group("board") as Board
-	_place_on_random_lane()
-
 func _place_on_random_lane() -> void:
 	if _board==null:
 		_board=get_tree().get_first_node_in_group("board") as Board
