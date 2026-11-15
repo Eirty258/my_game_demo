@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://by0islktv1f4l" path="res://drop/drop_manager.tscn" id="6_tvjhf"]
 [ext_resource type="PackedScene" uid="uid://dgvkn28nfhs7u" path="res://ui/ui.tscn" id="7_vmw6g"]
 [ext_resource type="Texture2D" uid="uid://clr00f06f24mh" path="res://arts/texture/hand.png" id="8_4t6hg"]
-[ext_resource type="Script" path="res://drop/Background.gd" id="9_bg"]
+[ext_resource type="Script" uid="uid://b0bppq2bnq0pt" path="res://drop/Background.gd" id="9_bg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7vrqn"]
 atlas = ExtResource("8_4t6hg")

@@ -14,5 +14,5 @@ func handle_click():
 	var type=WeightTable.pick_egg_type()
 	for i in range(3):
 		SignalBus.drop_egg_picked.emit(type)
-	VisualEffect.show_text_hint("兵：'夫尽小者大，积微者著'-给予三颗同种蛋")
+	VisualEffect.show_text_hint("兵：积微者著")
 	queue_free()

@@ -10,5 +10,5 @@ func _process(delta: float) -> void:
 
 func handle_click():
 	SignalBus.drop_egg_picked.emit("ju")
-	VisualEffect.show_text_hint("车：'横冲直撞'-给予一颗车")
+	VisualEffect.show_text_hint("车：横冲直撞")
 	queue_free()

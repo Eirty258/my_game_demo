@@ -12,5 +12,5 @@ func _process(delta: float) -> void:
 
 func handle_click():
 	SignalBus.drop_egg_picked.emit("red_xiang")#与掉蛋共用入口：棋盘随机位置生成一颗相
-	VisualEffect.show_text_hint("相：'神本无相'-给予一颗相")
+	VisualEffect.show_text_hint("相：神本无相")
 	queue_free()

@@ -9,5 +9,5 @@ func _process(delta: float) -> void:
 
 func handle_click():
 	SignalBus.drop_egg_picked.emit("shuai")#与掉蛋共用入口：棋盘随机位置生成一颗帅
-	VisualEffect.show_text_hint("帅：'帅不离位，将不失城'-给予一颗帅")
+	VisualEffect.show_text_hint("帅：最后手段")
 	queue_free()

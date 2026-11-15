@@ -4,9 +4,9 @@ var board_weights_tables=[
 	#一层
 	[
 		{
-			#"board_2":1,
-			#"board_3":1,
-			"board_8":1,
+			"board_2":1,
+			"board_3":1,
+			#"board_8":1,
 		}
 	],
 	#二层

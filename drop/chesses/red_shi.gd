@@ -11,5 +11,5 @@ func _process(delta: float) -> void:
 
 func handle_click():
 	SignalBus.drop_egg_picked.emit("red_shi")#与掉蛋共用入口：棋盘随机位置生成一颗仕
-	VisualEffect.show_text_hint("仕：'拱卫中军'-给予一颗仕")
+	VisualEffect.show_text_hint("仕：拱卫中军")
 	queue_free()

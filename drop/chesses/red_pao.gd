@@ -9,5 +9,5 @@ func _process(delta: float) -> void:
 
 func handle_click():
 	SignalBus.drop_egg_picked.emit("pao")#与掉蛋共用入口：棋盘随机位置生成一颗红炮
-	VisualEffect.show_text_hint("炮：'隔子打子，隔山打牛'-给予一颗红炮")
+	VisualEffect.show_text_hint("炮：隔山打牛")
 	queue_free()

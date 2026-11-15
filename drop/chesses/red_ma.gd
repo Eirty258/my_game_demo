@@ -9,5 +9,5 @@ func is_valid_target(cell:Cell) -> bool:
 
 func apply_target(cell:Cell) -> void:
 	cell.durability=cell.max_durability
-	VisualEffect.show_text_hint("马：'固若金汤'-边界耐久回满")
+	VisualEffect.show_text_hint("马：高贵的马儿能够驱除一切外力")
 	queue_free()
