@@ -80,13 +80,13 @@ func refresh_order_price() -> void:
 
 #订单花费（蛋片数）的额外部分，看的是切关时锁下来的价格分：
 #	价格分为正：每只 +25（击杀越多，订单越贵）
-#	价格分为负：-10 × 该值（值为负，所以每放走一只也是 +10）
+#	价格分为负：每只 -10（放走越多，订单越便宜；返回负数 = 减价）
 #	0：不加价
 func get_order_cost_offset() -> int:
 	if order_price_score>0:
 		return 25*order_price_score
 	if order_price_score<0:
-		return -10*order_price_score
+		return 10*order_price_score
 	return 0
 
 func init():

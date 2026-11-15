@@ -18,7 +18,8 @@ const BASE_ORDER_COST:=50
 
 func setup_random()->Dictionary:
 	var dic={}
-	#需求：蛋片 = 基础花费 + 纸鸽子计数加成（击杀越多越贵，见 GameState.get_order_cost_offset）
+	#需求：蛋片 = 基础花费 + 纸鸽子计数加成
+	#（打掉鸽子 → 变贵；放走鸽子 → 变便宜；最低 1 片，不会出现白嫖/负数）
 	var cost:=maxi(BASE_ORDER_COST+GameState.get_order_cost_offset(),1)
 	var requirement=[{"type":"egg_shard","amount":cost}]
 	dic["requirements"]=requirement
