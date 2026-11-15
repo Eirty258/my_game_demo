@@ -9,6 +9,7 @@ var screen_exit_count=0:
 func _ready() -> void:
 	super._ready()
 	is_airborne=true#纸鸽子在天上飞：地雷这类地面陷阱踩不到它
+	counts_as_dove=true#击杀 +1、飞走 -1（GameState.dove_score，影响订单花费）
 	weekness="electricity"
 	speed=1024
 	health=1
@@ -31,6 +32,7 @@ func handle_ai():
 	pass
 
 func leave():
+	_notify_dove(true)#放走了一只：计数 -1（只记一次）
 	get_parent().total_enemy_number_reduce()
 	GameState.modify_energy(energy)
 	get_parent().remove_enemy(self)
@@ -66,6 +68,7 @@ func die():
 	if is_dying:
 		return
 	is_dying=true
+	_notify_dove(false)#打掉了一只：计数 +1
 	$CollisionShape2D.set_deferred("disabled", true)
 	$Hitbox/CollisionShape2D.set_deferred("disabled", true)
 	$Hurtbox/CollisionShape2D.set_deferred("disabled", true)

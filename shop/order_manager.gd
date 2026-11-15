@@ -13,10 +13,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
+#订单基础花费（蛋片数）：实际花费 = 基础 + 纸鸽子计数带来的加价
+const BASE_ORDER_COST:=50
+
 func setup_random()->Dictionary:
 	var dic={}
-	#需求：
-	var requirement=[{"type":"egg_shard","amount":50}]
+	#需求：蛋片 = 基础花费 + 纸鸽子计数加成（击杀越多越贵，见 GameState.get_order_cost_offset）
+	var cost:=maxi(BASE_ORDER_COST+GameState.get_order_cost_offset(),1)
+	var requirement=[{"type":"egg_shard","amount":cost}]
 	dic["requirements"]=requirement
 	#三个道具池共用"已刷出"记录，pick_item 会把抽中的道具在所有池里清零
 	var item=WeightTable.pick_item("order_item_pool")

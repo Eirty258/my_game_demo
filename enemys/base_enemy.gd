@@ -23,6 +23,10 @@ var tilemap_body:Node2D=null#当前贴着的那层瓦片（索敌用）
 @export var is_dying:bool=false
 #是否在空中飞：地面上的陷阱（反步兵地雷之类）踩不到它，目前只有纸鸽子会是 true
 @export var is_airborne:bool=false
+#是否算"纸鸽子"这类送订单的鸟：被击杀时 GameState.dove_score +1、飞走时 -1
+#以后新增类似的敌人，把这个打开就会自动记进同一个计数
+@export var counts_as_dove:bool=false
+var _dove_scored:bool=false#同一只只结算一次
 #切关清场（虚空之蛋）时为 true：这只怪死了也不掉东西
 @export var block_drops:bool=false
 @export var motion:String=""
@@ -152,6 +156,7 @@ func die():
 	if is_dying:
 		return
 	is_dying=true
+	_notify_dove(false)#纸鸽子被打掉了：计数 +1
 	$CollisionShape2D.set_deferred("disabled", true)
 	$Hitbox/CollisionShape2D.set_deferred("disabled", true)
 	$Hurtbox/CollisionShape2D.set_deferred("disabled", true)
@@ -181,6 +186,15 @@ func die():
 
 func handle_ai():
 	pass
+
+#纸鸽子这类"送订单的鸟"的结算：击杀 +1、飞走 -1（GameState.dove_score，影响订单花费）
+#· counts_as_dove 没打开的不记；同一只只记一次
+#· 虚空之蛋清场（block_drops）不算击杀，避免切关时白送计数
+func _notify_dove(escaped:bool) -> void:
+	if not counts_as_dove or _dove_scored or block_drops:
+		return
+	_dove_scored=true
+	GameState.modify_dove_score(-1 if escaped else 1)
 
 func close_attacking():
 	if touch_cell!=null:

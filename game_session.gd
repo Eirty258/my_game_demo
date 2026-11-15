@@ -42,6 +42,7 @@ func goto_next_floor():
 	GameState.init()
 	GameState.floor+=1
 	Weather.start_floor(GameState.floor)#第一层无天气，之后每层随机
+	GameState.refresh_order_price()#切关：按累计的纸鸽子计数定这一关的订单价格
 	update_background()#换层背景（此刻画面是黑的，换完不会被看到）
 	clear_mines()#跟班不跨关：上一关的地雷全部清掉（新一关由道具在地上的 floor_ready 里重新放一颗）
 	await $Board.init()
